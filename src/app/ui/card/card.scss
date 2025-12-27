@@ -1,0 +1,19 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+@use 'styles/abstracts/media' as media;
+
+.card-container {
+  padding: vars.$space-lg;
+  border-radius: vars.$radius-lg;
+
+  background-color: colors.$bg-surface;
+  border: 1px solid colors.$border-default;
+
+  color: colors.$text-primary;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  width: 350px;
+
+  @include media.from-large {
+    width: 500px;
+  }
+}

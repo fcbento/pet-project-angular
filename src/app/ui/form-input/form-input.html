@@ -1,0 +1,9 @@
+@let labelContent = label();
+
+<section class="input-container">
+  @if (labelContent) {
+    <b>{{ labelContent }}</b>
+  }
+
+  <input [placeholder]="placeholder()" [disabled]="disabled()" [type]="type()" />
+</section>

@@ -1,0 +1,56 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+@use 'styles/abstracts/mixins' as mixins;
+@use 'styles/abstracts/media' as media;
+
+.auth {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  @include media.from-large {
+    flex-direction: row;
+  }
+
+  &__visual {
+    display: none;
+
+    @include media.from-large {
+      display: block;
+      flex: 1;
+      background-color: colors.$color-primary;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    padding: vars.$space-xl;
+
+    @include mixins.flex-center(column);
+
+    @include media.from-large {
+      padding: vars.$space-xxl;
+    }
+  }
+
+  &__panel {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  &__header {
+    padding: vars.$space-xl 0;
+  }
+
+  &__form {
+    @include mixins.flex-direction(column);
+    gap: vars.$space-md;
+  }
+
+  &__action {
+    @include mixins.flex-direction(column);
+    padding: vars.$space-xl 0;
+    gap: vars.$space-xl;
+  }
+}

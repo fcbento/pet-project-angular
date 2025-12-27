@@ -1,0 +1,27 @@
+<section class="auth">
+  <div class="auth__visual"></div>
+  <div class="auth__content">
+    <div class="auth__panel">
+      <div class="auth__header">
+        <h1>{{ title() }}</h1>
+        <i> {{ description() }}</i>
+      </div>
+      <div class="auth__form">
+        @if (isLogin()) {
+          <app-form-input placeholder="Email" label="Email" type="email" />
+          <app-form-input placeholder="Password" label="Password" type="password" />
+        } @else {
+          <app-form-input placeholder="Name" label="Name" />
+          <app-form-input placeholder="Last name" label="Last name" />
+          <app-form-input placeholder="Email" label="Email" type="email" />
+          <app-form-input placeholder="Password" label="Password" type="password" />
+          <app-form-input placeholder="Confirm password" label="Confirm password" type="password" />
+        }
+      </div>
+      <div class="auth__action">
+        <app-button [disabled]="false" (clicked)="execute()" [name]="buttonName()" type="primary" />
+        <app-button [disabled]="false" [name]="linkName()" (clicked)="redirect()" type="link" />
+      </div>
+    </div>
+  </div>
+</section>

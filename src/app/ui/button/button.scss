@@ -1,0 +1,98 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+@use 'styles/abstracts/mixins' as mixins;
+
+button {
+  padding: vars.$space-sm vars.$space-lg;
+  min-height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: vars.$space-xs;
+
+  border-radius: vars.$radius-md;
+  border: 1px solid transparent;
+
+  font-size: vars.$font-size-md;
+  font-weight: 500;
+  font-family: vars.$font-family-base;
+
+  cursor: pointer;
+  text-decoration: none;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px colors.$focus-ring;
+  }
+
+  &:disabled {
+    background-color: colors.$bg-disabled;
+    color: colors.$text-muted;
+    cursor: not-allowed;
+  }
+}
+
+button.button--primary {
+  background-color: colors.$color-primary;
+  color: colors.$text-inverse;
+
+  &:hover:not(:disabled) {
+    background-color: colors.$blue-400;
+  }
+
+  &:active:not(:disabled) {
+    background-color: colors.$blue-300;
+  }
+}
+
+button.button--secondary {
+  background-color: colors.$bg-surface;
+  border-color: colors.$border-default;
+  color: colors.$text-primary;
+
+  &:hover:not(:disabled) {
+    background-color: colors.$bg-surface-hover;
+    border-color: colors.$border-surface-hover;
+  }
+
+  &:active:not(:disabled) {
+    background-color: colors.$bg-surface-active;
+  }
+}
+
+button.button--tertiary {
+  background-color: transparent;
+  color: colors.$text-primary;
+
+  &:hover:not(:disabled) {
+    background-color: colors.$bg-muted;
+  }
+
+  &:active:not(:disabled) {
+    background-color: colors.$bg-surface-active;
+  }
+}
+
+button.button--link {
+  padding: 0;
+  min-height: auto;
+
+  background-color: transparent;
+  color: colors.$color-primary;
+  border-radius: 0;
+
+  &:hover:not(:disabled) {
+    text-decoration: underline;
+  }
+
+  &:active:not(:disabled) {
+    color: colors.$blue-400;
+  }
+}

@@ -1,0 +1,80 @@
+@use '../abstracts/variables' as vars;
+@use '../abstracts/colors' as colors;
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: vars.$font-family-base;
+  font-size: vars.$font-size-md;
+  font-weight: vars.$font-weight-regular;
+  line-height: 1.5;
+  color: colors.$text-primary;
+  background-color: colors.$bg-page;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: vars.$font-weight-semibold;
+  color: colors.$text-primary;
+  margin: 0;
+}
+
+h1 {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.75rem;
+  line-height: 1.25;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+h5 {
+  font-size: 1.125rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
+
+p {
+  margin: 0;
+  font-size: vars.$font-size-md;
+  color: colors.$text-primary;
+}
+
+span {
+  font-size: inherit;
+  color: inherit;
+}
+
+small {
+  font-size: vars.$font-size-sm;
+  color: colors.$text-muted;
+}
+
+strong,
+b {
+  font-weight: vars.$font-weight-semibold;
+  color: colors.$text-primary;
+}
+
+label {
+  font-size: vars.$font-size-sm;
+  font-weight: vars.$font-weight-medium;
+  color: colors.$text-secondary;
+}

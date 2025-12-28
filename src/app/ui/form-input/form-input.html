@@ -5,5 +5,18 @@
     <b>{{ labelContent }}</b>
   }
 
-  <input [placeholder]="placeholder()" [disabled]="disabled()" [type]="type()" />
+  <input
+    [placeholder]="placeholder()"
+    [type]="type()"
+    [disabled]="disabled()"
+    [class.error]="errors().length && touched()"
+    (input)="value.set($event.target.value)"
+    (blur)="touched.set(true)"
+  />
+
+  @if (touched()) {
+    @for (error of errors(); track error) {
+      <small class="error">{{ error.message }}</small>
+    }
+  }
 </section>

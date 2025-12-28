@@ -45,12 +45,12 @@
 
   &__form {
     @include mixins.flex-direction(column);
-    gap: vars.$space-md;
+    gap: vars.$space-lg;
   }
 
   &__action {
     @include mixins.flex-direction(column);
-    padding: vars.$space-xl 0;
-    gap: vars.$space-xl;
+    padding: vars.$space-md 0;
+    gap: vars.$space-lg;
   }
 }

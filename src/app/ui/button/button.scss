@@ -50,6 +50,12 @@ button.button--primary {
   &:active:not(:disabled) {
     background-color: colors.$blue-300;
   }
+
+  &:disabled {
+    background-color: colors.$bg-disabled;
+    color: colors.$text-muted;
+    cursor: not-allowed;
+  }
 }
 
 button.button--secondary {

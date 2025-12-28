@@ -12,6 +12,8 @@ describe('Card', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(Card);
+    fixture.componentRef.setInput('title', 'Test Title');
+    fixture.componentRef.setInput('description', 'Test Description');
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

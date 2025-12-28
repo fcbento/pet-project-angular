@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Auth } from './auth';
 
 describe('Auth', () => {
@@ -8,7 +10,9 @@ describe('Auth', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Auth],
-    }).compileComponents();
+    })
+      .overrideProvider(ActivatedRoute, { useValue: { snapshot: { data: { isLogin: true } } } })
+      .compileComponents();
 
     fixture = TestBed.createComponent(Auth);
     component = fixture.componentInstance;

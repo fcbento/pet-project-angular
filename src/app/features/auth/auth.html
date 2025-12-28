@@ -8,35 +8,19 @@
       </div>
       <div class="auth__form">
         <form>
-          @if (isLogin()) {
+          @for (form of formulary(); track form) {
             <app-form-input
-              placeholder="Email"
-              label="Email"
-              type="email"
-              [field]="loginForm.email"
-            />
-            <app-form-input
-              placeholder="Password"
-              label="Password"
-              type="password"
-              [field]="loginForm.password"
-            />
-          } @else {
-            <app-form-input placeholder="Name" label="Name" />
-            <app-form-input placeholder="Last name" label="Last name" />
-            <app-form-input placeholder="Email" label="Email" type="email" />
-            <app-form-input placeholder="Password" label="Password" type="password" />
-            <app-form-input
-              placeholder="Confirm password"
-              label="Confirm password"
-              type="password"
+              [placeholder]="form.placeholder"
+              [label]="form.label"
+              [type]="form.type!"
+              [field]="form.field"
             />
           }
         </form>
       </div>
       <div class="auth__action">
         <app-button
-          [disabled]="loginForm().invalid()"
+          [disabled]="disable()"
           (clicked)="execute()"
           [name]="buttonName()"
           type="primary"

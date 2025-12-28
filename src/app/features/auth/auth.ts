@@ -1,30 +1,21 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { email, Field, form, minLength, required } from '@angular/forms/signals';
+import { Component, computed, inject } from '@angular/core';
+import { Field } from '@angular/forms/signals';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Button } from '../../ui/button/button';
 import { FormInput } from '../../ui/form-input/form-input';
 import { AUTH } from './auth.const';
+import { AuthUtils } from './auth.utils';
 
 @Component({
   selector: 'app-auth',
   imports: [FormInput, Button, Field],
   templateUrl: './auth.html',
+  providers: [AuthUtils],
 })
 export class Auth {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-
-  public readonly loginModel = signal({
-    email: '',
-    password: '',
-  });
-
-  public readonly loginForm = form(this.loginModel, (schemaPath) => {
-    required(schemaPath.email, { message: 'Email is required' });
-    required(schemaPath.password, { message: 'Password is required' });
-    email(schemaPath.email, { message: 'Enter a valid email address' });
-    minLength(schemaPath.password, 6, { message: 'Password must be at least 6 characters' });
-  });
+  private readonly authUtils = inject(AuthUtils);
 
   protected readonly title = computed(() =>
     this.isLogin() ? AUTH.loginTitle : AUTH.registerTitle,
@@ -43,6 +34,14 @@ export class Auth {
   );
 
   protected readonly isLogin = computed(() => this.route.snapshot.data['isLogin']);
+
+  protected readonly disable = computed(() =>
+    this.isLogin() ? this.authUtils.loginForm().invalid() : this.authUtils.registerForm().invalid(),
+  );
+
+  protected readonly formulary = computed(() =>
+    this.isLogin() ? this.authUtils.loginFormItems : this.authUtils.registerFormItems,
+  );
 
   protected execute(): void {
     //TODO

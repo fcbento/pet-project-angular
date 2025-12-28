@@ -1,1 +1,1 @@
-echo "npm run lint && ng build" > .husky/pre-push
+npm run lint && ng build

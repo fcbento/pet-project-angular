@@ -4,18 +4,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Button } from '../../ui/button/button';
 import { FormInput } from '../../ui/form-input/form-input';
 import { AUTH } from './auth.const';
-import { AuthUtils } from './auth.utils';
+import { AuthForm } from './auth.form';
 
 @Component({
   selector: 'app-auth',
   imports: [FormInput, Button, Field],
   templateUrl: './auth.html',
-  providers: [AuthUtils],
+  providers: [AuthForm],
 })
 export class Auth {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly authUtils = inject(AuthUtils);
+  private readonly authForm = inject(AuthForm);
 
   protected readonly title = computed(() =>
     this.isLogin() ? AUTH.loginTitle : AUTH.registerTitle,
@@ -36,11 +36,11 @@ export class Auth {
   protected readonly isLogin = computed(() => this.route.snapshot.data['isLogin']);
 
   protected readonly disable = computed(() =>
-    this.isLogin() ? this.authUtils.loginForm().invalid() : this.authUtils.registerForm().invalid(),
+    this.isLogin() ? this.authForm.loginForm().invalid() : this.authForm.registerForm().invalid(),
   );
 
   protected readonly formulary = computed(() =>
-    this.isLogin() ? this.authUtils.loginFormItems : this.authUtils.registerFormItems,
+    this.isLogin() ? this.authForm.loginFormItems : this.authForm.registerFormItems,
   );
 
   protected execute(): void {

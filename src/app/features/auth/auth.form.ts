@@ -2,7 +2,7 @@ import { signal } from '@angular/core';
 import { email, form, minLength, required, validate } from '@angular/forms/signals';
 import { FormItems, LoginModel, RegisterModel } from './auth.models';
 
-export class AuthUtils {
+export class AuthForm {
   private readonly loginModel = signal<LoginModel>({
     email: '',
     password: '',

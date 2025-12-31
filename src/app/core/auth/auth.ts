@@ -1,8 +1,12 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Field } from '@angular/forms/signals';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngxs/store';
 import { Button } from '../../ui/button/button';
 import { FormInput } from '../../ui/form-input/form-input';
+import { Session } from '../../utility/session/session.actions';
+import { AuthService } from '../services/auth';
 import { AUTH } from './auth.const';
 import { AuthForm } from './auth.form';
 
@@ -10,12 +14,15 @@ import { AuthForm } from './auth.form';
   selector: 'app-auth',
   imports: [FormInput, Button, Field],
   templateUrl: './auth.html',
-  providers: [AuthForm],
+  providers: [AuthForm, AuthService],
 })
 export class Auth {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly authForm = inject(AuthForm);
+  private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly store = inject(Store);
 
   protected readonly title = computed(() =>
     this.isLogin() ? AUTH.loginTitle : AUTH.registerTitle,
@@ -43,8 +50,28 @@ export class Auth {
     this.isLogin() ? this.authForm.loginFormItems : this.authForm.registerFormItems,
   );
 
+  private login(): void {
+    this.authService
+      .login(this.authForm.loginForm().value())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ email, token }) => {
+          this.store.dispatch(new Session({ email, token }));
+        },
+      });
+  }
+
+  private register(): void {
+    this.authService
+      .login(this.authForm.registerForm().value())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {},
+      });
+  }
+
   protected execute(): void {
-    //TODO
+    this.isLogin() ? this.login() : this.register();
   }
 
   protected redirect(): void {

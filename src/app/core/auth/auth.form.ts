@@ -1,7 +1,8 @@
-import { signal } from '@angular/core';
-import { email, form, minLength, required, validate } from '@angular/forms/signals';
+import { Injectable, signal } from '@angular/core';
+import { disabled, email, form, minLength, required, validate } from '@angular/forms/signals';
 import { FormItems, LoginModel, RegisterModel } from './auth.models';
 
+@Injectable()
 export class AuthForm {
   private readonly loginModel = signal<LoginModel>({
     email: '',
@@ -16,11 +17,15 @@ export class AuthForm {
     confirmPassword: '',
   });
 
+  public readonly isSubmitting = signal(false);
+
   public readonly loginForm = form(this.loginModel, (schemaPath) => {
     required(schemaPath.email, { message: 'Email is required' });
     required(schemaPath.password, { message: 'Password is required' });
     email(schemaPath.email, { message: 'Enter a valid email address' });
     minLength(schemaPath.password, 6, { message: 'Password must be at least 6 characters' });
+    disabled(schemaPath.email, () => this.isSubmitting());
+    disabled(schemaPath.password, () => this.isSubmitting());
   });
 
   public readonly registerForm = form(this.registerModel, (schemaPath) => {
@@ -40,6 +45,12 @@ export class AuthForm {
       }
       return undefined;
     });
+
+    disabled(schemaPath.name, () => this.isSubmitting());
+    disabled(schemaPath.lastName, () => this.isSubmitting());
+    disabled(schemaPath.email, () => this.isSubmitting());
+    disabled(schemaPath.password, () => this.isSubmitting());
+    disabled(schemaPath.confirmPassword, () => this.isSubmitting());
   });
 
   public readonly loginFormItems: FormItems[] = [

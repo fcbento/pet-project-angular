@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
+import { Loader } from '../loader/loader';
 import { ButtonType } from './button.model';
 
 @Component({
   selector: 'app-button',
-  imports: [CommonModule],
+  imports: [CommonModule, Loader],
   templateUrl: './button.html',
   styleUrl: './button.scss',
 })
@@ -16,9 +17,12 @@ export class Button {
     'button--link': this.type() === 'link',
   }));
 
+  protected readonly disableButton = computed(() => this.disabled() || this.loading());
+
   public readonly name = input.required<string>();
   public readonly type = input.required<ButtonType>();
   public readonly disabled = input.required<boolean>();
+  public readonly loading = input<boolean>();
 
   public readonly clicked = output<void>();
 }

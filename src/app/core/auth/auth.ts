@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Field } from '@angular/forms/signals';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -23,6 +23,8 @@ export class Auth {
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly store = inject(Store);
+
+  protected readonly loading = signal(false);
 
   protected readonly title = computed(() =>
     this.isLogin() ? AUTH.loginTitle : AUTH.registerTitle,
@@ -51,6 +53,7 @@ export class Auth {
   );
 
   private login(): void {
+    this.setLoaders(true);
     this.authService
       .login(this.authForm.loginForm().value())
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -58,16 +61,24 @@ export class Auth {
         next: ({ email, token }) => {
           this.store.dispatch(new Session({ email, token }));
         },
-      });
+      })
+      .add(() => this.setLoaders(false));
+  }
+
+  private setLoaders(loading: boolean): void {
+    this.loading.set(loading);
+    this.authForm.isSubmitting.set(loading);
   }
 
   private register(): void {
+    this.setLoaders(true);
     this.authService
       .login(this.authForm.registerForm().value())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {},
-      });
+      })
+      .add(() => this.setLoaders(false));
   }
 
   protected execute(): void {

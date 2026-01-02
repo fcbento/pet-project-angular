@@ -58,8 +58,8 @@ export class Auth {
       .login(this.authForm.loginForm().value())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: ({ email, token }) => {
-          this.store.dispatch(new Session({ email, token }));
+        next: ({ access_token }) => {
+          this.store.dispatch(new Session({ access_token }));
         },
       })
       .add(() => this.setLoaders(false));
@@ -73,7 +73,7 @@ export class Auth {
   private register(): void {
     this.setLoaders(true);
     this.authService
-      .login(this.authForm.registerForm().value())
+      .register(this.authForm.registerForm().value())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {},

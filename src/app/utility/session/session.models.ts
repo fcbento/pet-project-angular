@@ -1,4 +1,3 @@
 export interface SessionUser {
-  token: string;
-  email: string;
+  access_token: string;
 }

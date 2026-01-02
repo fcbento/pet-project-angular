@@ -4,7 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:mock": "ng serve --configuration=mock",
     "build": "ng build",
+    "build:mock": "ng build --configuration=mock",
+    "build:production": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test --watch=false",
     "format": "prettier --write \"src/**/*.{ts,html,scss}\"",

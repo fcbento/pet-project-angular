@@ -22,9 +22,7 @@ export interface FormItems {
 }
 
 export interface LoginResponse {
-  token: string;
-  type: string;
-  email: string;
+  access_token: string;
 }
 
 export interface AuthError {

@@ -60,16 +60,19 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true,
+              "sourceMap": true
+            },
+            "mock": {
+              "outputHashing": "all",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.development.ts"
+                  "with": "src/environments/environment.mock.ts"
                 }
               ]
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "mock"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
@@ -79,6 +82,9 @@
             },
             "development": {
               "buildTarget": "practices:build:development"
+            },
+            "mock": {
+              "buildTarget": "practices:build:mock"
             }
           },
           "defaultConfiguration": "development"

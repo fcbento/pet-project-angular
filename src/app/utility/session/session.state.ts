@@ -6,8 +6,7 @@ import { SessionUser } from './session.models';
 @State<SessionUser>({
   name: 'session',
   defaults: {
-    email: '',
-    token: '',
+    access_token: '',
   },
 })
 @Injectable()

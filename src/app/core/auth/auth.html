@@ -23,6 +23,7 @@
           [disabled]="disable()"
           (clicked)="execute()"
           [name]="buttonName()"
+          [loading]="loading()"
           type="primary"
         />
         <app-button [disabled]="false" [name]="linkName()" (clicked)="redirect()" type="link" />

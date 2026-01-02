@@ -1,3 +1,6 @@
-<button (click)="clicked.emit()" [ngClass]="buttonType()" [disabled]="disabled()">
+<button (click)="clicked.emit()" [ngClass]="buttonType()" [disabled]="disableButton()">
   {{ name() }}
+  @if (loading()) {
+    <app-loader size="sm" color="primary" />
+  }
 </button>

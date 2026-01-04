@@ -1,0 +1,18 @@
+@if (isActive()) {
+  <div class="toast-container">
+    <div [ngClass]="toastType()" class="toast">
+      <div class="toast__icon">{{ icon() }}</div>
+
+      <div class="toast__content">
+        <p class="toast__title">{{ activeToast().title }}</p>
+        <p class="toast__message">{{ activeToast().message }}</p>
+      </div>
+
+      <button class="toast__close" aria-label="Close" (click)="manualClose()">✕</button>
+
+      <div class="toast__progress">
+        <div class="toast__progress-bar" [style.animation-duration.ms]="duration()"></div>
+      </div>
+    </div>
+  </div>
+}

@@ -13,7 +13,7 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, payload);
   }
 
-  public register(payload: RegisterModel): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/register`, payload);
+  public register(payload: RegisterModel): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/auth/register`, payload);
   }
 }

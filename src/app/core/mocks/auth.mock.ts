@@ -20,7 +20,6 @@ export const authMocks = {
         status: 200,
         body: {
           message: 'User registered successfully',
-          date: new Date(),
         },
       }),
     ).pipe(delay(environment.mockDelay)),

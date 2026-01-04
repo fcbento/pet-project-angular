@@ -7,13 +7,14 @@ import { provideStore } from '@ngxs/store';
 import { routes } from './app.routes';
 import { mockInterceptor } from './core/interceptors/mock-interceptor';
 import { SessionState } from './utility/session/session.state';
+import { ToastState } from './utility/toast/toast.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideStore(
-      [SessionState],
+      [SessionState, ToastState],
       withNgxsStoragePlugin({
         keys: '*',
       }),

@@ -39,7 +39,7 @@ export const TOAST_LOGIN = {
     title: 'Welcome back',
     message: 'It’s great to see you again. We’re loading your dashboard now',
     type: 'success' as ToastType,
-    duration: 5000,
+    duration: 2000,
   } as ToastModel,
   error: {
     ...COMMON_ERROR,

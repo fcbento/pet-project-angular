@@ -33,7 +33,7 @@ module.exports = tseslint.config(
     },
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
     rules: {
-      'prettier/prettier': ['error', { parser: 'angular' }],
+      'prettier/prettier': ['error', { parser: 'angular', endOfLine: 'auto' }],
     },
   },
   prettierConfig,

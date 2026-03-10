@@ -66,7 +66,7 @@ export class Auth {
       .subscribe({
         next: ({ access_token }) => {
           this.store.dispatch(new Session({ access_token }));
-          this.toast(TOAST_LOGIN.success);
+          this.redirectAfterLoginSuccess();
         },
         error: () => {
           this.toast(TOAST_LOGIN.error);
@@ -87,6 +87,15 @@ export class Auth {
     this.authForm.isSubmitting.set(true);
     setTimeout(() => {
       this.router.navigate(['/']);
+      this.setLoaders(false);
+    }, TOAST_REGISTER.success.duration);
+  }
+
+  private redirectAfterLoginSuccess(): void {
+    this.authForm.isSubmitting.set(true);
+    this.toast(TOAST_LOGIN.success);
+    setTimeout(() => {
+      this.router.navigate(['/dashboard']);
       this.setLoaders(false);
     }, TOAST_LOGIN.success.duration);
   }

@@ -1,0 +1,134 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+@use 'styles/abstracts/mixins' as mixins;
+@use 'styles/abstracts/media' as media;
+
+.sidebar {
+  width: vars.$sidebar-width;
+  height: 100vh;
+  background-color: colors.$bg-surface;
+  border-right: 1px solid colors.$border-default;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease;
+  position: fixed;
+  z-index: vars.$z-sticky;
+
+  &.collapsed {
+    width: 72px;
+
+    .label,
+    .sidebar__logo {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .nav-children {
+      display: none;
+    }
+  }
+}
+
+/* HEADER */
+.sidebar__header {
+  height: vars.$header-height;
+  padding: 0 vars.$space-md;
+  border-bottom: 1px solid colors.$border-default;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar__logo {
+  font-size: vars.$font-size-lg;
+  font-weight: vars.$font-weight-semibold;
+  color: colors.$text-primary;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar__toggle {
+  background: none;
+  border: none;
+  font-size: vars.$font-size-lg;
+  cursor: pointer;
+}
+
+/* NAV */
+.sidebar__nav {
+  padding: vars.$space-sm 0;
+  flex: 1;
+}
+
+.nav-item {
+  padding: vars.$space-sm vars.$space-md;
+  display: flex;
+  align-items: center;
+  gap: vars.$space-sm;
+  color: colors.$text-secondary;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background-color: colors.$bg-surface-hover;
+    color: colors.$text-primary;
+  }
+
+  &.active {
+    background-color: colors.$blue-50;
+    color: colors.$blue-400;
+    border-left: 3px solid colors.$blue-400;
+  }
+
+  .icon {
+    font-size: 1.2rem;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .label {
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+  }
+}
+
+/* SUBMENU */
+.has-children {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.nav-item__parent {
+  display: flex;
+  align-items: center;
+  gap: vars.$space-sm;
+}
+
+.nav-children {
+  margin-left: 32px;
+  margin-top: vars.$space-xxs;
+  display: none;
+
+  &.open {
+    display: block;
+  }
+}
+
+.nav-child {
+  padding: vars.$space-xs vars.$space-md;
+  font-size: vars.$font-size-sm;
+  color: colors.$text-muted;
+  cursor: pointer;
+
+  &:hover {
+    color: colors.$text-primary;
+  }
+}
+
+/* RESPONSIVE */
+@include media.from(md) {
+  .sidebar {
+    position: relative;
+  }
+}

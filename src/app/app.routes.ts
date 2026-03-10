@@ -15,5 +15,9 @@ export const routes: Routes = [
       isLogin: false,
     },
   },
+  {
+    path: 'dashboard',
+    loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.Dashboard),
+  },
   { path: '**', redirectTo: 'login' },
 ];

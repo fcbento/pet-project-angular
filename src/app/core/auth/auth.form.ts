@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { disabled, email, form, minLength, required, validate } from '@angular/forms/signals';
-import { FormItems, LoginModel, RegisterModel } from './auth.models';
+import { FormItems } from '../../utility/models/form-items.model';
+import { LoginModel, RegisterModel } from './auth.models';
 
 @Injectable()
 export class AuthForm {

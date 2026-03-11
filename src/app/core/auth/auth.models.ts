@@ -1,5 +1,4 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { FieldTree } from '@angular/forms/signals';
 
 export interface LoginModel {
   email: string;
@@ -12,13 +11,6 @@ export interface RegisterModel {
   email: string;
   password: string;
   confirmPassword: string;
-}
-
-export interface FormItems {
-  placeholder: string;
-  label: string;
-  type: string;
-  field: FieldTree<string>;
 }
 
 export interface LoginResponse {

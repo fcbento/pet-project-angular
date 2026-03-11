@@ -1,0 +1,7 @@
+<section class="categoria">
+  <app-button [disabled]="false" (clicked)="openForm()" name="+ Nova categoria" type="tertiary" />
+  @if (formOpen()) {
+    <app-register />
+  }
+  <app-list />
+</section>

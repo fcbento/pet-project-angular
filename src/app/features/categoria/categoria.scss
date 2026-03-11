@@ -1,0 +1,10 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+@use 'styles/abstracts/mixins' as mixins;
+@use 'styles/abstracts/media' as media;
+
+.categoria {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$space-lg;
+}

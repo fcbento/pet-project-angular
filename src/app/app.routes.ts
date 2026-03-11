@@ -18,6 +18,12 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.Dashboard),
+    children: [
+      {
+        path: 'categoria',
+        loadComponent: () => import('./features/categoria/categoria').then((m) => m.Categoria),
+      },
+    ],
   },
   { path: '**', redirectTo: 'login' },
 ];

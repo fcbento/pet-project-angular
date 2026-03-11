@@ -3,6 +3,16 @@
 @use 'styles/abstracts/mixins' as mixins;
 @use 'styles/abstracts/media' as media;
 
+.dashboard {
+  display: flex;
+  gap: 10px;
+
+  &__content {
+    margin-top: vars.$space-lg;
+    margin-left: vars.$space-md;
+  }
+}
+
 .sidebar {
   width: vars.$sidebar-width;
   height: 100vh;
@@ -31,7 +41,6 @@
 
 /* HEADER */
 .sidebar__header {
-  height: vars.$header-height;
   padding: 0 vars.$space-md;
   border-bottom: 1px solid colors.$border-default;
   display: flex;

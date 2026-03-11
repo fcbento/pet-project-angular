@@ -1,17 +1,26 @@
-<aside class="sidebar" [class.collapsed]="collapsed">
-  <img src="" alt="Logo" />
-  <div class="sidebar__header">Casa Gelada</div>
-  <nav class="sidebar__nav">
-    <ul>
-      <li class="nav-item active">
-        <span class="label">Painel</span>
-      </li>
-
-      <li class="nav-item has-children">
-        <div class="nav-item__parent">
-          <span class="label">Simulador Revenda</span>
-        </div>
-      </li>
-    </ul>
-  </nav>
-</aside>
+<section class="dashboard">
+  <aside class="sidebar" [class.collapsed]="collapsed">
+    <img src="logo.png" alt="Logo" />
+    <div class="sidebar__header"></div>
+    <nav class="sidebar__nav">
+      <ul>
+        @for (route of routers; track route) {
+          <li
+            [class.active]="activeRoute() === route.link"
+            class="nav-item has-children"
+            (click)="navigate(route.link)"
+            (keyup.enter)="navigate(route.link)"
+            tabindex="0"
+          >
+            <div class="nav-item__parent">
+              <span class="label">{{ route.name }}</span>
+            </div>
+          </li>
+        }
+      </ul>
+    </nav>
+  </aside>
+  <section class="dashboard__content">
+    <router-outlet />
+  </section>
+</section>

@@ -41,6 +41,10 @@
 
   &__header {
     padding: vars.$space-xl 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 
   &__form {

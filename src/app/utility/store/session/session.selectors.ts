@@ -7,4 +7,9 @@ export class SessionSelectors {
   public static session(state: SessionUser): SessionUser {
     return state;
   }
+
+  @Selector([SessionState])
+  public static accessToken(state: SessionUser): string {
+    return state.access_token;
+  }
 }

@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, linkedSignal } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { CloseToast } from '../../utility/toast/toast.actions';
-import { ToastSelectors } from '../../utility/toast/toast.selectors';
+import { CloseToast } from '../../utility/store/toast/toast.actions';
+import { ToastSelectors } from '../../utility/store/toast/toast.selectors';
 
 @Component({
   selector: 'app-toast',

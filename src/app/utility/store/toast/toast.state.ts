@@ -3,6 +3,8 @@ import { Action, State, StateContext } from '@ngxs/store';
 import { CloseToast, OpenToast } from './toast.actions';
 import { ToastModel } from './toast.models';
 
+const DEFAULT_TOAST_TIMER = 3000;
+
 @State<ToastModel>({
   name: 'toast',
   defaults: {
@@ -16,7 +18,7 @@ import { ToastModel } from './toast.models';
 export class ToastState {
   @Action(OpenToast)
   public open(ctx: StateContext<ToastModel>, action: OpenToast): void {
-    ctx.patchState(action.toast);
+    ctx.patchState({ ...action.toast, duration: action.toast.duration ?? DEFAULT_TOAST_TIMER });
   }
 
   @Action(CloseToast)

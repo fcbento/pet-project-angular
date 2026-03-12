@@ -1,31 +1,25 @@
-import { ToastModel } from '../../utility/toast/toast.models';
-import { ToastType } from '../../utility/toast/toast.types';
+import { COMMON_ERROR } from '../../utility/constants/common-toast-error.conts';
+import { ToastModel } from '../../utility/store/toast/toast.models';
+import { ToastType } from '../../utility/store/toast/toast.types';
 
 export const AUTH = {
-  loginTitle: 'Sign in',
-  registerTitle: 'Create',
+  loginTitle: 'Entrar',
+  registerTitle: 'Criar conta',
 
-  loginDescription: 'Access your account and manage your data',
-  registerDescription: 'Create your account and manage your data',
+  loginDescription: 'Acesse sua conta e gerencie seus dados',
+  registerDescription: 'Crie sua conta e gerencie seus dados',
 
-  loginLinkName: 'Don’t have an account? Sign up',
-  registerLinkName: 'Already have an account? Sign in',
+  loginLinkName: 'Ainda não tem conta? Cadastre-se',
+  registerLinkName: 'Já tem conta? Entre',
 
-  loginButtonName: 'Sign in',
-  registerButtonName: 'Create',
-};
-
-const COMMON_ERROR = {
-  title: 'Something went wrong',
-  message: 'We couldn’t complete your request. Please try again later.',
-  type: 'error' as ToastType,
-  duration: 8000,
+  loginButtonName: 'Entrar',
+  registerButtonName: 'Criar',
 };
 
 export const TOAST_REGISTER = {
   success: {
-    title: 'Registration Successful',
-    message: 'You have registered successfully. Please log in.',
+    title: 'Cadastro bem‑sucedido',
+    message: 'Você se cadastrou com sucesso. Por favor, faça login.',
     type: 'success' as ToastType,
     duration: 4000,
   } as ToastModel,
@@ -36,10 +30,10 @@ export const TOAST_REGISTER = {
 
 export const TOAST_LOGIN = {
   success: {
-    title: 'Welcome back',
-    message: 'It’s great to see you again. We’re loading your dashboard now',
+    title: 'Bem‑vindo de volta',
+    message: 'Que bom te ver novamente. Estamos carregando seu painel agora.',
     type: 'success' as ToastType,
-    duration: 2000,
+    duration: 3000,
   } as ToastModel,
   error: {
     ...COMMON_ERROR,

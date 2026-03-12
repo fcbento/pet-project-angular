@@ -4,12 +4,12 @@ import { List } from './list/list';
 import { Register } from './register/register';
 
 @Component({
-  selector: 'app-categoria',
+  selector: 'app-category',
   imports: [List, Button, Register],
-  templateUrl: './categoria.html',
-  styleUrl: './categoria.scss',
+  templateUrl: './category.html',
+  styleUrl: './category.scss',
 })
-export class Categoria {
+export class Category {
   public readonly formOpen = signal(false);
 
   public openForm(): void {

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NgxsModule } from '@ngxs/store';
-import { ToastState } from '../../utility/toast/toast.state';
+import { ToastState } from '../../utility/store/toast/toast.state';
 import { Toast } from './toast';
 
 describe('Toast', () => {

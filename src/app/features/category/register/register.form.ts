@@ -15,12 +15,24 @@ export class RegisterForm {
     required(schemaPath.nome, { message: 'Nome é obrigatório' });
   });
 
-  public readonly registerFormItems: FormItems[] = [
+  public readonly registerFormItems = signal<FormItems[]>([
     {
       placeholder: 'Nome',
       label: 'Nome',
       type: 'text',
       field: this.registerForm.nome,
     },
-  ];
+  ]);
+
+  public resetForm(): void {
+    this.registerForm().reset({ nome: '' });
+    this.registerFormItems.update((formItems) => {
+      return formItems.map((item) => {
+        return {
+          ...item,
+          field: this.registerForm.nome,
+        };
+      });
+    });
+  }
 }

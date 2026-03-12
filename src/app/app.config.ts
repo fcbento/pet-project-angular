@@ -6,19 +6,21 @@ import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { provideStore } from '@ngxs/store';
 import { routes } from './app.routes';
 import { mockInterceptor } from './core/interceptors/mock-interceptor';
-import { SessionState } from './utility/session/session.state';
-import { ToastState } from './utility/toast/toast.state';
+import { tokenInterceptor } from './core/interceptors/token-interceptor';
+import { SessionState } from './utility/store/session/session.state';
+import { ToastState } from './utility/store/toast/toast.state';
+import { UserState } from './utility/store/user/user.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideStore(
-      [SessionState, ToastState],
+      [SessionState, ToastState, UserState],
       withNgxsStoragePlugin({
         keys: '*',
       }),
     ),
-    provideHttpClient(withInterceptors([mockInterceptor])),
+    provideHttpClient(withInterceptors([mockInterceptor, tokenInterceptor])),
   ],
 };

@@ -11,8 +11,13 @@ import { Register } from './register/register';
 })
 export class Category {
   public readonly formOpen = signal(false);
+  public readonly updateTable = signal(false);
 
   public openForm(): void {
     this.formOpen.set(this.formOpen() ? false : true);
+  }
+
+  public onSuccess(): void {
+    this.updateTable.set(this.updateTable() ? false : true);
   }
 }

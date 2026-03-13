@@ -64,8 +64,8 @@ export class Auth {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: ({ access_token }) => {
-          this.store.dispatch(new Session({ access_token }));
+        next: ({ data }) => {
+          this.store.dispatch(new Session({ access_token: data.access_token }));
           this.redirectAfterLoginSuccess();
         },
         error: () => {

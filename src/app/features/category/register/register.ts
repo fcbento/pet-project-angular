@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, output, signal } from '@angular/core';
 import { Field } from '@angular/forms/signals';
 import { Store } from '@ngxs/store';
 import { Button } from '../../../ui/button/button';
@@ -35,6 +35,8 @@ export class Register {
   protected readonly formulary = computed(() => this.form.registerFormItems());
   protected readonly disable = computed(() => this.form.registerForm().invalid() || this.loading());
 
+  public readonly success = output();
+
   private toast(toast: ToastModel): void {
     this.store.dispatch(new OpenToast(toast));
   }
@@ -46,6 +48,7 @@ export class Register {
       .subscribe({
         next: () => {
           this.form.resetForm();
+          this.success.emit();
           this.toast(TOAST_CATEGORY.success);
         },
         error: () => this.toast(TOAST_CATEGORY.error),

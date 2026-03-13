@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { ApiResponse } from '../../utility/models/api-response.interface';
+import { CategoryResponse } from './list/list.models';
 import { CategoryRequest } from './register/register.models';
 
 @Injectable({
@@ -16,5 +18,9 @@ export class CategoryService {
       nome,
       criadoPor,
     });
+  }
+
+  public getAll(): Observable<ApiResponse<CategoryResponse[]>> {
+    return this.http.get<ApiResponse<CategoryResponse[]>>(`${this.apiUrl}/categoria`);
   }
 }

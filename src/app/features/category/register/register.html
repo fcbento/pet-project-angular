@@ -1,6 +1,6 @@
 <section class="form">
   @for (form of formulary(); track form) {
     <app-form-input [placeholder]="form.placeholder" [type]="form.type!" [field]="form.field" />
+    <app-button [disabled]="disable()" (clicked)="execute()" name="Cadastrar" type="primary" />
   }
-  <app-button [disabled]="disable()" (clicked)="execute()" name="Cadastrar" type="primary" />
 </section>

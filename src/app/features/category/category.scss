@@ -3,8 +3,14 @@
 @use 'styles/abstracts/mixins' as mixins;
 @use 'styles/abstracts/media' as media;
 
-.categoria {
+.category {
   display: flex;
   flex-direction: column;
   gap: vars.$space-lg;
+  width: 100%;
+  padding: 24px;
+
+  &__register {
+    width: 20%;
+  }
 }

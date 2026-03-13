@@ -1,7 +1,9 @@
 <section class="category">
   <app-button [disabled]="false" (clicked)="openForm()" name="+ Nova categoria" type="tertiary" />
   @if (formOpen()) {
-    <app-register />
+    <div class="category__register">
+      <app-register (success)="onSuccess()" />
+    </div>
   }
-  <app-list />
+  <app-list [updateTable]="updateTable()" />
 </section>

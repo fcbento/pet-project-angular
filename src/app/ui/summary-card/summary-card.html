@@ -4,6 +4,8 @@
     <h3 class="summary-card__value">
       @if (type() === 'currency') {
         {{ value() | currency:'BRL':'symbol':'1.2-2' }}
+      } @else if (type() === 'percentage') {
+        {{ (+value() / 100) | percent:'1.2-2' }}
       } @else {
         {{ value() }}
       }

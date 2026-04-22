@@ -39,6 +39,13 @@
     variant="success" 
     icon="📈"
   />
+  <app-summary-card 
+    label="Margem de Lucro" 
+    [value]="summary().profitMargin" 
+    type="percentage" 
+    variant="warning" 
+    icon="📊"
+  />
 </section>
 
 @if (sales().length > 0) {

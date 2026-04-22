@@ -100,6 +100,15 @@ export class ProductList {
       field: 'profit',
       cell: (row: ProductResponse) => this.currencyPipe.transform(row.profit, 'BRL', 'symbol', '1.2-2'),
     },
+    {
+      label: 'Margem de lucro',
+      field: 'profitMargin',
+      cell: (row: ProductResponse) => {
+        if (!row.sellPrice) return '0.00%';
+        const margin = (row.profit / row.sellPrice) * 100;
+        return `${margin.toFixed(2)}%`;
+      },
+    },
     { label: 'Criado por', field: 'criadoPor' },
     {
       label: 'Criado em',

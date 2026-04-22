@@ -74,10 +74,15 @@ export class SaleList {
   // Derived Summary
   public readonly summary = computed(() => {
     const list = this.sales();
+    const totalPrice = list.reduce((acc, curr) => acc + curr.totalPrice, 0);
+    const totalProfit = list.reduce((acc, curr) => acc + curr.totalProfit, 0);
+    const profitMargin = totalPrice > 0 ? (totalProfit / totalPrice) * 100 : 0;
+
     return {
       totalSell: list.length,
-      totalPrice: list.reduce((acc, curr) => acc + curr.totalPrice, 0),
-      totalProfit: list.reduce((acc, curr) => acc + curr.totalProfit, 0),
+      totalPrice,
+      totalProfit,
+      profitMargin,
     };
   });
 

@@ -8,6 +8,7 @@
   <select
     #select
     [disabled]="disabled()"
+    [value]="value()"
     [class.error]="errors().length && touched()"
     (change)="value.set(select.value)"
     (blur)="touched.set(true)"

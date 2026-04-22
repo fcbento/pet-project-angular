@@ -17,6 +17,11 @@
     <hr class="divider" />
 
     <h3>Itens da Venda</h3>
+    @if (saleItems().length > 0) {
+      <div class="header-actions">
+        <app-button name="Limpar Itens" type="tertiary" [disabled]="false" (clicked)="clearItems()"></app-button>
+      </div>
+    }
     <div class="add-item-row">
       <app-form-select 
         label="Categoria" 
@@ -42,7 +47,7 @@
         (valueChange)="selectedQuantity.set(+$event)"
       />
       <div class="add-action">
-        <app-button name="Adicionar Item" type="primary" [disabled]="false" (clicked)="addItem()"></app-button>
+        <app-button name="Adicionar Item" type="primary" [disabled]="!canAddItem()" (clicked)="addItem()"></app-button>
       </div>
     </div>
 
@@ -83,8 +88,6 @@
       }
     </div>
 
-    <hr class="divider" />
-
     <div class="actions">
       <app-button 
         name="Cancelar" 
@@ -96,7 +99,7 @@
         name="Salvar Venda" 
         type="primary" 
         (clicked)="submit()" 
-        [disabled]="registerForm.isSubmitting()"
+        [disabled]="registerForm.isSubmitting() || !canSubmit()"
         [loading]="registerForm.isSubmitting()"
       />
     </div>

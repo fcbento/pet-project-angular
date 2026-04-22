@@ -25,6 +25,12 @@
     color: colors.$text-primary;
   }
 
+  .header-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: vars.$space-sm;
+  }
+
   .divider {
     border: none;
     border-top: 1px solid colors.$border-default;

@@ -88,6 +88,18 @@ export class SaleRegister {
     return this.saleItems().reduce((acc, curr) => acc + (curr.sellPrice * curr.quantity), 0);
   });
 
+  public readonly canAddItem = computed(() => {
+    return !!this.selectedProductId() && this.selectedQuantity() > 0;
+  });
+
+  public readonly canSubmit = computed(() => {
+    return this.saleItems().length > 0 && this.registerForm.registerForm().valid;
+  });
+
+  public clearItems(): void {
+    this.saleItems.set([]);
+  }
+
   public addItem(): void {
     console.log('addItem called');
     const productId = this.selectedProductId();

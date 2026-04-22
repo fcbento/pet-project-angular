@@ -10,6 +10,7 @@
     [placeholder]="placeholder()"
     [type]="type()"
     [disabled]="disabled()"
+    [value]="value()"
     [class.error]="errors().length && touched()"
     (input)="value.set(input.value)"
     (blur)="touched.set(true)"

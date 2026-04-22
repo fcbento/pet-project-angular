@@ -1,0 +1,16 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/mixins' as mixins;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$space-md;
+  max-width: 600px;
+  margin: 0 auto;
+
+  &__actions {
+    margin-top: vars.$space-lg;
+    @include mixins.flex-center;
+    justify-content: flex-end;
+  }
+}

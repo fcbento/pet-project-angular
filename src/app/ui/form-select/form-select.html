@@ -1,0 +1,27 @@
+@let labelContent = label();
+
+<section class="select-container">
+  @if (labelContent) {
+    <b>{{ labelContent }}</b>
+  }
+
+  <select
+    [disabled]="disabled()"
+    [class.error]="errors().length && touched()"
+    (change)="value.set($any($event.target).value)"
+    (blur)="touched.set(true)"
+  >
+    @if (placeholder()) {
+      <option value="" disabled selected>{{ placeholder() }}</option>
+    }
+    @for (option of options(); track option.value) {
+      <option [value]="option.value">{{ option.label }}</option>
+    }
+  </select>
+
+  @if (touched()) {
+    @for (error of errors(); track error) {
+      <small class="error">{{ error.message }}</small>
+    }
+  }
+</section>

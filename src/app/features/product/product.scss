@@ -1,0 +1,25 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+@use 'styles/abstracts/mixins' as mixins;
+
+.product {
+  padding: vars.$space-lg;
+
+  &__header {
+    @include mixins.flex-center;
+    justify-content: space-between;
+    margin-bottom: vars.$space-xl;
+
+    h1 {
+      font-size: vars.$font-size-xl;
+      color: colors.$text-primary;
+      margin: 0;
+    }
+  }
+
+  &__main {
+    background: colors.$bg-surface;
+    border-radius: vars.$radius-lg;
+    padding: vars.$space-lg;
+  }
+}

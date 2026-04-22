@@ -1,0 +1,6 @@
+<app-table
+  [columns]="columns"
+  [data]="products()"
+  [actions]="rowActions"
+  (selectionChange)="onRowsSelected($event)"
+/>

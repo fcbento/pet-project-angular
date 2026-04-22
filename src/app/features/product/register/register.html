@@ -1,0 +1,27 @@
+<section class="form">
+  @for (item of formulary(); track item) {
+    @if (item.type === 'select') {
+      <app-form-select
+        [placeholder]="item.placeholder"
+        [label]="item.label"
+        [options]="item.options || []"
+        [field]="item.field"
+      />
+    } @else {
+      <app-form-input
+        [placeholder]="item.placeholder"
+        [label]="item.label"
+        [type]="item.type || 'text'"
+        [field]="item.field"
+      />
+    }
+  }
+  <div class="form__actions">
+    <app-button
+      [disabled]="disable()"
+      (clicked)="execute()"
+      name="Cadastrar"
+      type="primary"
+    />
+  </div>
+</section>

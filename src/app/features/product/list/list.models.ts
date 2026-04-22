@@ -1,0 +1,12 @@
+import { CategoryResponse } from '../../category/list/list.models';
+
+export interface ProductResponse {
+  id: number;
+  name: string;
+  category: CategoryResponse;
+  criadoPor: string;
+  createdAt: string;
+  costPrice: number;
+  sellPrice: number;
+  profit: number;
+}

@@ -93,7 +93,14 @@ export class SaleRegister {
   });
 
   public readonly canSubmit = computed(() => {
-    return this.saleItems().length > 0 && this.registerForm.registerForm().valid;
+    const form = this.registerForm.registerForm();
+    const hasItems = this.saleItems().length > 0;
+    const isFormValid = form.valid();
+    const values = form.value();
+    const hasOrigem = !!values.origem?.trim();
+    const hasDate = !!values.sellDate;
+
+    return hasItems && isFormValid && hasOrigem && hasDate;
   });
 
   public clearItems(): void {
@@ -171,10 +178,10 @@ export class SaleRegister {
     const form = this.registerForm.registerForm;
     form().markAsTouched();
 
-    if (!form().valid) {
+    if (!form().valid() || !form().value().origem?.trim() || !form().value().sellDate) {
        this.toast({
         title: 'Erro ao cadastrar venda',
-        message: 'Preencha os campos obrigatórios',
+        message: 'Preencha os campos obrigatórios (Origem e Data)',
         type: 'error',
        });
       return;

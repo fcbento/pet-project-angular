@@ -6,9 +6,10 @@
   }
 
   <select
+    #select
     [disabled]="disabled()"
     [class.error]="errors().length && touched()"
-    (change)="value.set($any($event.target).value)"
+    (change)="value.set(select.value)"
     (blur)="touched.set(true)"
   >
     @if (placeholder()) {

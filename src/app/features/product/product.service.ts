@@ -13,15 +13,15 @@ export class ProductService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
-  public create(request: ProductRequest): Observable<any> {
-    return this.http.post(`${this.apiUrl}/produto`, request);
+  public create(request: ProductRequest): Observable<ApiResponse<ProductResponse>> {
+    return this.http.post<ApiResponse<ProductResponse>>(`${this.apiUrl}/produto`, request);
   }
 
   public getAll(): Observable<ApiResponse<ProductResponse[]>> {
     return this.http.get<ApiResponse<ProductResponse[]>>(`${this.apiUrl}/produto`);
   }
 
-  public delete(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/produto/${id}`);
+  public delete(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/produto/${id}`);
   }
 }

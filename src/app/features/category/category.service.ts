@@ -13,8 +13,8 @@ export class CategoryService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
-  public create({ nome, criadoPor }: CategoryRequest): Observable<any> {
-    return this.http.post(`${this.apiUrl}/categoria`, {
+  public create({ nome, criadoPor }: CategoryRequest): Observable<ApiResponse<CategoryResponse>> {
+    return this.http.post<ApiResponse<CategoryResponse>>(`${this.apiUrl}/categoria`, {
       nome,
       criadoPor,
     });

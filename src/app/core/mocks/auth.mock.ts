@@ -4,7 +4,7 @@ import { delay } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 export const authMocks = {
-  login: (_req: HttpRequest<any>) =>
+  login: (_req: HttpRequest<unknown>) =>
     of(
       new HttpResponse({
         status: 200,
@@ -14,7 +14,7 @@ export const authMocks = {
       }),
     ).pipe(delay(environment.mockDelay)),
 
-  register: (_req: HttpRequest<any>) =>
+  register: (_req: HttpRequest<unknown>) =>
     of(
       new HttpResponse({
         status: 200,

@@ -14,6 +14,14 @@ import { ProductService } from '../../product/product.service';
 import { CategoryService } from '../../category/category.service';
 import { SaleService } from '../sale.service';
 import { SaleRegisterForm } from './register.form';
+import { SaleItemRequest } from '../sale.models';
+
+export interface SaleItemDraft {
+  productId: number;
+  productName: string;
+  sellPrice: number;
+  quantity: number;
+}
 
 @Component({
   selector: 'app-sale-register',
@@ -74,7 +82,7 @@ export class SaleRegister {
       }));
   });
   public readonly selectedQuantity = signal<number>(1);
-  public readonly saleItems = signal<any[]>([]); // items added to the sale
+  public readonly saleItems = signal<SaleItemDraft[]>([]); // items added to the sale
   
   public readonly totalSalePrice = computed(() => {
     return this.saleItems().reduce((acc, curr) => acc + (curr.sellPrice * curr.quantity), 0);
@@ -174,7 +182,7 @@ export class SaleRegister {
     const payload = {
       origem: form().value().origem,
       sellDate: new Date(form().value().sellDate).toISOString(),
-      items: this.saleItems().map((i) => ({
+      items: this.saleItems().map((i): SaleItemRequest => ({
         productId: i.productId,
         quantity: i.quantity,
       })),

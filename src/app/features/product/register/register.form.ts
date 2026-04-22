@@ -49,7 +49,7 @@ export class RegisterForm {
     },
   ]);
 
-  public setCategoryOptions(options: { label: string; value: any }[]): void {
+  public setCategoryOptions(options: { label: string; value: string | number }[]): void {
     this.registerFormItems.update((items) => {
       return items.map((item) => {
         if (item.type === 'select' && item.label === 'Categoria') {
@@ -69,7 +69,7 @@ export class RegisterForm {
     });
     this.registerFormItems.update((formItems) => {
       return formItems.map((item) => {
-        let field: any = this.registerForm.nome;
+        let field = this.registerForm.nome as any;
         if (item.label === 'Categoria') field = this.registerForm.categoryId;
         if (item.label === 'Preço de custo') field = this.registerForm.costPrice;
         if (item.label === 'Preço de venda') field = this.registerForm.sellPrice;

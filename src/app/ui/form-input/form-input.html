@@ -6,11 +6,12 @@
   }
 
   <input
+    #input
     [placeholder]="placeholder()"
     [type]="type()"
     [disabled]="disabled()"
     [class.error]="errors().length && touched()"
-    (input)="value.set($event.target.value)"
+    (input)="value.set(input.value)"
     (blur)="touched.set(true)"
   />
 

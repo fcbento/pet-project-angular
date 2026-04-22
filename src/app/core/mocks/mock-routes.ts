@@ -2,7 +2,7 @@ import { HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/ht
 import { Observable } from 'rxjs';
 import { authMocks } from './auth.mock';
 
-type MockHandler = (req: HttpRequest<any>) => Observable<HttpResponse<any>>;
+type MockHandler = (req: HttpRequest<unknown>) => Observable<HttpResponse<unknown>>;
 
 export const mockRoutes: Record<string, MockHandler> = {
   'POST http://localhost:8080/api/auth/login': authMocks.login,

@@ -7,13 +7,13 @@ import { FormValueControl, ValidationError } from '@angular/forms/signals';
   templateUrl: './form-select.html',
   styleUrl: './form-select.scss',
 })
-export class FormSelect implements FormValueControl<any> {
-  public readonly value = model<any>('');
+export class FormSelect implements FormValueControl<string | number | null> {
+  public readonly value = model<string | number | null>('');
   public readonly touched = model<boolean>(false);
 
   public readonly placeholder = input<string>();
   public readonly label = input<string>();
-  public readonly options = input<{ label: string; value: any }[]>([]);
+  public readonly options = input<{ label: string; value: string | number }[]>([]);
   public readonly disabled = input<boolean>(false);
 
   public readonly invalid = input<boolean>(false);

@@ -11,7 +11,7 @@ import { TableAction, TableColumn } from './table.model';
   templateUrl: './table.html',
   styleUrl: './table.scss',
 })
-export class Table<T = any> {
+export class Table<T> {
   public readonly columns = input.required<TableColumn<T>[]>();
   public readonly data = input.required<T[]>();
   public readonly actions = input<TableAction<T>[]>();
@@ -37,25 +37,30 @@ export class Table<T = any> {
 
   public readonly actionMenuFor = signal<T | null>(null);
 
-  public cellValue(row: T, field: keyof T | string): any {
-    return (row as any)[field as any];
+  public cellValue(row: T, field: keyof T | string): unknown {
+    return (row as Record<string, unknown>)[field as string];
   }
 
   public readonly sortedData = computed(() => {
     const arr = [...this.data()];
-    const field = this.sortField();
+    const field = this.sortField() as string;
     const dir = this.sortDirection();
     if (!field) {
       return arr;
     }
-    arr.sort((a: any, b: any) => {
-      const va = a[field];
-      const vb = b[field];
+    arr.sort((a, b) => {
+      const va = (a as Record<string, unknown>)[field];
+      const vb = (b as Record<string, unknown>)[field];
       if (va == null && vb == null) return 0;
       if (va == null) return dir === 'asc' ? -1 : 1;
       if (vb == null) return dir === 'asc' ? 1 : -1;
-      if (va < vb) return dir === 'asc' ? -1 : 1;
-      if (va > vb) return dir === 'asc' ? 1 : -1;
+      
+      if (typeof va === 'string' && typeof vb === 'string') {
+        return dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+      }
+
+      if ((va as number) < (vb as number)) return dir === 'asc' ? -1 : 1;
+      if ((va as number) > (vb as number)) return dir === 'asc' ? 1 : -1;
       return 0;
     });
     return arr;

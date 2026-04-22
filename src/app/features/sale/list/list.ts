@@ -9,6 +9,7 @@ import { FormSelect } from '../../../ui/form-select/form-select';
 import { Table } from '../../../ui/table/table';
 import { SummaryCard } from '../../../ui/summary-card/summary-card';
 import { SaleService } from '../sale.service';
+import { SaleResponse } from '../sale.models';
 
 @Component({
   selector: 'app-sale-list',
@@ -23,7 +24,7 @@ export class SaleList {
   private readonly currencyPipe = inject(CurrencyPipe);
   private readonly router = inject(Router);
 
-  public readonly updateTable = input<any>();
+  public readonly updateTable = input<unknown>();
 
   public readonly updateTableSignal = effect(() => {
     this.updateTable();
@@ -85,42 +86,42 @@ export class SaleList {
     {
       label: 'Data Venda',
       field: 'sellDate',
-      cell: (row: any) => this.datePipe.transform(new Date(row.sellDate), 'dd/MM/yyyy'),
+      cell: (row: SaleResponse) => this.datePipe.transform(new Date(row.sellDate), 'dd/MM/yyyy'),
     },
     {
       label: 'Preço Total',
       field: 'totalPrice',
-      cell: (row: any) => this.currencyPipe.transform(row.totalPrice, 'BRL', 'symbol', '1.2-2'),
+      cell: (row: SaleResponse) => this.currencyPipe.transform(row.totalPrice, 'BRL', 'symbol', '1.2-2'),
     },
     {
       label: 'Lucro Total',
       field: 'totalProfit',
-      cell: (row: any) => this.currencyPipe.transform(row.totalProfit, 'BRL', 'symbol', '1.2-2'),
+      cell: (row: SaleResponse) => this.currencyPipe.transform(row.totalProfit, 'BRL', 'symbol', '1.2-2'),
     },
     {
       label: 'Margem de Lucro',
       field: 'profitMargin',
-      cell: (row: any) => `${row.profitMargin?.toFixed(2)}%`,
+      cell: (row: SaleResponse) => `${row.profitMargin?.toFixed(2)}%`,
     },
     {
       label: 'Criado em',
       field: 'createdAt',
-      cell: (row: any) => this.datePipe.transform(new Date(row.createdAt), 'dd/MM/yyyy HH:mm:ss'),
+      cell: (row: SaleResponse) => this.datePipe.transform(new Date(row.createdAt), 'dd/MM/yyyy HH:mm:ss'),
     },
   ];
 
   public readonly rowActions = [
     {
       label: 'Excluir',
-      callback: (row: any) => this.delete(row),
+      callback: (row: SaleResponse) => this.delete(row),
     },
   ];
 
-  public onRowsSelected = (rows: any[]): void => {
+  public onRowsSelected = (rows: SaleResponse[]): void => {
     console.log('selecionados', rows);
   };
 
-  private delete(row: any): void {
+  private delete(row: SaleResponse): void {
     if (confirm(`Deseja realmente excluir a venda de ID ${row.id}?`)) {
       this.service.delete(row.id).subscribe(() => {
         this.saleResource.reload();

@@ -4,5 +4,5 @@ export interface FormItems {
   label: string;
   type: string;
   field: any;
-  options?: { label: string; value: any }[];
+  options?: { label: string; value: string | number }[];
 }

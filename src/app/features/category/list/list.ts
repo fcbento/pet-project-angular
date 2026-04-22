@@ -7,6 +7,7 @@ import { Table } from '../../../ui/table/table';
 import { FormInput } from '../../../ui/form-input/form-input';
 import { Button } from '../../../ui/button/button';
 import { SummaryCard } from '../../../ui/summary-card/summary-card';
+import { CategoryResponse } from './list.models';
 
 @Component({
   selector: 'app-list',
@@ -18,8 +19,7 @@ import { SummaryCard } from '../../../ui/summary-card/summary-card';
 export class List {
   private readonly service = inject(CategoryService);
   private readonly datePipe = inject(DatePipe);
-
-  public readonly updateTable = input();
+  public readonly updateTable = input<unknown>();
 
   public readonly updateTableSignal = effect(() => {
     this.updateTable();
@@ -63,30 +63,30 @@ export class List {
     {
       label: 'Criado em',
       field: 'createdAt',
-      cell: (row: any) => this.datePipe.transform(new Date(row.createdAt), 'dd/MM/yyyy HH:mm:ss'),
+      cell: (row: CategoryResponse) => this.datePipe.transform(new Date(row.createdAt), 'dd/MM/yyyy HH:mm:ss'),
     },
   ];
 
   public readonly rowActions = [
     {
       label: 'Excluir',
-      callback: (row: any) => this.delete(row),
+      callback: (row: CategoryResponse) => this.delete(row),
     },
     {
       label: 'Editar',
-      callback: (row: any) => this.edit(row),
+      callback: (row: CategoryResponse) => this.edit(row),
     },
   ];
 
-  public onRowsSelected = (rows: any[]): void => {
+  public onRowsSelected = (rows: CategoryResponse[]): void => {
     console.log('selecionados', rows);
   };
 
-  private edit(row: any): void {
+  private edit(row: CategoryResponse): void {
     console.log('edit', row);
   }
 
-  private delete(row: any): void {
+  private delete(row: CategoryResponse): void {
     console.log('delete', row);
   }
 }

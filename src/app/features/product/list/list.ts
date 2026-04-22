@@ -8,6 +8,7 @@ import { FormInput } from '../../../ui/form-input/form-input';
 import { FormSelect } from '../../../ui/form-select/form-select';
 import { Button } from '../../../ui/button/button';
 import { SummaryCard } from '../../../ui/summary-card/summary-card';
+import { ProductResponse } from './list.models';
 
 @Component({
   selector: 'app-product-list',
@@ -22,7 +23,7 @@ export class ProductList {
   private readonly datePipe = inject(DatePipe);
   private readonly currencyPipe = inject(CurrencyPipe);
 
-  public readonly updateTable = input<any>();
+  public readonly updateTable = input<unknown>();
 
   public readonly updateTableSignal = effect(() => {
     this.updateTable();
@@ -83,50 +84,50 @@ export class ProductList {
 
   public readonly columns = [
     { label: 'Nome', field: 'name', sortable: true },
-    { label: 'Categoria', field: 'category', cell: (row: any) => row.category?.nome || '-' },
+    { label: 'Categoria', field: 'category', cell: (row: ProductResponse) => row.category?.nome || '-' },
     {
       label: 'Preço Custo',
       field: 'costPrice',
-      cell: (row: any) => this.currencyPipe.transform(row.costPrice, 'BRL', 'symbol', '1.2-2'),
+      cell: (row: ProductResponse) => this.currencyPipe.transform(row.costPrice, 'BRL', 'symbol', '1.2-2'),
     },
     {
       label: 'Preço Venda',
       field: 'sellPrice',
-      cell: (row: any) => this.currencyPipe.transform(row.sellPrice, 'BRL', 'symbol', '1.2-2'),
+      cell: (row: ProductResponse) => this.currencyPipe.transform(row.sellPrice, 'BRL', 'symbol', '1.2-2'),
     },
     {
       label: 'Lucro',
       field: 'profit',
-      cell: (row: any) => this.currencyPipe.transform(row.profit, 'BRL', 'symbol', '1.2-2'),
+      cell: (row: ProductResponse) => this.currencyPipe.transform(row.profit, 'BRL', 'symbol', '1.2-2'),
     },
     { label: 'Criado por', field: 'criadoPor' },
     {
       label: 'Criado em',
       field: 'createdAt',
-      cell: (row: any) => this.datePipe.transform(new Date(row.createdAt), 'dd/MM/yyyy HH:mm:ss'),
+      cell: (row: ProductResponse) => this.datePipe.transform(new Date(row.createdAt), 'dd/MM/yyyy HH:mm:ss'),
     },
   ];
 
   public readonly rowActions = [
     {
       label: 'Excluir',
-      callback: (row: any) => this.delete(row),
+      callback: (row: ProductResponse) => this.delete(row),
     },
     {
       label: 'Editar',
-      callback: (row: any) => this.edit(row),
+      callback: (row: ProductResponse) => this.edit(row),
     },
   ];
 
-  public onRowsSelected = (rows: any[]): void => {
+  public onRowsSelected = (rows: ProductResponse[]): void => {
     console.log('selecionados', rows);
   };
 
-  private edit(row: any): void {
+  private edit(row: ProductResponse): void {
     console.log('edit', row);
   }
 
-  private delete(row: any): void {
+  private delete(row: ProductResponse): void {
     if (confirm(`Deseja realmente excluir o produto ${row.name}?`)) {
       this.service.delete(row.id).subscribe(() => {
         this.productResource.reload();

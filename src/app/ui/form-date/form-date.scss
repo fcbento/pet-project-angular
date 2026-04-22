@@ -1,0 +1,60 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+@use 'styles/abstracts/mixins' as mixins;
+
+.input-container {
+  @include mixins.flex-direction(column);
+  gap: vars.$space-xs;
+  margin-bottom: vars.$space-xs;
+  box-sizing: border-box;
+
+  b {
+    font-size: vars.$font-size-sm;
+    font-weight: vars.$font-weight-medium;
+    color: colors.$text-secondary;
+  }
+
+  input {
+    box-sizing: border-box;
+
+    padding: vars.$space-sm vars.$space-md;
+    font-size: vars.$font-size-md;
+    font-family: vars.$font-family-base;
+
+    color: colors.$text-primary;
+    background-color: colors.$bg-surface;
+
+    border: 1px solid colors.$border-default;
+    border-radius: vars.$radius-md;
+
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+
+    &::placeholder {
+      color: colors.$text-muted;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: colors.$color-primary;
+      box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.35);
+    }
+
+    &:disabled {
+      background-color: colors.$bg-disabled;
+      color: colors.$text-muted;
+      cursor: not-allowed;
+    }
+  }
+
+  .error {
+    &:not(small) {
+      border: 1px solid colors.$red-400;
+    }
+  }
+
+  small {
+    color: colors.$red-400;
+  }
+}

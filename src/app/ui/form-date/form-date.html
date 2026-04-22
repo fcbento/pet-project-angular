@@ -1,0 +1,23 @@
+@let labelContent = label();
+
+<section class="input-container">
+  @if (labelContent) {
+    <b>{{ labelContent }}</b>
+  }
+
+  <input
+    type="date"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [class.error]="errors().length && touched()"
+    [value]="value()"
+    (input)="value.set($event.target.value)"
+    (blur)="touched.set(true)"
+  />
+
+  @if (touched()) {
+    @for (error of errors(); track error) {
+      <small class="error">{{ error.message }}</small>
+    }
+  }
+</section>

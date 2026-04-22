@@ -1,0 +1,125 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+@use 'styles/abstracts/mixins' as mixins;
+
+.form-card {
+  background-color: colors.$bg-surface;
+  border-radius: vars.$radius-lg;
+  border: 1px solid colors.$border-default;
+  padding: vars.$space-xl;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: vars.$space-lg;
+    color: colors.$text-primary;
+  }
+
+  h3 {
+    margin-top: vars.$space-lg;
+    margin-bottom: vars.$space-md;
+    color: colors.$text-primary;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid colors.$border-default;
+    margin: vars.$space-lg 0;
+  }
+
+  .form-row {
+    display: flex;
+    gap: vars.$space-md;
+    
+    > * {
+      flex: 1;
+    }
+  }
+
+  .add-item-row {
+    display: flex;
+    gap: vars.$space-md;
+    align-items: flex-end;
+    margin-bottom: vars.$space-md;
+
+    > *:nth-child(1) { flex: 2; }
+    > *:nth-child(2) { flex: 1; }
+    
+    .add-action {
+      flex: 0 0 auto;
+      margin-bottom: vars.$space-xs;
+    }
+  }
+
+  .items-list {
+    margin-top: vars.$space-md;
+
+    .empty-list {
+      text-align: center;
+      padding: vars.$space-lg;
+      color: colors.$text-muted;
+      font-style: italic;
+      background-color: colors.$bg-muted;
+      border-radius: vars.$radius-md;
+      border: 1px dashed colors.$border-default;
+    }
+
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th, td {
+        padding: vars.$space-sm;
+        text-align: left;
+        border-bottom: 1px solid colors.$border-default;
+      }
+
+      th {
+        font-weight: vars.$font-weight-medium;
+        color: colors.$text-secondary;
+        font-size: vars.$font-size-sm;
+      }
+
+      td {
+        color: colors.$text-primary;
+        font-size: vars.$font-size-md;
+      }
+
+      .btn-remove {
+        background: none;
+        border: none;
+        color: colors.$red-500;
+        cursor: pointer;
+        font-weight: vars.$font-weight-medium;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      tfoot {
+        .total-label {
+          text-align: right;
+          font-weight: vars.$font-weight-bold;
+          padding-right: vars.$space-md;
+        }
+        .total-value {
+          font-weight: vars.$font-weight-bold;
+          color: #059669;
+          font-size: vars.$font-size-lg;
+        }
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: vars.$space-md;
+    margin-top: vars.$space-lg;
+  }
+}

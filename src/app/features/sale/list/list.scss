@@ -1,0 +1,75 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: vars.$space-md;
+
+  h2 {
+    margin: 0;
+    color: colors.$text-primary;
+  }
+}
+
+.filters {
+  background: colors.$bg-surface;
+  padding: vars.$space-md;
+  border-radius: vars.$radius-md;
+  border: 1px solid colors.$border-default;
+  margin-bottom: vars.$space-md;
+
+  .filters-row {
+    display: flex;
+    gap: vars.$space-md;
+    align-items: flex-end;
+    flex-wrap: wrap;
+
+    > * {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    .filter-actions {
+      flex: 0 0 auto;
+      margin-bottom: vars.$space-xs; /* align with inputs instead of labels */
+    }
+  }
+}
+
+.summary-cards {
+  display: flex;
+  gap: vars.$space-md;
+  margin-bottom: vars.$space-md;
+
+  .card {
+    flex: 1;
+    background: colors.$bg-surface;
+    padding: vars.$space-md;
+    border-radius: vars.$radius-md;
+    border: 1px solid colors.$border-default;
+    display: flex;
+    flex-direction: column;
+    gap: vars.$space-xs;
+
+    span {
+      color: colors.$text-secondary;
+      font-size: vars.$font-size-sm;
+      font-weight: vars.$font-weight-medium;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    h3 {
+      color: colors.$text-primary;
+      font-size: vars.$font-size-xl;
+      font-weight: vars.$font-weight-bold;
+      margin: 0;
+
+      &.profit {
+        color: #10b981;
+      }
+    }
+  }
+}

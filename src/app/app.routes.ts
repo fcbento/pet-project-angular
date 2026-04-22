@@ -29,6 +29,10 @@ export const routes: Routes = [
         path: 'produto',
         loadComponent: () => import('./features/product/product').then((m) => m.Product),
       },
+      {
+        path: 'venda',
+        loadChildren: () => import('./features/sale/sale.const').then((m) => m.SALE_ROUTES),
+      },
     ],
   },
   { path: '**', redirectTo: 'login' },

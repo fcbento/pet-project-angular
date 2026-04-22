@@ -1,0 +1,38 @@
+<header class="list-header">
+  <h2>Vendas</h2>
+  <app-button name="Nova Venda" type="primary" [disabled]="false" (clicked)="newSale()"></app-button>
+</header>
+
+<section class="filters">
+  <div class="filters-row">
+    <app-form-input label="Origem" placeholder="Buscar por origem..." [(value)]="origemFilter" />
+    <app-form-date label="Data Inicial" [(value)]="startDateFilter" />
+    <app-form-date label="Data Final" [(value)]="endDateFilter" />
+    
+    <div class="filter-actions">
+      <app-button name="Limpar Filtros" type="secondary" [disabled]="false" (clicked)="clearFilters()"></app-button>
+    </div>
+  </div>
+</section>
+
+<section class="summary-cards">
+  <div class="card">
+    <span>Total de Vendas</span>
+    <h3>{{ summary().totalSell }}</h3>
+  </div>
+  <div class="card">
+    <span>Receita Total</span>
+    <h3>{{ summary().totalPrice | currency: 'BRL':'symbol':'1.2-2' }}</h3>
+  </div>
+  <div class="card">
+    <span>Lucro Total</span>
+    <h3 class="profit">{{ summary().totalProfit | currency: 'BRL':'symbol':'1.2-2' }}</h3>
+  </div>
+</section>
+
+<app-table
+  [columns]="columns"
+  [data]="sales()"
+  [actions]="rowActions"
+  (selectionChange)="onRowsSelected($event)"
+/>

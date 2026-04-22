@@ -5,7 +5,12 @@
 
 <section class="filters">
   <div class="filters-row">
-    <app-form-input label="Origem" placeholder="Buscar por origem..." [(value)]="origemFilter" />
+    <app-form-select 
+      label="Origem" 
+      placeholder="Todas as origens" 
+      [options]="origemOptions()" 
+      [(value)]="origemFilter" 
+    />
     <app-form-date label="Data Inicial" [(value)]="startDateFilter" />
     <app-form-date label="Data Final" [(value)]="endDateFilter" />
     
@@ -16,23 +21,36 @@
 </section>
 
 <section class="summary-cards">
-  <div class="card">
-    <span>Total de Vendas</span>
-    <h3>{{ summary().totalSell }}</h3>
-  </div>
-  <div class="card">
-    <span>Receita Total</span>
-    <h3>{{ summary().totalPrice | currency: 'BRL':'symbol':'1.2-2' }}</h3>
-  </div>
-  <div class="card">
-    <span>Lucro Total</span>
-    <h3 class="profit">{{ summary().totalProfit | currency: 'BRL':'symbol':'1.2-2' }}</h3>
-  </div>
+  <app-summary-card 
+    label="Total de Vendas" 
+    [value]="summary().totalSell" 
+    icon="🛍️"
+  />
+  <app-summary-card 
+    label="Receita Total" 
+    [value]="summary().totalPrice" 
+    type="currency" 
+    icon="💰"
+  />
+  <app-summary-card 
+    label="Lucro Total" 
+    [value]="summary().totalProfit" 
+    type="currency" 
+    variant="success" 
+    icon="📈"
+  />
 </section>
 
-<app-table
-  [columns]="columns"
-  [data]="sales()"
-  [actions]="rowActions"
-  (selectionChange)="onRowsSelected($event)"
-/>
+@if (sales().length > 0) {
+  <app-table
+    [columns]="columns"
+    [data]="sales()"
+    [actions]="rowActions"
+    (selectionChange)="onRowsSelected($event)"
+  />
+} @else {
+  <div class="empty-state-card">
+    <span class="icon">🔍</span>
+    <p>Nenhuma venda realizada ainda. Vamos vender! 🚀</p>
+  </div>
+}

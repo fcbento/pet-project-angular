@@ -1,0 +1,72 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+
+.summary-card {
+  background: #ffffff;
+  padding: vars.$space-lg;
+  border-radius: vars.$radius-lg;
+  border: 1px solid colors.$border-default;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-color: colors.$border-strong;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$space-xs;
+  }
+
+  &__label {
+    color: colors.$text-secondary;
+    font-size: vars.$font-size-xs;
+    font-weight: vars.$font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__value {
+    color: colors.$text-primary;
+    font-size: vars.$font-size-xl;
+    font-weight: vars.$font-weight-bold;
+    margin: 0;
+  }
+
+  &__icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: vars.$radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border: 1px solid colors.$border-default;
+    font-size: vars.$font-size-xl;
+  }
+
+  /* Variants */
+  &--success {
+    border-left: 4px solid #10b981;
+    .summary-card__value { color: #10b981; }
+    .summary-card__icon-wrapper { background: #ecfdf5; color: #10b981; }
+  }
+
+  &--warning {
+    border-left: 4px solid #f59e0b;
+    .summary-card__value { color: #f59e0b; }
+    .summary-card__icon-wrapper { background: #fffbeb; color: #f59e0b; }
+  }
+
+  &--danger {
+    border-left: 4px solid colors.$red-500;
+    .summary-card__value { color: colors.$red-500; }
+    .summary-card__icon-wrapper { background: colors.$red-50; color: colors.$red-500; }
+  }
+}

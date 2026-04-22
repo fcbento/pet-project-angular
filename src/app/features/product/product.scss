@@ -18,8 +18,6 @@
   }
 
   &__main {
-    background: colors.$bg-surface;
-    border-radius: vars.$radius-lg;
-    padding: vars.$space-lg;
+    // Content is now separate sections (filters, summary, table)
   }
 }

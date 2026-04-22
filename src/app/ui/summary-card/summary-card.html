@@ -1,0 +1,18 @@
+<div class="summary-card" [ngClass]="'summary-card--' + variant()">
+  <div class="summary-card__info">
+    <span class="summary-card__label">{{ label() }}</span>
+    <h3 class="summary-card__value">
+      @if (type() === 'currency') {
+        {{ value() | currency:'BRL':'symbol':'1.2-2' }}
+      } @else {
+        {{ value() }}
+      }
+    </h3>
+  </div>
+  
+  @if (icon()) {
+    <div class="summary-card__icon-wrapper">
+      <span class="summary-card__icon">{{ icon() }}</span>
+    </div>
+  }
+</div>

@@ -1,13 +1,16 @@
-import { Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { CategoryService } from '../category.service';
 
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Table } from '../../../ui/table/table';
+import { FormInput } from '../../../ui/form-input/form-input';
+import { Button } from '../../../ui/button/button';
+import { SummaryCard } from '../../../ui/summary-card/summary-card';
 
 @Component({
   selector: 'app-list',
-  imports: [Table],
+  imports: [Table, FormInput, Button, CommonModule, SummaryCard],
   templateUrl: './list.html',
   styleUrl: './list.scss',
   providers: [DatePipe],
@@ -27,7 +30,32 @@ export class List {
     stream: () => this.service.getAll(),
   });
 
-  public readonly categories = computed(() => this.categoryResource.value()?.data || []);
+  // Filters
+  public readonly nameFilter = signal('');
+
+  public readonly categories = computed(() => {
+    let data = this.categoryResource.value()?.data || [];
+
+    const name = this.nameFilter().toLowerCase();
+
+    if (name) {
+      data = data.filter((item) => item.nome?.toLowerCase().includes(name));
+    }
+
+    return data;
+  });
+
+  // Derived Summary
+  public readonly summary = computed(() => {
+    const list = this.categories();
+    return {
+      totalCategories: list.length,
+    };
+  });
+
+  public clearFilters(): void {
+    this.nameFilter.set('');
+  }
 
   public readonly columns = [
     { label: 'Nome', field: 'nome', sortable: true },

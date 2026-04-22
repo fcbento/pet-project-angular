@@ -11,6 +11,7 @@ import { FormSelect } from '../../../ui/form-select/form-select';
 import { OpenToast } from '../../../utility/store/toast/toast.actions';
 import { ToastModel } from '../../../utility/store/toast/toast.models';
 import { ProductService } from '../../product/product.service';
+import { CategoryService } from '../../category/category.service';
 import { SaleService } from '../sale.service';
 import { SaleRegisterForm } from './register.form';
 
@@ -24,26 +25,54 @@ import { SaleRegisterForm } from './register.form';
 export class SaleRegister {
   private readonly service = inject(SaleService);
   private readonly productService = inject(ProductService);
+  private readonly categoryService = inject(CategoryService);
   private readonly router = inject(Router);
   public readonly registerForm = inject(SaleRegisterForm);
   public readonly store = inject(Store);
+
+  // Categories for the select
+  public readonly categoryResource = rxResource({
+    stream: () => this.categoryService.getAll(),
+  });
+
+  public readonly categoryOptions = computed(() => {
+    const categories = this.categoryResource.value()?.data || [];
+    const products = this.productResource.value()?.data || [];
+
+    // Filter categories that have at least one product
+    return categories
+      .filter((c) => products.some((p) => p.category?.id == c.id))
+      .map((c) => ({
+        label: c.nome,
+        value: c.id,
+      }));
+  });
 
   // Products for the select
   public readonly productResource = rxResource({
     stream: () => this.productService.getAll(),
   });
 
-  public readonly productOptions = computed(() => {
-    const products = this.productResource.value()?.data || [];
-    return products.map((p) => ({
-      label: p.name,
-      value: p.id,
-      product: p, // keep full object to show price
-    }));
+  public readonly hasProducts = computed(() => {
+    return (this.productResource.value()?.data?.length || 0) > 0;
   });
 
   // Items State
+  public readonly selectedCategoryId = signal<number | null>(null);
   public readonly selectedProductId = signal<number | null>(null);
+
+  public readonly productOptions = computed(() => {
+    const products = this.productResource.value()?.data || [];
+    const categoryId = this.selectedCategoryId();
+
+    return products
+      .filter((p) => !categoryId || p.category?.id == categoryId)
+      .map((p) => ({
+        label: p.name,
+        value: p.id,
+        product: p,
+      }));
+  });
   public readonly selectedQuantity = signal<number>(1);
   public readonly saleItems = signal<any[]>([]); // items added to the sale
   

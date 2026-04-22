@@ -1,91 +1,112 @@
-<section class="form-card">
-  <h2>Nova Venda</h2>
-  
-  <div class="form-row">
-    <app-form-input 
-      label="Origem" 
-      placeholder="Ex: Balcão, Site, iFood..." 
-      [field]="registerForm.registerForm.origem"
-    />
-    <app-form-date 
-      label="Data da Venda" 
-      [field]="registerForm.registerForm.sellDate"
-    />
-  </div>
+@if (hasProducts()) {
+  <section class="form-card">
+    <h2>Nova Venda</h2>
+    
+    <div class="form-row">
+      <app-form-input 
+        label="Origem" 
+        placeholder="Ex: Balcão, Site, iFood..." 
+        [field]="registerForm.registerForm.origem"
+      />
+      <app-form-date 
+        label="Data da Venda" 
+        [field]="registerForm.registerForm.sellDate"
+      />
+    </div>
 
-  <hr class="divider" />
+    <hr class="divider" />
 
-  <h3>Itens da Venda</h3>
-  <div class="add-item-row">
-    <app-form-select 
-      label="Produto" 
-      placeholder="Selecione um produto..."
-      [options]="productOptions()"
-      [(value)]="selectedProductId"
-    />
-    <app-form-input 
-      label="Quantidade" 
-      type="number"
-      [value]="selectedQuantity().toString()"
-      (valueChange)="selectedQuantity.set(+$event)"
-    />
-    <div class="add-action">
-      <app-button name="Adicionar Item" type="primary" [disabled]="false" (clicked)="addItem()"></app-button>
+    <h3>Itens da Venda</h3>
+    <div class="add-item-row">
+      <app-form-select 
+        label="Categoria" 
+        placeholder="Selecione..."
+        [options]="categoryOptions()"
+        [(value)]="selectedCategoryId"
+        (valueChange)="selectedProductId.set(null)"
+      />
+
+      @if (selectedCategoryId()) {
+        <app-form-select 
+          label="Produto" 
+          placeholder="Selecione..."
+          [options]="productOptions()"
+          [(value)]="selectedProductId"
+        />
+      }
+
+      <app-form-input 
+        label="Quantidade" 
+        type="number"
+        [value]="selectedQuantity().toString()"
+        (valueChange)="selectedQuantity.set(+$event)"
+      />
+      <div class="add-action">
+        <app-button name="Adicionar Item" type="primary" [disabled]="false" (clicked)="addItem()"></app-button>
+      </div>
+    </div>
+
+    <div class="items-list">
+      @if (saleItems().length === 0) {
+        <p class="empty-list">Nenhum item adicionado à venda ainda.</p>
+      } @else {
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Preço Unit.</th>
+              <th>Quantidade</th>
+              <th>Subtotal</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of saleItems(); track $index) {
+              <tr>
+                <td>{{ item.productName }}</td>
+                <td>{{ item.sellPrice | currency:'BRL':'symbol':'1.2-2' }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.sellPrice * item.quantity | currency:'BRL':'symbol':'1.2-2' }}</td>
+                <td>
+                  <button class="btn-remove" (click)="removeItem($index)">Remover</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" class="total-label">Total da Venda</td>
+              <td colspan="2" class="total-value">{{ totalSalePrice() | currency:'BRL':'symbol':'1.2-2' }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      }
+    </div>
+
+    <hr class="divider" />
+
+    <div class="actions">
+      <app-button 
+        name="Cancelar" 
+        type="secondary" 
+        (clicked)="cancel()" 
+        [disabled]="registerForm.isSubmitting()"
+      />
+      <app-button 
+        name="Salvar Venda" 
+        type="primary" 
+        (clicked)="submit()" 
+        [disabled]="registerForm.isSubmitting()"
+        [loading]="registerForm.isSubmitting()"
+      />
+    </div>
+  </section>
+} @else {
+  <div class="empty-state-card">
+    <span class="icon">🚫</span>
+    <p>Não há produtos cadastrados. Não é possível realizar uma venda sem produtos.</p>
+    <div class="actions">
+      <app-button name="Voltar" type="secondary" [disabled]="false" (clicked)="cancel()"></app-button>
     </div>
   </div>
-
-  <div class="items-list">
-    @if (saleItems().length === 0) {
-      <p class="empty-list">Nenhum item adicionado à venda ainda.</p>
-    } @else {
-      <table class="items-table">
-        <thead>
-          <tr>
-            <th>Produto</th>
-            <th>Preço Unit.</th>
-            <th>Quantidade</th>
-            <th>Subtotal</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (item of saleItems(); track $index) {
-            <tr>
-              <td>{{ item.productName }}</td>
-              <td>{{ item.sellPrice | currency:'BRL':'symbol':'1.2-2' }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ item.sellPrice * item.quantity | currency:'BRL':'symbol':'1.2-2' }}</td>
-              <td>
-                <button class="btn-remove" (click)="removeItem($index)">Remover</button>
-              </td>
-            </tr>
-          }
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="3" class="total-label">Total da Venda</td>
-            <td colspan="2" class="total-value">{{ totalSalePrice() | currency:'BRL':'symbol':'1.2-2' }}</td>
-          </tr>
-        </tfoot>
-      </table>
-    }
-  </div>
-
-  <hr class="divider" />
-
-  <div class="actions">
-    <app-button 
-      name="Cancelar" 
-      type="secondary" 
-      (clicked)="cancel()" 
-      [disabled]="registerForm.isSubmitting()"
-    />
-    <app-button 
-      name="Salvar Venda" 
-      type="primary" 
-      (clicked)="submit()" 
-      [disabled]="registerForm.isSubmitting()"
-      [loading]="registerForm.isSubmitting()"
-    />
-  </div>
-</section>
+}

@@ -5,12 +5,14 @@ import { Router } from '@angular/router';
 import { Button } from '../../../ui/button/button';
 import { FormDate } from '../../../ui/form-date/form-date';
 import { FormInput } from '../../../ui/form-input/form-input';
+import { FormSelect } from '../../../ui/form-select/form-select';
 import { Table } from '../../../ui/table/table';
+import { SummaryCard } from '../../../ui/summary-card/summary-card';
 import { SaleService } from '../sale.service';
 
 @Component({
   selector: 'app-sale-list',
-  imports: [Table, FormInput, FormDate, Button, CommonModule],
+  imports: [Table, FormDate, FormSelect, Button, CommonModule, SummaryCard],
   templateUrl: './list.html',
   styleUrl: './list.scss',
   providers: [DatePipe, CurrencyPipe],
@@ -37,15 +39,21 @@ export class SaleList {
   public readonly startDateFilter = signal('');
   public readonly endDateFilter = signal('');
 
+  public readonly origemOptions = computed(() => {
+    const data = this.saleResource.value()?.data || [];
+    const origens = [...new Set(data.map((s) => s.origem))];
+    return origens.map((o) => ({ label: o, value: o }));
+  });
+
   public readonly sales = computed(() => {
     let data = this.saleResource.value()?.data || [];
 
-    const origem = this.origemFilter().toLowerCase();
+    const origem = this.origemFilter();
     const startDate = this.startDateFilter();
     const endDate = this.endDateFilter();
 
     if (origem) {
-      data = data.filter((s) => s.origem.toLowerCase().includes(origem));
+      data = data.filter((s) => s.origem === origem);
     }
 
     if (startDate) {

@@ -1,6 +1,31 @@
-<app-table
-  [columns]="columns"
-  [data]="categories()"
-  [actions]="rowActions"
-  (selectionChange)="onRowsSelected($event)"
-></app-table>
+<section class="filters">
+  <div class="filters-row">
+    <app-form-input label="Nome" placeholder="Buscar por nome..." [(value)]="nameFilter" />
+    
+    <div class="filter-actions">
+      <app-button name="Limpar Filtros" type="secondary" [disabled]="false" (clicked)="clearFilters()"></app-button>
+    </div>
+  </div>
+</section>
+
+<section class="summary-cards">
+  <app-summary-card 
+    label="Total de Categorias" 
+    [value]="summary().totalCategories" 
+    icon="📁"
+  />
+</section>
+
+@if (categories().length > 0) {
+  <app-table
+    [columns]="columns"
+    [data]="categories()"
+    [actions]="rowActions"
+    (selectionChange)="onRowsSelected($event)"
+  ></app-table>
+} @else {
+  <div class="empty-state-card">
+    <span class="icon">📁</span>
+    <p>Nenhuma categoria cadastrada ainda. Comece criando uma nova! ✨</p>
+  </div>
+}

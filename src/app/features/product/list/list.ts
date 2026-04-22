@@ -1,18 +1,24 @@
-import { DatePipe, CurrencyPipe } from '@angular/common';
-import { Component, computed, effect, inject, input } from '@angular/core';
+import { DatePipe, CurrencyPipe, CommonModule } from '@angular/common';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Table } from '../../../ui/table/table';
 import { ProductService } from '../product.service';
+import { CategoryService } from '../../category/category.service';
+import { FormInput } from '../../../ui/form-input/form-input';
+import { FormSelect } from '../../../ui/form-select/form-select';
+import { Button } from '../../../ui/button/button';
+import { SummaryCard } from '../../../ui/summary-card/summary-card';
 
 @Component({
   selector: 'app-product-list',
-  imports: [Table],
+  imports: [Table, FormInput, FormSelect, Button, CommonModule, SummaryCard],
   templateUrl: './list.html',
   styleUrl: './list.scss',
   providers: [DatePipe, CurrencyPipe],
 })
 export class ProductList {
   private readonly service = inject(ProductService);
+  private readonly categoryService = inject(CategoryService);
   private readonly datePipe = inject(DatePipe);
   private readonly currencyPipe = inject(CurrencyPipe);
 
@@ -27,7 +33,53 @@ export class ProductList {
     stream: () => this.service.getAll(),
   });
 
-  public readonly products = computed(() => this.productResource.value()?.data || []);
+  public readonly categoryResource = rxResource({
+    stream: () => this.categoryService.getAll(),
+  });
+
+  // Filters
+  public readonly nameFilter = signal('');
+  public readonly categoryFilter = signal<string>('');
+
+  public readonly categoryOptions = computed(() => {
+    const categories = this.categoryResource.value()?.data || [];
+    return categories.map((c) => ({
+      label: c.nome,
+      value: c.id.toString(),
+    }));
+  });
+
+  public readonly products = computed(() => {
+    let data = this.productResource.value()?.data || [];
+
+    const name = this.nameFilter().toLowerCase();
+    const categoryId = this.categoryFilter();
+
+    if (name) {
+      data = data.filter((item) => item.name?.toLowerCase().includes(name));
+    }
+
+    if (categoryId) {
+      data = data.filter((item) => item.category?.id?.toString() === categoryId);
+    }
+
+    return data;
+  });
+
+  // Derived Summary
+  public readonly summary = computed(() => {
+    const list = this.products();
+    return {
+      totalProducts: list.length,
+      totalValue: list.reduce((acc, curr) => acc + curr.sellPrice, 0),
+      totalProfit: list.reduce((acc, curr) => acc + curr.profit, 0),
+    };
+  });
+
+  public clearFilters(): void {
+    this.nameFilter.set('');
+    this.categoryFilter.set('');
+  }
 
   public readonly columns = [
     { label: 'Nome', field: 'name', sortable: true },

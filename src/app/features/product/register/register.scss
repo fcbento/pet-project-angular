@@ -1,16 +1,29 @@
 @use 'styles/abstracts/variables' as vars;
-@use 'styles/abstracts/mixins' as mixins;
+@use 'styles/abstracts/colors' as colors;
 
 .form {
+  background-color: colors.$bg-surface;
+  border-radius: vars.$radius-lg;
+  border: 1px solid colors.$border-default;
+  padding: vars.$space-xl;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   gap: vars.$space-md;
   max-width: 600px;
   margin: 0 auto;
+  box-sizing: border-box;
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: vars.$space-lg;
+    color: colors.$text-primary;
+    font-size: vars.$font-size-xl;
+  }
 
   &__actions {
     margin-top: vars.$space-lg;
-    @include mixins.flex-center;
+    display: flex;
     justify-content: flex-end;
   }
 }

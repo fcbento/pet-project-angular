@@ -3,9 +3,10 @@
     <h2>Nova Venda</h2>
     
     <div class="form-row">
-      <app-form-input 
+      <app-form-select 
         label="Origem" 
-        placeholder="Ex: Balcão, Site, iFood..." 
+        placeholder="Selecione..." 
+        [options]="origemOptions()"
         [field]="registerForm.registerForm.origem"
       />
       <app-form-date 

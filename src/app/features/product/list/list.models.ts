@@ -8,5 +8,6 @@ export interface ProductResponse {
   createdAt: string;
   costPrice: number;
   sellPrice: number;
+  ifoodSellPrice: number;
   profit: number;
 }

@@ -9,6 +9,4 @@ export interface ProductRequest {
 export interface ProductModel {
   nome: string;
   categoryId: string;
-  costPrice: number;
-  sellPrice: number;
 }

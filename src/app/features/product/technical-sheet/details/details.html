@@ -1,0 +1,150 @@
+<div class="details-container">
+  <div class="header">
+    <div class="header-left">
+      <button class="back-btn" (click)="goBack()">← Voltar</button>
+      <div>
+        <h1>Ficha Técnica</h1>
+        <p>Detalhamento de insumos e custos de produção</p>
+      </div>
+    </div>
+    @if (hasSheet()) {
+      <app-button
+        name="Editar Ficha Técnica"
+        type="primary"
+        [disabled]="false"
+        (clicked)="goToEdit()"
+      ></app-button>
+    }
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <span class="spinner"></span>
+      <p>Carregando ficha técnica...</p>
+    </div>
+  } @else if (hasError() || !hasSheet()) {
+    <div class="empty-state">
+      <span class="icon">📋</span>
+      <p>Nenhuma ficha técnica encontrada para este produto.</p>
+      <app-button
+        name="Cadastrar Ficha Técnica"
+        type="primary"
+        [disabled]="false"
+        (clicked)="goToEdit()"
+      ></app-button>
+    </div>
+  } @else {
+    <div class="content-grid">
+      <!-- Product Identification -->
+      <div class="card product-card">
+        <h3>Identificação do Produto</h3>
+        <div class="info-row">
+          <span class="info-label">Produto:</span>
+          <span class="info-value">{{ sheet()!.productName }}</span>
+        </div>
+      </div>
+
+      <!-- Cost Summary -->
+      <div class="card summary-card">
+        <h3>Resumo de Custos</h3>
+        <div class="summary-details">
+          <div class="summary-row">
+            <span>Total Ingredientes:</span>
+            <strong>{{ totalIngredientsCost() | currency: 'BRL' }}</strong>
+          </div>
+          <div class="summary-row">
+            <span>Total Embalagem:</span>
+            <strong>{{ totalPackagingCost() | currency: 'BRL' }}</strong>
+          </div>
+          <div class="summary-row total">
+            <span>Custo Total Receita:</span>
+            <strong>{{ totalCost() | currency: 'BRL' }}</strong>
+          </div>
+          <div class="summary-row unit-cost">
+            <span>Custo Unitário Final:</span>
+            <strong>{{ unitCost() | currency: 'BRL' }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Production Info -->
+      <div class="card production-card">
+        <h3>Informações de Produção</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Rendimento (Unidades)</span>
+            <span class="info-value">{{ sheet()!.yieldUnits }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Peso por Unidade (g)</span>
+            <span class="info-value">{{ sheet()!.yieldWeight }}g</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Armazenamento</span>
+            <span class="info-value">{{ sheet()!.storage || '—' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Validade</span>
+            <span class="info-value">{{ sheet()!.validity || '—' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ingredients Table -->
+      <div class="card ingredients-card">
+        <h3>Ingredientes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Ingrediente</th>
+              <th>Quantidade</th>
+              <th>Unidade</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (ing of sheet()!.ingredients; track $index) {
+              <tr>
+                <td>{{ ing.name }}</td>
+                <td>{{ ing.quantity }}</td>
+                <td>{{ ing.unit }}</td>
+                <td>{{ ing.value | currency: 'BRL' }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="empty-cell">Nenhum ingrediente cadastrado</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Packaging Costs -->
+      <div class="card packaging-card">
+        <h3>Custos de Embalagem</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Custo Palito</span>
+            <span class="info-value">{{ sheet()!.packaging.stickCost | currency: 'BRL' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Custo Etiqueta Marca</span>
+            <span class="info-value">{{ sheet()!.packaging.brandLabelCost | currency: 'BRL' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Custo Etiqueta Sabor</span>
+            <span class="info-value">{{ sheet()!.packaging.flavorLabelCost | currency: 'BRL' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Custo Saquinho</span>
+            <span class="info-value">{{ sheet()!.packaging.bagCost | currency: 'BRL' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Custo Embalagem Papel</span>
+            <span class="info-value">{{ sheet()!.packaging.paperPackagingCost | currency: 'BRL' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

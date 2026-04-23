@@ -30,6 +30,14 @@ export const routes: Routes = [
         loadComponent: () => import('./features/product/product').then((m) => m.Product),
       },
       {
+        path: 'produto/ficha-tecnica',
+        loadComponent: () => import('./features/product/technical-sheet/register/register').then((m) => m.TechnicalSheetRegister),
+      },
+      {
+        path: 'produto/detalhes/:id',
+        loadComponent: () => import('./features/product/technical-sheet/details/details').then((m) => m.TechnicalSheetDetails),
+      },
+      {
         path: 'venda',
         loadChildren: () => import('./features/sale/sale.const').then((m) => m.SALE_ROUTES),
       },

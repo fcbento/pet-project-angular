@@ -1,6 +1,7 @@
 import { DatePipe, CurrencyPipe, CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { Table } from '../../../ui/table/table';
 import { ProductService } from '../product.service';
 import { CategoryService } from '../../category/category.service';
@@ -22,6 +23,7 @@ export class ProductList {
   private readonly categoryService = inject(CategoryService);
   private readonly datePipe = inject(DatePipe);
   private readonly currencyPipe = inject(CurrencyPipe);
+  private readonly router = inject(Router);
 
   public readonly updateTable = input<unknown>();
 
@@ -82,42 +84,81 @@ export class ProductList {
     this.categoryFilter.set('');
   }
 
-  public readonly columns = [
-    { label: 'Nome', field: 'name', sortable: true },
-    { label: 'Categoria', field: 'category', cell: (row: ProductResponse) => row.category?.nome || '-' },
-    {
-      label: 'Preço Custo',
-      field: 'costPrice',
-      cell: (row: ProductResponse) => this.currencyPipe.transform(row.costPrice, 'BRL', 'symbol', '1.2-2'),
-    },
-    {
-      label: 'Preço Venda',
-      field: 'sellPrice',
-      cell: (row: ProductResponse) => this.currencyPipe.transform(row.sellPrice, 'BRL', 'symbol', '1.2-2'),
-    },
-    {
-      label: 'Lucro',
-      field: 'profit',
-      cell: (row: ProductResponse) => this.currencyPipe.transform(row.profit, 'BRL', 'symbol', '1.2-2'),
-    },
-    {
-      label: 'Margem de lucro',
-      field: 'profitMargin',
-      cell: (row: ProductResponse) => {
-        if (!row.sellPrice) return '0.00%';
-        const margin = (row.profit / row.sellPrice) * 100;
-        return `${margin.toFixed(2)}%`;
+  public readonly columns = computed(() => {
+    const products = this.products();
+    const hasFinancials = products.some((p) => p.costPrice > 0 || p.sellPrice > 0);
+
+    const baseColumns = [
+      { label: 'Nome', field: 'name', sortable: true },
+      { label: 'Categoria', field: 'category', cell: (row: ProductResponse) => row.category?.nome || '-' },
+    ];
+
+    const financialColumns = hasFinancials
+      ? [
+          {
+            label: 'Preço Custo',
+            field: 'costPrice',
+            cell: (row: ProductResponse) =>
+              row.costPrice ? this.currencyPipe.transform(row.costPrice, 'BRL', 'symbol', '1.2-2') : '-',
+          },
+          {
+            label: 'Preço Venda',
+            field: 'sellPrice',
+            cell: (row: ProductResponse) =>
+              row.sellPrice ? this.currencyPipe.transform(row.sellPrice, 'BRL', 'symbol', '1.2-2') : '-',
+          },
+          {
+            label: 'Venda iFood',
+            field: 'ifoodSellPrice',
+            cell: (row: ProductResponse) =>
+              row.ifoodSellPrice ? this.currencyPipe.transform(row.ifoodSellPrice, 'BRL', 'symbol', '1.2-2') : '-',
+          },
+          {
+            label: 'Lucro',
+            field: 'profit',
+            cell: (row: ProductResponse) =>
+              row.profit ? this.currencyPipe.transform(row.profit, 'BRL', 'symbol', '1.2-2') : '-',
+          },
+          {
+            label: 'Margem',
+            field: 'profitMargin',
+            cell: (row: ProductResponse) => {
+              if (!row.sellPrice) return '-';
+              const margin = (row.profit / row.sellPrice) * 100;
+              return `${margin.toFixed(2)}%`;
+            },
+          },
+          {
+            label: 'Margem iFood',
+            field: 'ifoodProfitMargin',
+            cell: (row: ProductResponse) => {
+              if (!row.ifoodSellPrice || !row.costPrice) return '-';
+              // Lucro iFood = (Preço iFood * 0.72) - Custo
+              const ifoodProfit = (row.ifoodSellPrice * 0.72) - row.costPrice;
+              const margin = (ifoodProfit / row.ifoodSellPrice) * 100;
+              return `${margin.toFixed(2)}%`;
+            },
+          },
+        ]
+      : [];
+
+    const metaColumns = [
+      { label: 'Criado por', field: 'criadoPor' },
+      {
+        label: 'Criado em',
+        field: 'createdAt',
+        cell: (row: ProductResponse) => this.datePipe.transform(new Date(row.createdAt), 'dd/MM/yyyy HH:mm:ss'),
       },
-    },
-    { label: 'Criado por', field: 'criadoPor' },
-    {
-      label: 'Criado em',
-      field: 'createdAt',
-      cell: (row: ProductResponse) => this.datePipe.transform(new Date(row.createdAt), 'dd/MM/yyyy HH:mm:ss'),
-    },
-  ];
+    ];
+
+    return [...baseColumns, ...financialColumns, ...metaColumns];
+  });
 
   public readonly rowActions = [
+    {
+      label: 'Ficha Técnica',
+      callback: (row: ProductResponse) => this.fichaTecnica(row),
+    },
     {
       label: 'Excluir',
       callback: (row: ProductResponse) => this.delete(row),
@@ -127,6 +168,12 @@ export class ProductList {
       callback: (row: ProductResponse) => this.edit(row),
     },
   ];
+
+  private fichaTecnica(row: ProductResponse): void {
+    this.router.navigate(['/dashboard/produto/ficha-tecnica'], {
+      queryParams: { productId: row.id },
+    });
+  }
 
   public onRowsSelected = (rows: ProductResponse[]): void => {
     console.log('selecionados', rows);
@@ -142,5 +189,9 @@ export class ProductList {
         this.productResource.reload();
       });
     }
+  }
+
+  public onRowClick(row: ProductResponse): void {
+    this.fichaTecnica(row);
   }
 }

@@ -91,6 +91,15 @@
       gap: vars.$space-xs;
     }
 
+    .clickable-row {
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+
+      &:hover td {
+        background-color: colors.$bg-surface-hover;
+      }
+    }
+
     .checkbox-cell {
       width: 100px;
     }

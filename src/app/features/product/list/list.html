@@ -1,13 +1,9 @@
 <section class="filters">
   <div class="filters-row">
     <app-form-input label="Nome" placeholder="Buscar por nome..." [(value)]="nameFilter" />
-    <app-form-select 
-      label="Categoria" 
-      placeholder="Todas as categorias" 
-      [options]="categoryOptions()" 
-      [(value)]="categoryFilter" 
-    />
-    
+    <app-form-select label="Categoria" placeholder="Todas as categorias" [options]="categoryOptions()"
+      [(value)]="categoryFilter" />
+
     <div class="filter-actions">
       <app-button name="Limpar Filtros" type="secondary" [disabled]="false" (clicked)="clearFilters()"></app-button>
     </div>
@@ -15,36 +11,18 @@
 </section>
 
 <section class="summary-cards">
-  <app-summary-card 
-    label="Total de Produtos" 
-    [value]="summary().totalProducts" 
-    icon="📦"
-  />
-  <app-summary-card 
-    label="Valor Total (Venda)" 
-    [value]="summary().totalValue" 
-    type="currency" 
-    icon="💰"
-  />
-  <app-summary-card 
-    label="Lucro Estimado" 
-    [value]="summary().totalProfit" 
-    type="currency" 
-    variant="success" 
-    icon="📈"
-  />
+  <app-summary-card label="Total de Produtos" [value]="summary().totalProducts" icon="📦" />
+  <app-summary-card label="Valor Total (Venda)" [value]="summary().totalValue" type="currency" icon="💰" />
+  <app-summary-card label="Lucro Estimado" [value]="summary().totalProfit" type="currency" variant="success"
+    icon="📈" />
 </section>
 
 @if (products().length > 0) {
-  <app-table
-    [columns]="columns"
-    [data]="products()"
-    [actions]="rowActions"
-    (selectionChange)="onRowsSelected($event)"
-  />
+<app-table [columns]="columns()" [data]="products()" [actions]="rowActions" (selectionChange)="onRowsSelected($event)"
+  (rowClick)="onRowClick($event)" />
 } @else {
-  <div class="empty-state-card">
-    <span class="icon">📦</span>
-    <p>Não encontramos nenhum produto. Que tal cadastrar o primeiro? ✨</p>
-  </div>
+<div class="empty-state-card">
+  <span class="icon">📦</span>
+  <p>Não encontramos nenhum produto. Que tal cadastrar o primeiro? ✨</p>
+</div>
 }

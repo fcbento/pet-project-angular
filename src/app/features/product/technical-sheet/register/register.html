@@ -1,0 +1,159 @@
+<div class="technical-sheet-container">
+  <div class="header">
+    <h1>{{ isEditMode() ? 'Editar Ficha Técnica' : 'Cadastro de Ficha Técnica' }}</h1>
+    <h2 class="product-title">{{ selectedProduct()?.name || 'Carregando...' }}</h2>
+    <p class="product-subtitle">Categoria: {{ selectedProduct()?.category?.nome || '...' }} | Detalhamento de insumos e custos de produção</p>
+  </div>
+
+  <div class="content-grid">
+    <!-- Reordered DOM: Left Column first -->
+    <!-- Full Width: Ingredients -->
+    <div class="card ingredients-card">
+      <h3>Ingredientes</h3>
+      <div class="ingredient-add-form">
+        <app-form-input label="Nome do Ingrediente" placeholder="Ex: Leite Condensado" [value]="newIngredientName()"
+          (valueChange)="newIngredientName.set($event)"></app-form-input>
+        <app-form-input label="Quantidade" type="number" [value]="String(newIngredientQuantity())"
+          (valueChange)="onQuantityChange($event)"></app-form-input>
+        <app-form-input label="Unidade" placeholder="g, kg, ml, un" [value]="newIngredientUnit()"
+          (valueChange)="newIngredientUnit.set($event)"></app-form-input>
+        <app-form-input label="Valor Unitário (Insumo)" type="number" [value]="String(newIngredientValue())"
+          (valueChange)="onValueChange($event)"></app-form-input>
+        <app-button name="Adicionar" type="primary" [disabled]="!canAddItem()" (clicked)="addIngredient()"></app-button>
+      </div>
+
+      <div class="ingredients-list mt-4">
+        <table>
+          <thead>
+            <tr>
+              <th>Ingrediente</th>
+              <th>Quantidade</th>
+              <th>Unidade</th>
+              <th>Valor Unit.</th>
+              <th>Subtotal</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (ing of ingredients(); track $index) {
+            <tr>
+              <td>{{ ing.name }}</td>
+              <td>{{ ing.quantity }}</td>
+              <td>{{ ing.unit }}</td>
+              <td>{{ ing.value | currency: 'BRL' }}</td>
+              <td>{{ ing.value | currency: 'BRL' }}</td>
+              <td>
+                <button class="btn-remove" [disabled]="ingredients().length === 1"
+                  (click)="removeIngredient($index)">Remover</button>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="6" class="empty-state">Nenhum ingrediente adicionado</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Full Width: Packaging -->
+    <div class="card packaging-card">
+      <h3>Custos de Embalagem</h3>
+
+      <!-- Radio Selection for Picole -->
+      <div class="packaging-type-selection mb-4" *ngIf="isPicole()">
+        <label class="block mb-2 font-medium">Tipo de Embalagem para Picolé:</label>
+        <div class="radio-options">
+          <label class="radio-label">
+            <input type="radio" name="pkgType" [checked]="isPapel()" (change)="setPackagingType('PAPEL')">
+            <span>Embalagem Papel</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="pkgType" [checked]="isSaquinho()" (change)="setPackagingType('SAQUINHO')">
+            <span>Embalagem Saquinho</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <!-- Always for Picole -->
+        <app-form-input *ngIf="isPicole()" label="Custo Palito" type="number"
+          [field]="registerForm.registerForm.stickCost">
+        </app-form-input>
+
+        <!-- Only for Geladinho OR (Picole + Saquinho) -->
+        <app-form-input *ngIf="isGeladinho() || (isPicole() && isSaquinho())" label="Custo Saquinho" type="number"
+          [field]="registerForm.registerForm.bagCost">
+        </app-form-input>
+
+        <app-form-input *ngIf="isGeladinho() || (isPicole() && isSaquinho())" label="Custo Etiqueta Marca" type="number"
+          [field]="registerForm.registerForm.brandLabelCost">
+        </app-form-input>
+
+        <app-form-input *ngIf="isGeladinho() || (isPicole() && isSaquinho())" label="Custo Etiqueta Sabor" type="number"
+          [field]="registerForm.registerForm.flavorLabelCost">
+        </app-form-input>
+
+        <!-- Only for Picole + Papel -->
+        <app-form-input *ngIf="isPicole() && isPapel()" label="Custo Embalagem Papel" type="number"
+          [field]="registerForm.registerForm.paperPackagingCost">
+        </app-form-input>
+      </div>
+    </div>
+
+    <!-- Right Column: Costs Summary -->
+    <div class="card summary-card">
+      <h3>Resumo de Custos</h3>
+      <div class="summary-details">
+        <div class="summary-row">
+          <span>Total Ingredientes:</span>
+          <strong>{{ totalIngredientsCost() | currency: 'BRL' }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Total Embalagem:</span>
+          <strong>{{ totalPackagingCost() | currency: 'BRL' }}</strong>
+        </div>
+        <div class="summary-row total">
+          <span>Custo Total Receita:</span>
+          <strong>{{ totalCost() | currency: 'BRL' }}</strong>
+        </div>
+        <div class="summary-row unit-cost">
+          <span>Custo Unitário Final:</span>
+          <strong>{{ unitCost() | currency: 'BRL' }}</strong>
+        </div>
+      </div>
+
+      <div class="pricing-section mt-4">
+        <h3>Precificação</h3>
+        <app-form-input label="Preço de Venda" placeholder="Informe o preço de venda" type="number"
+          [field]="registerForm.registerForm.sellPrice"></app-form-input>
+        <app-form-input label="Preço de Venda iFood (Livre)" placeholder="Ex: 21.00" type="number"
+          [field]="registerForm.registerForm.ifoodSellPrice"></app-form-input>
+
+        <div class="summary-details mt-4">
+          <div *ngIf="ifoodSellPriceValue() < suggestedIfoodPrice()" style="color: red; font-size: 0.9rem; margin-bottom: 0.5rem;">
+            Aviso: O preço iFood não pode ser menor que a sugestão mínima de {{ suggestedIfoodPrice() | currency: 'BRL' }} (markup 28%).
+          </div>
+          <div class="summary-row profit">
+            <span>Lucro:</span>
+            <strong [class.positive]="profit() >= 0" [class.negative]="profit() < 0">
+              {{ profit() | currency: 'BRL' }}
+            </strong>
+          </div>
+          <div class="summary-row margin">
+            <span>Margem de Lucro:</span>
+            <strong [class.positive]="profitMargin() >= 0" [class.negative]="profitMargin() < 0">
+              {{ profitMargin() | number: '1.2-2' }}%
+            </strong>
+          </div>
+        </div>
+      </div>
+      <div class="actions mt-6">
+        <app-button [name]="isEditMode() ? 'Atualizar Ficha Técnica' : 'Salvar Ficha Técnica'" type="primary"
+          [disabled]="!canSubmit()" (clicked)="submit()"></app-button>
+        <app-button name="Cancelar" type="secondary" [disabled]="false" (clicked)="cancel()"></app-button>
+      </div>
+    </div>
+  </div>
+</div>

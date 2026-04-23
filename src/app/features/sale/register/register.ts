@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, effect } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Field } from '@angular/forms/signals';
 import { Router } from '@angular/router';
@@ -12,15 +12,17 @@ import { OpenToast } from '../../../utility/store/toast/toast.actions';
 import { ToastModel } from '../../../utility/store/toast/toast.models';
 import { ProductService } from '../../product/product.service';
 import { CategoryService } from '../../category/category.service';
+import { ProductResponse } from '../../product/list/list.models';
 import { SaleService } from '../sale.service';
 import { SaleRegisterForm } from './register.form';
-import { SaleItemRequest } from '../sale.models';
+import { SaleItemRequest, SaleOrigin } from '../sale.models';
 
 export interface SaleItemDraft {
   productId: number;
   productName: string;
   sellPrice: number;
   quantity: number;
+  product: ProductResponse;
 }
 
 @Component({
@@ -37,6 +39,32 @@ export class SaleRegister {
   private readonly router = inject(Router);
   public readonly registerForm = inject(SaleRegisterForm);
   public readonly store = inject(Store);
+
+  constructor() {
+    effect(() => {
+      const origem = this.registerForm.registerForm().value().origem;
+      
+      this.saleItems.update((items) => {
+        let changed = false;
+        const newItems = items.map((item) => {
+          const product = item.product;
+          if (!product) return item;
+          
+          const newPrice = origem === 'IFOOD' && product.ifoodSellPrice 
+                        ? product.ifoodSellPrice 
+                        : product.sellPrice;
+                        
+          if (newPrice !== item.sellPrice) {
+            changed = true;
+            return { ...item, sellPrice: newPrice };
+          }
+          return item;
+        });
+        
+        return changed ? newItems : items;
+      });
+    }, { allowSignalWrites: true });
+  }
 
   // Categories for the select
   public readonly categoryResource = rxResource({
@@ -64,6 +92,13 @@ export class SaleRegister {
   public readonly hasProducts = computed(() => {
     return (this.productResource.value()?.data?.length || 0) > 0;
   });
+
+  public readonly origemOptions = signal([
+    { label: 'iFood', value: 'IFOOD' },
+    { label: 'Condomínio', value: 'CONDOMINIO' },
+    { label: 'Escola', value: 'ESCOLA' },
+    { label: 'Outros', value: 'OUTROS' },
+  ]);
 
   // Items State
   public readonly selectedCategoryId = signal<number | null>(null);
@@ -154,8 +189,11 @@ export class SaleRegister {
         {
           productId: product.id,
           productName: product.name,
-          sellPrice: product.sellPrice,
+          sellPrice: this.registerForm.registerForm().value().origem === 'IFOOD' && product.ifoodSellPrice 
+                        ? product.ifoodSellPrice 
+                        : product.sellPrice,
           quantity,
+          product,
         },
       ];
     });
@@ -199,7 +237,7 @@ export class SaleRegister {
     this.registerForm.isSubmitting.set(true);
 
     const payload = {
-      origem: form().value().origem,
+      origem: form().value().origem as SaleOrigin,
       sellDate: new Date(form().value().sellDate).toISOString(),
       items: this.saleItems().map((i): SaleItemRequest => ({
         productId: i.productId,

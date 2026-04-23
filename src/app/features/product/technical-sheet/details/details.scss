@@ -1,0 +1,254 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+@use 'styles/abstracts/mixins' as mixins;
+
+.details-container {
+  padding: vars.$space-xl;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: vars.$space-xl;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: vars.$space-md;
+
+      .back-btn {
+        background: none;
+        border: 1px solid colors.$border-default;
+        border-radius: vars.$radius-md;
+        padding: vars.$space-xs vars.$space-md;
+        cursor: pointer;
+        color: colors.$text-secondary;
+        font-size: vars.$font-size-sm;
+        transition: all 0.2s;
+
+        &:hover {
+          background: colors.$bg-surface-hover;
+          color: colors.$text-primary;
+          border-color: colors.$border-strong;
+        }
+      }
+
+      h1 {
+        font-size: vars.$font-size-xl;
+        color: colors.$text-primary;
+        margin: 0;
+      }
+
+      p {
+        color: colors.$text-secondary;
+        margin: vars.$space-xxs 0 0;
+        font-size: vars.$font-size-sm;
+      }
+    }
+  }
+
+  .loading-state {
+    @include mixins.flex-center(column);
+    padding: vars.$space-xxl;
+    gap: vars.$space-md;
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid colors.$border-default;
+      border-top-color: colors.$color-primary;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    p {
+      color: colors.$text-secondary;
+    }
+  }
+
+  .empty-state {
+    @include mixins.flex-center(column);
+    background: colors.$bg-muted;
+    border: 1px dashed colors.$border-default;
+    border-radius: vars.$radius-lg;
+    padding: vars.$space-xxl;
+    gap: vars.$space-md;
+
+    .icon {
+      font-size: 3rem;
+    }
+
+    p {
+      color: colors.$text-secondary;
+      font-size: vars.$font-size-lg;
+      font-weight: vars.$font-weight-medium;
+      margin: 0;
+    }
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: vars.$space-lg;
+
+    .card {
+      background: colors.$bg-surface;
+      padding: vars.$space-lg;
+      border-radius: vars.$radius-xl;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      border: 1px solid colors.$border-default;
+
+      h3 {
+        margin: 0 0 vars.$space-md;
+        font-size: vars.$font-size-lg;
+        color: colors.$text-primary;
+        font-weight: vars.$font-weight-semibold;
+        border-bottom: 1px solid colors.$border-default;
+        padding-bottom: vars.$space-sm;
+      }
+    }
+
+    .product-card {
+      .info-row {
+        display: flex;
+        gap: vars.$space-sm;
+        align-items: baseline;
+
+        .info-label {
+          color: colors.$text-secondary;
+          font-weight: vars.$font-weight-medium;
+        }
+
+        .info-value {
+          color: colors.$text-primary;
+          font-weight: vars.$font-weight-semibold;
+          font-size: vars.$font-size-lg;
+        }
+      }
+    }
+
+    .summary-card {
+      .summary-details {
+        .summary-row {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: vars.$space-sm;
+          color: colors.$text-secondary;
+
+          strong {
+            color: colors.$text-primary;
+          }
+
+          &.total {
+            margin-top: vars.$space-md;
+            padding-top: vars.$space-md;
+            border-top: 2px solid colors.$border-default;
+            font-size: vars.$font-size-lg;
+
+            strong {
+              color: colors.$text-primary;
+            }
+          }
+
+          &.unit-cost {
+            color: colors.$text-primary;
+            font-size: vars.$font-size-lg;
+            background: colors.$bg-muted;
+            padding: vars.$space-md;
+            border-radius: vars.$radius-md;
+            margin-top: vars.$space-sm;
+
+            strong {
+              color: colors.$color-primary;
+              font-size: vars.$font-size-xl;
+            }
+          }
+        }
+      }
+    }
+
+    .production-card {
+      grid-column: 1 / -1;
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: vars.$space-md;
+      }
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: vars.$space-xxs;
+      background: colors.$bg-muted;
+      padding: vars.$space-md;
+      border-radius: vars.$radius-md;
+
+      .info-label {
+        font-size: vars.$font-size-sm;
+        color: colors.$text-secondary;
+        font-weight: vars.$font-weight-medium;
+      }
+
+      .info-value {
+        font-size: vars.$font-size-md;
+        color: colors.$text-primary;
+        font-weight: vars.$font-weight-semibold;
+      }
+    }
+
+    .ingredients-card,
+    .packaging-card {
+      grid-column: 1 / -1;
+    }
+
+    .ingredients-card {
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border: 1px solid colors.$border-default;
+        border-radius: vars.$radius-md;
+        overflow: hidden;
+
+        th {
+          text-align: left;
+          background: colors.$bg-muted;
+          padding: vars.$space-sm vars.$space-md;
+          color: colors.$text-secondary;
+          font-weight: vars.$font-weight-semibold;
+          font-size: vars.$font-size-sm;
+        }
+
+        td {
+          padding: vars.$space-sm vars.$space-md;
+          border-top: 1px solid colors.$border-default;
+          color: colors.$text-primary;
+        }
+
+        .empty-cell {
+          text-align: center;
+          padding: vars.$space-xl;
+          color: colors.$text-muted;
+        }
+      }
+    }
+
+    .packaging-card {
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: vars.$space-md;
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

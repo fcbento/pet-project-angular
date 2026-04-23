@@ -79,6 +79,7 @@ export class Table<T> {
   });
 
   public readonly selectionChange = output<T[]>();
+  public readonly rowClick = output<T>();
   private readonly _selectionEffect = effect(() => {
     this.selectionChange.emit(this.selectedRows());
   });
@@ -138,7 +139,10 @@ export class Table<T> {
     this.actionMenuFor.set(this.actionMenuFor() === row ? null : row);
   }
 
-  public runAction(action: TableAction<T>, row: T): void {
+  public runAction(action: TableAction<T>, row: T, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
     action.callback(row);
     this.actionMenuFor.set(null);
   }

@@ -87,7 +87,12 @@ export class SaleList {
   });
 
   public readonly columns = [
-    { label: 'Origem', field: 'origem', sortable: true },
+    { 
+      label: 'Origem', 
+      field: 'origem', 
+      sortable: true,
+      cell: (row: SaleResponse) => row.origem === 'IFOOD' ? '🔴 iFood' : row.origem
+    },
     {
       label: 'Data Venda',
       field: 'sellDate',
@@ -99,14 +104,17 @@ export class SaleList {
       cell: (row: SaleResponse) => this.currencyPipe.transform(row.totalPrice, 'BRL', 'symbol', '1.2-2'),
     },
     {
-      label: 'Lucro Total',
+      label: 'Lucro Líquido',
       field: 'totalProfit',
       cell: (row: SaleResponse) => this.currencyPipe.transform(row.totalProfit, 'BRL', 'symbol', '1.2-2'),
     },
     {
-      label: 'Margem de Lucro',
+      label: 'Margem',
       field: 'profitMargin',
-      cell: (row: SaleResponse) => `${row.profitMargin?.toFixed(2)}%`,
+      cell: (row: SaleResponse) => {
+        const margin = `${row.profitMargin?.toFixed(2)}%`;
+        return row.origem === 'IFOOD' ? `${margin} (Líquida)` : margin;
+      },
     },
     {
       label: 'Criado em',

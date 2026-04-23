@@ -1,8 +1,10 @@
 import { Injectable, signal } from '@angular/core';
 import { form, required } from '@angular/forms/signals';
 
+import { SaleOrigin } from '../sale.models';
+
 export interface SaleRegisterModel {
-  origem: string;
+  origem: SaleOrigin | '';
   sellDate: string;
 }
 

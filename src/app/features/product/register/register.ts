@@ -59,8 +59,8 @@ export class ProductRegister {
     const request: ProductRequest = {
       name: formValue?.nome || '',
       categoryId: Number(formValue?.categoryId),
-      costPrice: Number(formValue?.costPrice),
-      sellPrice: Number(formValue?.sellPrice),
+      costPrice: 0,
+      sellPrice: 0,
       criadoPor: this.user()?.name || '',
     };
 

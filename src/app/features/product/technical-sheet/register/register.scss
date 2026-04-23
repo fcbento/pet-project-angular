@@ -1,0 +1,204 @@
+.technical-sheet-container {
+  padding: 2rem;
+  margin: 0 auto;
+
+  .header {
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 0.25rem;
+    }
+
+    .product-title {
+      font-size: 1.5rem;
+      color: #007bff;
+      margin-bottom: 0.5rem;
+    }
+
+    .product-subtitle {
+      color: #666;
+      font-weight: 500;
+    }
+
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 1.5rem;
+    align-items: start;
+
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
+      h3 {
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+        color: #444;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 0.5rem;
+      }
+
+      // Selection card was removed from UI
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .form-grid-5 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      &.summary-card {
+        grid-column: 2 / 3;
+        grid-row: 1 / 4;
+        position: sticky;
+        top: 1rem;
+        height: fit-content;
+
+        .summary-details {
+          .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            color: #555;
+
+            &.total {
+              margin-top: 1rem;
+              padding-top: 1rem;
+              border-top: 2px solid #eee;
+              font-size: 1.2rem;
+              color: #333;
+            }
+
+            &.unit-cost {
+              color: #2c3e50;
+              font-size: 1.3rem;
+              background: #f8f9fa;
+              padding: 1rem;
+              border-radius: 8px;
+              margin-top: 0.5rem;
+            }
+          }
+        }
+
+        .actions {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+      }
+
+      &.ingredients-card,
+      &.packaging-card {
+        grid-column: 1 / 2;
+      }
+
+      .ingredient-add-form {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr auto;
+        gap: 1rem;
+        align-items: flex-end;
+        background: #fdfdfd;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px dashed #ddd;
+      }
+
+      .ingredients-list {
+        table {
+          width: 100%;
+          border-collapse: collapse;
+
+          th {
+            text-align: left;
+            background: #f4f7f6;
+            padding: 1rem;
+            color: #555;
+            font-weight: 600;
+          }
+
+          td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            color: #666;
+
+            &.empty-state {
+              text-align: center;
+              padding: 3rem;
+              color: #999;
+            }
+          }
+
+          .btn-remove {
+            background: #ff7675;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+
+            &:hover:not(:disabled) {
+              background: #d63031;
+            }
+
+            &:disabled {
+              background: #ffb8b8;
+              cursor: not-allowed;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .mt-4 {
+    margin-top: 1rem;
+  }
+
+  .mt-6 {
+    margin-top: 1.5rem;
+  }
+
+  .mb-4 {
+    margin-bottom: 1rem;
+  }
+
+  .pricing-section {
+    border-top: 2px solid #eee;
+    padding-top: 1rem;
+
+    h3 {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      color: #444;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 0.5rem;
+    }
+  }
+
+  .positive {
+    color: #27ae60 !important;
+  }
+
+  .negative {
+    color: #e74c3c !important;
+  }
+
+  .summary-row.profit,
+  .summary-row.margin {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+}

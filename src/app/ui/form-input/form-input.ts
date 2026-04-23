@@ -7,8 +7,8 @@ import { FormValueControl, ValidationError } from '@angular/forms/signals';
   templateUrl: './form-input.html',
   styleUrl: './form-input.scss',
 })
-export class FormInput implements FormValueControl<string> {
-  public readonly value = model('');
+export class FormInput implements FormValueControl<string | number> {
+  public readonly value = model<string | number>('');
   public readonly touched = model<boolean>(false);
 
   public readonly placeholder = input<string>();

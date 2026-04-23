@@ -8,8 +8,6 @@ export class RegisterForm {
   private readonly productModel = signal<ProductModel>({
     nome: '',
     categoryId: '',
-    costPrice: 0,
-    sellPrice: 0,
   });
 
   public readonly isSubmitting = signal(false);
@@ -17,8 +15,6 @@ export class RegisterForm {
   public readonly registerForm = form(this.productModel, (schemaPath) => {
     required(schemaPath.nome, { message: 'Nome é obrigatório' });
     required(schemaPath.categoryId, { message: 'Categoria é obrigatória' });
-    required(schemaPath.costPrice, { message: 'Preço de custo é obrigatório' });
-    required(schemaPath.sellPrice, { message: 'Preço de venda é obrigatório' });
   });
 
   public readonly registerFormItems = signal<FormItems[]>([
@@ -34,18 +30,6 @@ export class RegisterForm {
       type: 'select',
       field: this.registerForm.categoryId,
       options: [],
-    },
-    {
-      placeholder: 'Preço de custo',
-      label: 'Preço de custo',
-      type: 'number',
-      field: this.registerForm.costPrice,
-    },
-    {
-      placeholder: 'Preço de venda',
-      label: 'Preço de venda',
-      type: 'number',
-      field: this.registerForm.sellPrice,
     },
   ]);
 
@@ -64,16 +48,12 @@ export class RegisterForm {
     this.registerForm().reset({
       nome: '',
       categoryId: '',
-      costPrice: 0,
-      sellPrice: 0,
     });
     this.registerFormItems.update((formItems) => {
       return formItems.map((item) => {
         let field = this.registerForm.nome as any;
         if (item.label === 'Categoria') field = this.registerForm.categoryId;
-        if (item.label === 'Preço de custo') field = this.registerForm.costPrice;
-        if (item.label === 'Preço de venda') field = this.registerForm.sellPrice;
-        
+
         return {
           ...item,
           field,

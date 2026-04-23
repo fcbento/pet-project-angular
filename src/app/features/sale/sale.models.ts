@@ -3,8 +3,10 @@ export interface SaleItemRequest {
   quantity: number;
 }
 
+export type SaleOrigin = 'IFOOD' | 'CONDOMINIO' | 'ESCOLA' | 'OUTROS';
+
 export interface SaleRequest {
-  origem: string;
+  origem: SaleOrigin;
   sellDate: string;
   items: SaleItemRequest[];
 }
@@ -20,7 +22,7 @@ export interface SaleItemResponse {
 
 export interface SaleResponse {
   id: number;
-  origem: string;
+  origem: SaleOrigin;
   createdAt: string;
   sellDate: string;
   items: SaleItemResponse[];

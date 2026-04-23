@@ -95,63 +95,63 @@ export class ProductList {
 
     const financialColumns = hasFinancials
       ? [
-          {
-            label: 'Preço Custo',
-            field: 'costPrice',
-            cell: (row: ProductResponse) =>
-              row.costPrice ? this.currencyPipe.transform(row.costPrice, 'BRL', 'symbol', '1.2-2') : '-',
+        {
+          label: 'Custo',
+          field: 'costPrice',
+          cell: (row: ProductResponse) =>
+            row.costPrice ? this.currencyPipe.transform(row.costPrice, 'BRL', 'symbol', '1.2-2') : '-',
+        },
+        {
+          label: 'Venda Balcão',
+          field: 'sellPrice',
+          cell: (row: ProductResponse) =>
+            row.sellPrice ? this.currencyPipe.transform(row.sellPrice, 'BRL', 'symbol', '1.2-2') : '-',
+        },
+        {
+          label: 'Lucro Balcão',
+          field: 'profit',
+          cell: (row: ProductResponse) =>
+            row.profit ? this.currencyPipe.transform(row.profit, 'BRL', 'symbol', '1.2-2') : '-',
+        },
+        {
+          label: 'Margem Balcão',
+          field: 'profitMargin',
+          cell: (row: ProductResponse) => {
+            if (!row.sellPrice) return '-';
+            const margin = (row.profit / row.sellPrice) * 100;
+            return `${margin.toFixed(2)}%`;
           },
-          {
-            label: 'Preço Venda',
-            field: 'sellPrice',
-            cell: (row: ProductResponse) =>
-              row.sellPrice ? this.currencyPipe.transform(row.sellPrice, 'BRL', 'symbol', '1.2-2') : '-',
+        },
+        {
+          label: 'Venda iFood',
+          field: 'ifoodSellPrice',
+          cell: (row: ProductResponse) =>
+            row.ifoodSellPrice ? this.currencyPipe.transform(row.ifoodSellPrice, 'BRL', 'symbol', '1.2-2') : '-',
+        },
+        {
+          label: 'Lucro iFood',
+          field: 'ifoodProfit',
+          cell: (row: ProductResponse) => {
+            if (!row.ifoodSellPrice || !row.costPrice) return '-';
+            const ifoodProfit = (row.ifoodSellPrice * 0.72) - row.costPrice;
+            return this.currencyPipe.transform(ifoodProfit, 'BRL', 'symbol', '1.2-2');
           },
-          {
-            label: 'Venda iFood',
-            field: 'ifoodSellPrice',
-            cell: (row: ProductResponse) =>
-              row.ifoodSellPrice ? this.currencyPipe.transform(row.ifoodSellPrice, 'BRL', 'symbol', '1.2-2') : '-',
+        },
+        {
+          label: 'Margem iFood',
+          field: 'ifoodProfitMargin',
+          cell: (row: ProductResponse) => {
+            if (!row.ifoodSellPrice || !row.costPrice) return '-';
+            const ifoodNetRevenue = row.ifoodSellPrice * 0.72;
+            const ifoodProfit = ifoodNetRevenue - row.costPrice;
+            const margin = (ifoodProfit / ifoodNetRevenue) * 100;
+            return `${margin.toFixed(2)}%`;
           },
-          {
-            label: 'Lucro',
-            field: 'profit',
-            cell: (row: ProductResponse) =>
-              row.profit ? this.currencyPipe.transform(row.profit, 'BRL', 'symbol', '1.2-2') : '-',
-          },
-          {
-            label: 'Margem',
-            field: 'profitMargin',
-            cell: (row: ProductResponse) => {
-              if (!row.sellPrice) return '-';
-              const margin = (row.profit / row.sellPrice) * 100;
-              return `${margin.toFixed(2)}%`;
-            },
-          },
-          {
-            label: 'Margem iFood',
-            field: 'ifoodProfitMargin',
-            cell: (row: ProductResponse) => {
-              if (!row.ifoodSellPrice || !row.costPrice) return '-';
-              // Lucro iFood = (Preço iFood * 0.72) - Custo
-              const ifoodProfit = (row.ifoodSellPrice * 0.72) - row.costPrice;
-              const margin = (ifoodProfit / row.ifoodSellPrice) * 100;
-              return `${margin.toFixed(2)}%`;
-            },
-          },
-        ]
+        },
+      ]
       : [];
 
-    const metaColumns = [
-      { label: 'Criado por', field: 'criadoPor' },
-      {
-        label: 'Criado em',
-        field: 'createdAt',
-        cell: (row: ProductResponse) => this.datePipe.transform(new Date(row.createdAt), 'dd/MM/yyyy HH:mm:ss'),
-      },
-    ];
-
-    return [...baseColumns, ...financialColumns, ...metaColumns];
+    return [...baseColumns, ...financialColumns];
   });
 
   public readonly rowActions = [

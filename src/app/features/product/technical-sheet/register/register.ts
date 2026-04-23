@@ -283,6 +283,19 @@ export class TechnicalSheetRegister {
     return ((this.profit() / sell) * 100);
   });
 
+  public readonly ifoodProfit = computed(() => {
+    const ifoodPrice = this.ifoodSellPriceValue();
+    if (ifoodPrice <= 0) return 0;
+    return (ifoodPrice * 0.72) - this.unitCost();
+  });
+
+  public readonly ifoodProfitMargin = computed(() => {
+    const ifoodPrice = this.ifoodSellPriceValue();
+    if (ifoodPrice <= 0) return 0;
+    const ifoodNetRevenue = ifoodPrice * 0.72;
+    return (this.ifoodProfit() / ifoodNetRevenue) * 100;
+  });
+
   public readonly canAddItem = computed(() => {
     return !!this.newIngredientName() && this.newIngredientQuantity() > 0 && this.newIngredientValue() > 0;
   });

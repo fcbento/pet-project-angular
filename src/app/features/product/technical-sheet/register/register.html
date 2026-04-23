@@ -2,7 +2,8 @@
   <div class="header">
     <h1>{{ isEditMode() ? 'Editar Ficha Técnica' : 'Cadastro de Ficha Técnica' }}</h1>
     <h2 class="product-title">{{ selectedProduct()?.name || 'Carregando...' }}</h2>
-    <p class="product-subtitle">Categoria: {{ selectedProduct()?.category?.nome || '...' }} | Detalhamento de insumos e custos de produção</p>
+    <p class="product-subtitle">Categoria: {{ selectedProduct()?.category?.nome || '...' }} | Detalhamento de insumos e
+      custos de produção</p>
   </div>
 
   <div class="content-grid">
@@ -114,10 +115,6 @@
           <span>Total Embalagem:</span>
           <strong>{{ totalPackagingCost() | currency: 'BRL' }}</strong>
         </div>
-        <div class="summary-row total">
-          <span>Custo Total Receita:</span>
-          <strong>{{ totalCost() | currency: 'BRL' }}</strong>
-        </div>
         <div class="summary-row unit-cost">
           <span>Custo Unitário Final:</span>
           <strong>{{ unitCost() | currency: 'BRL' }}</strong>
@@ -132,8 +129,10 @@
           [field]="registerForm.registerForm.ifoodSellPrice"></app-form-input>
 
         <div class="summary-details mt-4">
-          <div *ngIf="ifoodSellPriceValue() < suggestedIfoodPrice()" style="color: red; font-size: 0.9rem; margin-bottom: 0.5rem;">
-            Aviso: O preço iFood não pode ser menor que a sugestão mínima de {{ suggestedIfoodPrice() | currency: 'BRL' }} (markup 28%).
+          <div *ngIf="ifoodSellPriceValue() < suggestedIfoodPrice()"
+            style="color: red; font-size: 0.9rem; margin-bottom: 0.5rem;">
+            Aviso: O preço iFood não pode ser menor que a sugestão mínima de {{ suggestedIfoodPrice() | currency: 'BRL'
+            }} (markup 28%).
           </div>
           <div class="summary-row profit">
             <span>Lucro:</span>
@@ -145,6 +144,18 @@
             <span>Margem de Lucro:</span>
             <strong [class.positive]="profitMargin() >= 0" [class.negative]="profitMargin() < 0">
               {{ profitMargin() | number: '1.2-2' }}%
+            </strong>
+          </div>
+          <div class="summary-row profit" *ngIf="ifoodSellPriceValue() > 0">
+            <span>Lucro iFood:</span>
+            <strong [class.positive]="ifoodProfit() >= 0" [class.negative]="ifoodProfit() < 0">
+              {{ ifoodProfit() | currency: 'BRL' }}
+            </strong>
+          </div>
+          <div class="summary-row margin" *ngIf="ifoodSellPriceValue() > 0">
+            <span>Margem iFood:</span>
+            <strong [class.positive]="ifoodProfitMargin() >= 0" [class.negative]="ifoodProfitMargin() < 0">
+              {{ ifoodProfitMargin() | number: '1.2-2' }}%
             </strong>
           </div>
         </div>

@@ -24,6 +24,8 @@ export interface TechnicalSheetRequest {
     packaging: PackagingDTO;
     sellPrice?: number;
     ifoodSellPrice?: number;
+    resalePrice?: number;
+    resaleQuantity?: number;
 }
 
 export interface TechnicalSheetResponse extends TechnicalSheetRequest {
@@ -33,4 +35,7 @@ export interface TechnicalSheetResponse extends TechnicalSheetRequest {
     unitCost: number;
     fixedOperationalCost: number;
     ifoodSellPrice: number;
+    hasResale: boolean;
+    resalePrice: number;
+    resaleQuantity: number;
 }

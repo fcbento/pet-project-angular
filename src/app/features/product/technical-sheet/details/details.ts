@@ -93,6 +93,19 @@ export class TechnicalSheetDetails {
     return ifoodNetRevenue > 0 ? (this.ifoodProfit() / ifoodNetRevenue) * 100 : 0;
   });
 
+  // Resale Signals
+  public readonly hasResale = computed(() => this.sheet()?.hasResale || false);
+  public readonly resalePrice = computed(() => this.sheet()?.resalePrice || 0);
+  public readonly resaleQuantity = computed(() => this.sheet()?.resaleQuantity || 0);
+
+  public readonly resaleProfitUnit = computed(() => this.resalePrice() - this.unitCost());
+  public readonly resaleMargin = computed(() => {
+    const price = this.resalePrice();
+    return price > 0 ? (this.resaleProfitUnit() / price) * 100 : 0;
+  });
+  public readonly resaleTotalProfit = computed(() => this.resaleProfitUnit() * this.resaleQuantity());
+  public readonly resaleTotalPrice = computed(() => this.resalePrice() * this.resaleQuantity());
+
   public readonly isLoading = computed(() => this.sheetResource.isLoading());
   public readonly hasError = computed(() => !!this.sheetResource.error());
 

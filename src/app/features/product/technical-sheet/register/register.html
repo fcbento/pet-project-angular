@@ -103,7 +103,44 @@
       </div>
     </div>
 
-    <!-- Right Column: Costs Summary -->
+    <div class="card resale-card" *ngIf="hasResale()">
+      <h3>Canal de Revenda</h3>
+      <div class="form-grid">
+        <div class="info-item">
+          <label>Custo Unitário:</label>
+          <strong>{{ unitCost() | currency: 'BRL' }}</strong>
+        </div>
+        <app-form-input label="Preço de Venda (Revenda)" type="number" [field]="registerForm.registerForm.resalePrice">
+        </app-form-input>
+        <app-form-input label="Quantidade Mínima (Lote)" type="number"
+          [field]="registerForm.registerForm.resaleQuantity">
+        </app-form-input>
+      </div>
+
+      <div class="resale-summary mt-4">
+        <div class="summary-row">
+          <span>Lucro Unitário:</span>
+          <strong [class.positive]="resaleProfitUnit() >= 0" [class.negative]="resaleProfitUnit() < 0">
+            {{ resaleProfitUnit() | currency: 'BRL' }}
+          </strong>
+        </div>
+        <div class="summary-row">
+          <span>Margem de Revenda:</span>
+          <strong>{{ resaleMargin() | number: '1.2-2' }}%</strong>
+        </div>
+        <div class="summary-row">
+          <span>Total Lote (Venda):</span>
+          <strong>{{ resaleTotalPrice() | currency: 'BRL' }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Lucro Total Lote:</span>
+          <strong>{{ resaleTotalProfit() | currency: 'BRL' }}</strong>
+        </div>
+        <div *ngIf="resalePrice() > 0 && resalePrice() < unitCost()" class="error-msg">
+          O preço de revenda não pode ser inferior ao custo unitário.
+        </div>
+      </div>
+    </div>
     <div class="card summary-card">
       <h3>Resumo de Custos</h3>
       <div class="summary-details">
@@ -135,7 +172,8 @@
         <div class="summary-details mt-4">
           <div *ngIf="ifoodSellPriceValue() < suggestedIfoodPrice()"
             style="color: red; font-size: 0.9rem; margin-bottom: 0.5rem;">
-            Aviso: O preço iFood não pode ser menor que a sugestão mínima de {{ suggestedIfoodPrice() | currency: 'BRL'
+            Aviso: O preço iFood não pode ser menor que a sugestão mínima de {{ suggestedIfoodPrice() | currency:
+            'BRL'
             }} (markup 28%).
           </div>
           <div class="summary-row profit">

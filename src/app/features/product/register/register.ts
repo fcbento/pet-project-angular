@@ -4,6 +4,7 @@ import { Store } from '@ngxs/store';
 import { Button } from '../../../ui/button/button';
 import { FormInput } from '../../../ui/form-input/form-input';
 import { FormSelect } from '../../../ui/form-select/form-select';
+import { FormSwitch } from '../../../ui/form-switch/form-switch';
 import { OpenToast } from '../../../utility/store/toast/toast.actions';
 import { ToastModel } from '../../../utility/store/toast/toast.models';
 import { UserSelectors } from '../../../utility/store/user/user.selectors';
@@ -15,7 +16,7 @@ import { ProductRequest } from './register.models';
 
 @Component({
   selector: 'app-product-register',
-  imports: [FormInput, FormSelect, Button, Field],
+  imports: [FormInput, FormSelect, FormSwitch, Button, Field],
   templateUrl: './register.html',
   styleUrl: './register.scss',
   providers: [RegisterForm],
@@ -61,6 +62,7 @@ export class ProductRegister {
       categoryId: Number(formValue?.categoryId),
       costPrice: 0,
       sellPrice: 0,
+      hasResale: formValue?.hasResale || false,
       criadoPor: this.user()?.name || '',
     };
 

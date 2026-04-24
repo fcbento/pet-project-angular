@@ -8,6 +8,7 @@ export class RegisterForm {
   private readonly productModel = signal<ProductModel>({
     nome: '',
     categoryId: '',
+    hasResale: false,
   });
 
   public readonly isSubmitting = signal(false);
@@ -31,6 +32,12 @@ export class RegisterForm {
       field: this.registerForm.categoryId,
       options: [],
     },
+    {
+      label: 'Produto possui Revenda?',
+      type: 'switch',
+      field: this.registerForm.hasResale,
+      placeholder: 'Produto possui Revenda?',
+    },
   ]);
 
   public setCategoryOptions(options: { label: string; value: string | number }[]): void {
@@ -48,6 +55,7 @@ export class RegisterForm {
     this.registerForm().reset({
       nome: '',
       categoryId: '',
+      hasResale: false,
     });
     this.registerFormItems.update((formItems) => {
       return formItems.map((item) => {

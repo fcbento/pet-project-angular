@@ -100,8 +100,58 @@
       }
 
       &.ingredients-card,
-      &.packaging-card {
+      &.packaging-card,
+      &.resale-card {
         grid-column: 1 / 2;
+      }
+
+      .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        
+        label {
+          font-size: 0.85rem;
+          color: #666;
+          font-weight: 500;
+        }
+
+        strong {
+          font-size: 1.1rem;
+          color: #333;
+        }
+      }
+
+      .resale-summary {
+        background: #f8f9fa;
+        padding: 1.25rem;
+        border-radius: 8px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+
+        .summary-row {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+
+          span {
+            font-size: 0.85rem;
+            color: #666;
+          }
+
+          strong {
+            font-size: 1.1rem;
+          }
+        }
+      }
+
+      .error-msg {
+        grid-column: 1 / -1;
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
       }
 
       .ingredient-add-form {

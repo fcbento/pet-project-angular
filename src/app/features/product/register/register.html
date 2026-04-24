@@ -8,6 +8,11 @@
         [options]="item.options || []"
         [field]="item.field"
       />
+    } @else if (item.type === 'switch') {
+      <app-form-switch
+        [label]="item.label"
+        [field]="item.field"
+      />
     } @else {
       <app-form-input
         [placeholder]="item.placeholder"

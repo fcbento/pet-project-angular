@@ -1,0 +1,16 @@
+<div class="switch-container" [class.disabled]="disabled()" (click)="toggle()">
+  <div class="switch-content">
+    @if (label()) {
+    <span class="switch-label">{{ label() }}</span>
+    }
+    <div class="switch-toggle" [class.active]="value()">
+      <div class="switch-handle"></div>
+    </div>
+  </div>
+
+  @if (touched()) {
+  @for (error of errors(); track error) {
+  <small class="error-text">{{ error.message }}</small>
+  }
+  }
+</div>

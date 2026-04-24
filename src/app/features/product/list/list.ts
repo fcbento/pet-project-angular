@@ -132,6 +132,12 @@ export class ProductList {
           },
         },
         {
+          label: 'Preço Revenda',
+          field: 'resalePrice',
+          cell: (row: ProductResponse) =>
+            row.hasResale && row.resalePrice ? this.currencyPipe.transform(row.resalePrice, 'BRL', 'symbol', '1.2-2') : '-',
+        },
+        {
           label: 'Venda iFood',
           field: 'ifoodSellPrice',
           cell: (row: ProductResponse) =>

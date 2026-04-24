@@ -145,6 +145,8 @@ export class TechnicalSheetRegister {
           packagingType: sheet.packaging.packagingType || 'SAQUINHO',
           sellPrice: sheet.sellPrice || 0,
           ifoodSellPrice: sheet.ifoodSellPrice || 0,
+          resalePrice: sheet.resalePrice || 0,
+          resaleQuantity: sheet.resaleQuantity || 50,
         });
         this.ingredients.set(sheet.ingredients);
       },
@@ -314,6 +316,20 @@ export class TechnicalSheetRegister {
     return (this.ifoodProfit() / ifoodNetRevenue) * 100;
   });
 
+  // Resale Calculations
+  public readonly hasResale = computed(() => this.selectedProduct()?.hasResale || false);
+
+  public readonly resalePrice = computed(() => Number(this.registerForm.registerForm().value().resalePrice) || 0);
+  public readonly resaleQuantity = computed(() => Number(this.registerForm.registerForm().value().resaleQuantity) || 0);
+
+  public readonly resaleProfitUnit = computed(() => this.resalePrice() - this.unitCost());
+  public readonly resaleMargin = computed(() => {
+    const price = this.resalePrice();
+    return price > 0 ? (this.resaleProfitUnit() / price) * 100 : 0;
+  });
+  public readonly resaleTotalProfit = computed(() => this.resaleProfitUnit() * this.resaleQuantity());
+  public readonly resaleTotalPrice = computed(() => this.resalePrice() * this.resaleQuantity());
+
   public readonly canAddItem = computed(() => {
     return !!this.newIngredientName() && this.newIngredientQuantity() > 0 && this.newIngredientValue() > 0;
   });
@@ -323,13 +339,17 @@ export class TechnicalSheetRegister {
     const ifoodSellPrice = Number(this.registerForm.registerForm().value().ifoodSellPrice) || 0;
     const suggestedIfood = this.suggestedIfoodPrice();
 
+    const resalePrice = this.resalePrice();
+    const resaleValid = !this.hasResale() || (resalePrice >= this.unitCost() && this.resaleQuantity() > 0);
+
     return !!this.selectedProductId() &&
       this.ingredients().length > 0 &&
       this.registerForm.registerForm().valid() &&
       sellPrice > 0 &&
       ifoodSellPrice >= suggestedIfood &&
       this.profit() >= 0 &&
-      this.profitMargin() >= 0;
+      this.profitMargin() >= 0 &&
+      resaleValid;
   });
 
   public submit(): void {
@@ -354,6 +374,8 @@ export class TechnicalSheetRegister {
       },
       sellPrice: Number(formVal.sellPrice) || 0,
       ifoodSellPrice: Number(formVal.ifoodSellPrice) || 0,
+      resalePrice: this.hasResale() ? Number(formVal.resalePrice) : undefined,
+      resaleQuantity: this.hasResale() ? Number(formVal.resaleQuantity) : undefined,
     };
 
     this.service.save(request).subscribe({

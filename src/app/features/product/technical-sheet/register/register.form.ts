@@ -17,6 +17,8 @@ export interface TechnicalSheetModel {
     // Pricing
     sellPrice: number;
     ifoodSellPrice: number;
+    resalePrice: number;
+    resaleQuantity: number;
 }
 
 @Injectable()
@@ -34,6 +36,8 @@ export class TechnicalSheetForm {
         packagingType: 'SAQUINHO',
         sellPrice: 0,
         ifoodSellPrice: 0,
+        resalePrice: 0,
+        resaleQuantity: 50,
     };
 
     private readonly model = signal<TechnicalSheetModel>(this.initialModel);

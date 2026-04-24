@@ -18,7 +18,6 @@ export interface TechnicalSheetModel {
     sellPrice: number;
     ifoodSellPrice: number;
     resalePrice: number;
-    resaleQuantity: number;
 }
 
 @Injectable()
@@ -37,7 +36,6 @@ export class TechnicalSheetForm {
         sellPrice: 0,
         ifoodSellPrice: 0,
         resalePrice: 0,
-        resaleQuantity: 50,
     };
 
     private readonly model = signal<TechnicalSheetModel>(this.initialModel);

@@ -112,9 +112,6 @@
         </div>
         <app-form-input label="Preço de Venda (Revenda)" type="number" [field]="registerForm.registerForm.resalePrice">
         </app-form-input>
-        <app-form-input label="Quantidade Mínima (Lote)" type="number"
-          [field]="registerForm.registerForm.resaleQuantity">
-        </app-form-input>
       </div>
 
       <div class="resale-summary mt-4">
@@ -127,14 +124,6 @@
         <div class="summary-row">
           <span>Margem de Revenda:</span>
           <strong>{{ resaleMargin() | number: '1.2-2' }}%</strong>
-        </div>
-        <div class="summary-row">
-          <span>Total Lote (Venda):</span>
-          <strong>{{ resaleTotalPrice() | currency: 'BRL' }}</strong>
-        </div>
-        <div class="summary-row">
-          <span>Lucro Total Lote:</span>
-          <strong>{{ resaleTotalProfit() | currency: 'BRL' }}</strong>
         </div>
         <div *ngIf="resalePrice() > 0 && resalePrice() < unitCost()" class="error-msg">
           O preço de revenda não pode ser inferior ao custo unitário.

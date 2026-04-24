@@ -1,5 +1,6 @@
 import { Component, computed, effect, inject, output, signal } from '@angular/core';
 import { Field } from '@angular/forms/signals';
+import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { Button } from '../../../ui/button/button';
 import { FormInput } from '../../../ui/form-input/form-input';
@@ -26,6 +27,7 @@ export class ProductRegister {
   private readonly service = inject(ProductService);
   private readonly categoryService = inject(CategoryService);
   private readonly store = inject(Store);
+  private readonly router = inject(Router);
 
   private readonly user = this.store.selectSignal(UserSelectors.user);
 
@@ -70,10 +72,13 @@ export class ProductRegister {
     this.service
       .create(request)
       .subscribe({
-        next: () => {
+        next: (response) => {
           this.form.resetForm();
           this.success.emit();
-          this.toast(TOAST_PRODUCT.success);
+          // Navigate to Technical Sheet for the new product
+          this.router.navigate(['/dashboard/produto/ficha-tecnica'], {
+            queryParams: { productId: response.data.id }
+          });
         },
         error: () => this.toast(TOAST_PRODUCT.error),
       })

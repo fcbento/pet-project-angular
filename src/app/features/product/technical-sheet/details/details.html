@@ -172,10 +172,6 @@
               <span class="info-value">{{ resalePrice() | currency: 'BRL' }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Quantidade (Lote):</span>
-              <span class="info-value">{{ resaleQuantity() }} un.</span>
-            </div>
-            <div class="info-row">
               <span class="info-label">Lucro Unitário:</span>
               <span class="info-value" [class.positive]="resaleProfitUnit() >= 0"
                 [class.negative]="resaleProfitUnit() < 0">
@@ -185,10 +181,6 @@
             <div class="info-row">
               <span class="info-label">Margem:</span>
               <span class="info-value">{{ resaleMargin() | number: '1.2-2' }}%</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Lucro Total Lote:</span>
-              <span class="info-value">{{ resaleTotalProfit() | currency: 'BRL' }}</span>
             </div>
           </div>
 

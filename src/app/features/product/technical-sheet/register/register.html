@@ -150,6 +150,7 @@
               {{ profitMargin() | number: '1.2-2' }}%
             </strong>
           </div>
+          <hr>
           <div class="summary-row profit" *ngIf="ifoodSellPriceValue() > 0">
             <span>Lucro iFood:</span>
             <strong [class.positive]="ifoodProfit() >= 0" [class.negative]="ifoodProfit() < 0">
@@ -162,6 +163,7 @@
               {{ ifoodProfitMargin() | number: '1.2-2' }}%
             </strong>
           </div>
+          <hr>
         </div>
       </div>
       <div class="actions mt-6">

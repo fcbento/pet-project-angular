@@ -251,11 +251,17 @@ export class TechnicalSheetRegister {
     return total;
   });
 
-  public readonly totalCost = computed(() => this.totalIngredientsCost() + this.totalPackagingCost());
+  // Fixed Operational Cost
+  public readonly fixedOperationalCost = signal(2.74);
+
+  public readonly totalCost = computed(() => {
+    const yieldUnits = Number(this.registerForm.registerForm().value().yieldUnits) || 1;
+    return this.totalIngredientsCost() + this.totalPackagingCost() + (this.fixedOperationalCost() * yieldUnits);
+  });
 
   public readonly unitCost = computed(() => {
     const yieldUnits = Number(this.registerForm.registerForm().value().yieldUnits) || 1;
-    return this.totalCost() / yieldUnits;
+    return (this.totalIngredientsCost() + this.totalPackagingCost()) / yieldUnits + this.fixedOperationalCost();
   });
 
   // Pricing & Profit
@@ -280,13 +286,25 @@ export class TechnicalSheetRegister {
   public readonly profitMargin = computed(() => {
     const sell = this.sellPrice();
     if (sell <= 0) return 0;
-    return ((this.profit() / sell) * 100);
+    return (this.profit() / sell) * 100;
+  });
+
+  public readonly markup = computed(() => {
+    const cost = this.unitCost();
+    if (cost <= 0) return 0;
+    return (this.profit() / cost) * 100;
   });
 
   public readonly ifoodProfit = computed(() => {
     const ifoodPrice = this.ifoodSellPriceValue();
     if (ifoodPrice <= 0) return 0;
     return (ifoodPrice * 0.72) - this.unitCost();
+  });
+
+  public readonly ifoodMarkup = computed(() => {
+    const cost = this.unitCost();
+    if (cost <= 0) return 0;
+    return (this.ifoodProfit() / cost) * 100;
   });
 
   public readonly ifoodProfitMargin = computed(() => {

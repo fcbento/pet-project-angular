@@ -244,6 +244,64 @@
         gap: vars.$space-md;
       }
     }
+
+    .pricing-card {
+      grid-column: 1 / -1;
+
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: vars.$space-xl;
+
+        @media (max-width: 768px) {
+          grid-template-columns: 1fr;
+        }
+
+        .pricing-group {
+          background: colors.$bg-muted;
+          padding: vars.$space-lg;
+          border-radius: vars.$radius-lg;
+          border: 1px solid colors.$border-default;
+
+          h4 {
+            margin: 0 0 vars.$space-md;
+            color: colors.$text-secondary;
+            font-size: vars.$font-size-md;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: vars.$space-xs 0;
+            border-bottom: 1px dashed colors.$border-default;
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            .info-label {
+              color: colors.$text-secondary;
+              font-size: vars.$font-size-sm;
+            }
+
+            .info-value {
+              font-weight: vars.$font-weight-semibold;
+              color: colors.$text-primary;
+
+              &.positive {
+                color: #10b981;
+              }
+
+              &.negative {
+                color: #ef4444;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 

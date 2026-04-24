@@ -115,6 +115,10 @@
           <span>Total Embalagem:</span>
           <strong>{{ totalPackagingCost() | currency: 'BRL' }}</strong>
         </div>
+        <div class="summary-row">
+          <span>Custo Operacional Fixo:</span>
+          <strong>{{ fixedOperationalCost() | currency: 'BRL' }} (por un.)</strong>
+        </div>
         <div class="summary-row unit-cost">
           <span>Custo Unitário Final:</span>
           <strong>{{ unitCost() | currency: 'BRL' }}</strong>

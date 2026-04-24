@@ -123,6 +123,15 @@ export class ProductList {
           },
         },
         {
+          label: 'Markup Balcão',
+          field: 'markup',
+          cell: (row: ProductResponse) => {
+            if (!row.costPrice || row.costPrice <= 0) return '-';
+            const markup = (row.profit / row.costPrice) * 100;
+            return `${markup.toFixed(2)}%`;
+          },
+        },
+        {
           label: 'Venda iFood',
           field: 'ifoodSellPrice',
           cell: (row: ProductResponse) =>

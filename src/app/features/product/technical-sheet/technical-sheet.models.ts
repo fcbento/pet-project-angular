@@ -31,5 +31,6 @@ export interface TechnicalSheetResponse extends TechnicalSheetRequest {
     productName: string;
     totalCost: number;
     unitCost: number;
+    fixedOperationalCost: number;
     ifoodSellPrice: number;
 }

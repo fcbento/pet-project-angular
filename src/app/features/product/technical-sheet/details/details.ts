@@ -50,12 +50,47 @@ export class TechnicalSheetDetails {
     );
   });
 
-  public readonly totalCost = computed(() => this.totalIngredientsCost() + this.totalPackagingCost());
+  public readonly fixedOperationalCost = computed(() => this.sheet()?.fixedOperationalCost || 0);
+
+  public readonly totalCost = computed(() => {
+    const s = this.sheet();
+    if (!s) return 0;
+    const yieldUnits = s.yieldUnits || 1;
+    return this.totalIngredientsCost() + this.totalPackagingCost() + (this.fixedOperationalCost() * yieldUnits);
+  });
 
   public readonly unitCost = computed(() => {
     const s = this.sheet();
-    const yieldUnits = s?.yieldUnits || 1;
-    return this.totalCost() / yieldUnits;
+    if (!s) return 0;
+    const yieldUnits = s.yieldUnits || 1;
+    return (this.totalIngredientsCost() + this.totalPackagingCost()) / yieldUnits + this.fixedOperationalCost();
+  });
+
+  public readonly sellPrice = computed(() => this.sheet()?.sellPrice || 0);
+  public readonly ifoodSellPrice = computed(() => this.sheet()?.ifoodSellPrice || 0);
+
+  public readonly profit = computed(() => this.sellPrice() - this.unitCost());
+  public readonly markup = computed(() => {
+    const cost = this.unitCost();
+    return cost > 0 ? (this.profit() / cost) * 100 : 0;
+  });
+  public readonly profitMargin = computed(() => {
+    const sell = this.sellPrice();
+    return sell > 0 ? (this.profit() / sell) * 100 : 0;
+  });
+
+  public readonly ifoodProfit = computed(() => {
+    const ifoodPrice = this.ifoodSellPrice();
+    return ifoodPrice > 0 ? (ifoodPrice * 0.72) - this.unitCost() : 0;
+  });
+  public readonly ifoodMarkup = computed(() => {
+    const cost = this.unitCost();
+    return cost > 0 ? (this.ifoodProfit() / cost) * 100 : 0;
+  });
+  public readonly ifoodProfitMargin = computed(() => {
+    const ifoodPrice = this.ifoodSellPrice();
+    const ifoodNetRevenue = ifoodPrice * 0.72;
+    return ifoodNetRevenue > 0 ? (this.ifoodProfit() / ifoodNetRevenue) * 100 : 0;
   });
 
   public readonly isLoading = computed(() => this.sheetResource.isLoading());

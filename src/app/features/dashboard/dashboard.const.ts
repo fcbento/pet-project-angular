@@ -28,6 +28,10 @@ export const DASHBOARD_ROUTES = [
     link: 'orcamento',
   },
   {
+    name: 'Compras',
+    link: 'compras',
+  },
+  {
     name: 'Gestão',
     link: 'gestao',
   },

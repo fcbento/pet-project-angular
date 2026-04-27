@@ -49,6 +49,10 @@ export const routes: Routes = [
         path: 'gestao',
         loadComponent: () => import('./features/gestao/gestao').then((m) => m.Gestao),
       },
+      {
+        path: 'compras',
+        loadComponent: () => import('./features/purchase/list/list').then((m) => m.PurchaseList),
+      },
     ],
   },
   { path: '**', redirectTo: 'login' },

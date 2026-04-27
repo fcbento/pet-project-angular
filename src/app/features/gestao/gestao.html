@@ -13,7 +13,7 @@
       <span class="sentiment-text">Saúde Financeira OK</span>
       } @else {
       <span class="emoji">⚠️</span>
-      <span class="sentiment-text">Atenção aos Custos</span>
+      <span class="sentiment-text">Atenção ao Lucro Real</span>
       }
     </div>
     }
@@ -50,19 +50,38 @@
       </div>
     </div>
 
-    <div class="card card--profit">
-      <div class="card__icon">📈</div>
+    <!-- US-014 Evolução: Lucro Real (Desconta Compras Operacionais) -->
+    <div class="card card--profit" [style.border-left-color]="s.netProfit > 0 ? '#4caf50' : '#f44336'">
+      <div class="card__icon">📊</div>
       <div class="card__content">
-        <span class="label">Lucro Total</span>
-        <span class="value">{{ s.totalProfit | currency:'BRL' }}</span>
+        <span class="label">Lucro Líquido Final</span>
+        <strong class="value">{{ s.netProfit | currency:'BRL' }}</strong>
         <div class="info-row">
-          <span>Margem Média:</span>
-          <strong class="trend">{{ s.averageMargin | number:'1.1-1' }}%</strong>
+          <span>Teórico:</span>
+          <strong>{{ s.totalProfit | currency:'BRL' }}</strong>
         </div>
       </div>
     </div>
 
-    <!-- Indicadores Avançados -->
+    <div class="card card--purchase">
+      <div class="card__icon">🛒</div>
+      <div class="card__content">
+        <span class="label">Compras (Operacional)</span>
+        <span class="value">{{ s.totalPurchasesValue | currency:'BRL' }}</span>
+        <div class="info-row"><span>{{ s.totalPurchasesCount }} registros</span></div>
+      </div>
+    </div>
+
+    <!-- US-014 Evolução: Giro de Estoque -->
+    <div class="card card--advanced">
+      <div class="card__icon">🔄</div>
+      <div class="card__content">
+        <span class="label">Giro de Estoque</span>
+        <span class="value">{{ s.inventoryTurnover | number:'1.1-2' }}</span>
+        <div class="info-row"><span>Itens Comprados vs Vendidos</span></div>
+      </div>
+    </div>
+
     <div class="card card--advanced">
       <div class="card__icon">🎟️</div>
       <div class="card__content">
@@ -77,33 +96,16 @@
       <div class="card__content">
         <span class="label">Ponto de Equilíbrio</span>
         <span class="value">{{ s.breakEvenPoint | currency:'BRL' }}</span>
-        <div class="info-row"><span>Meta de faturamento</span></div>
+        <div class="info-row"><span>Faturamento Mínimo</span></div>
       </div>
     </div>
 
     <div class="card card--cost">
       <div class="card__icon">👤</div>
       <div class="card__content">
-        <span class="label">Pró-labore</span>
-        <span class="value">{{ s.totalProLabore | currency:'BRL' }}</span>
-        <div class="info-row"><span>Base: {{ s.totalUnits }} unidades</span></div>
-      </div>
-    </div>
-
-    <div class="card card--cost">
-      <div class="card__icon">⚡</div>
-      <div class="card__content">
-        <span class="label">Luz / Gasolina</span>
-        <span class="value">{{ (s.totalElectricity + s.totalGasoline) | currency:'BRL' }}</span>
-        <div class="info-row"><span>Base: {{ s.totalUnits }} unidades</span></div>
-      </div>
-    </div>
-
-    <div class="card card--revenue">
-      <div class="card__icon">💰</div>
-      <div class="card__content">
-        <span class="label">Total de Vendas</span>
-        <span class="value">{{ s.totalSales }} <small>vendas</small></span>
+        <span class="label">Custos Operacionais</span>
+        <span class="value">{{ (s.totalProLabore + s.totalElectricity + s.totalGasoline) | currency:'BRL' }}</span>
+        <div class="info-row"><span>Fixos do Mês</span></div>
       </div>
     </div>
 
@@ -170,7 +172,6 @@
               <span class="pct">{{ s.growthMoM | number:'1.1-1' }}%</span>
         </div>
         <p>em relação ao mês anterior</p>
-        <div class="growth-icon">📊</div>
       </div>
     </div>
   </section>

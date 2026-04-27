@@ -24,8 +24,7 @@ export interface ManagementResponse {
   totalProfit: number;
   ifoodSales: number;
   counterSales: number;
-  resaleSales: number; // US-012
-  
+  resaleSales: number;
   averageTicket: number;
   averageMargin: number;
   breakEvenPoint: number;
@@ -34,11 +33,20 @@ export interface ManagementResponse {
   goalProgress: number;
   growthMoM: number;
   topProducts: ProductMixDTO[];
-
   totalProLabore: number;
   totalElectricity: number;
   totalGasoline: number;
   isHealthy: boolean;
+
+  // US-014: Módulo de Compras
+  totalPurchasesValue: number;
+  totalPurchasesCount: number;
+  grossProfit: number;
+  
+  // US-014 Evolução
+  totalPurchasesUnits: number;
+  inventoryTurnover: number;
+  netProfit: number;
 }
 
 @Injectable({
@@ -50,10 +58,7 @@ export class GestaoService {
   private readonly goalUrl = `${environment.apiUrl}/metas`;
 
   public getSummary(start: string, end: string): Observable<ApiResponse<ManagementResponse>> {
-    const params = new HttpParams()
-      .set('start', start)
-      .set('end', end);
-    
+    const params = new HttpParams().set('start', start).set('end', end);
     return this.http.get<ApiResponse<ManagementResponse>>(this.apiUrl, { params });
   }
 

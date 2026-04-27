@@ -13,10 +13,43 @@
     </div>
   </header>
 
+  <!-- NOVOS: Saúde e Liquidez -->
+  <section class="health-overview mb-6">
+    <div class="stats-grid">
+      <div class="card card--cash" [class.healthy]="s.financialStatus === 'VERDE'" [class.critical]="s.financialStatus === 'VERMELHO'">
+        <div class="card__icon">{{ s.financialStatus === 'VERDE' ? '💰' : '📉' }}</div>
+        <div class="card__content">
+          <span class="label">Caixa Disponível (Real)</span>
+          <span class="value">{{ s.availableCash | currency: 'BRL' }}</span>
+          <div class="info-row">
+            <span class="status-badge" [attr.data-status]="s.financialStatus">
+              Status: {{ s.financialStatus }}
+            </span>
+            <span>Regime de Caixa</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card--health">
+        <div class="card__icon">🩺</div>
+        <div class="card__content">
+          <span class="label">Saúde do Negócio (Score)</span>
+          <span class="value">{{ s.healthScore | number: '1.0-0' }}%</span>
+          <div class="progress-bar-mini">
+            <div class="progress-fill" [style.width.%]="s.healthScore" [class.low]="s.healthScore < 70" [class.high]="s.healthScore >= 100"></div>
+          </div>
+          <div class="info-row">
+            <span>Base: Cobertura vs Ponto de Equilíbrio</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Principais Indicadores Financeiros -->
   <main class="stats-grid">
     <div class="card card--revenue">
-      <div class="card__icon">💰</div>
+      <div class="card__icon">📊</div>
       <div class="card__content">
         <span class="label">Faturamento Total</span>
         <span class="value">{{ s.totalRevenue | currency: 'BRL' }}</span>
@@ -65,7 +98,7 @@
     </div>
   </main>
 
-  <!-- Análise por Canal (NOVO) -->
+  <!-- Análise por Canal -->
   <h2 class="section-title">Desempenho por Canal</h2>
   <div class="channels-grid">
     <div class="channel-card">

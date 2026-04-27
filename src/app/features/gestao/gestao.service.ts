@@ -34,18 +34,12 @@ export interface ManagementResponse {
   growthMoM: number;
   topProducts: ProductMixDTO[];
   
-  totalProLabore: number;
-  totalElectricity: number;
-  totalGasoline: number;
   totalFixedCosts: number;
   totalCmv: number;
 
   isHealthy: boolean;
 
   totalPurchasesValue: number;
-  totalPurchasesCount: number;
-  grossProfit: number;
-  totalPurchasesUnits: number;
   inventoryTurnover: number;
 
   netProfit: number;
@@ -65,6 +59,11 @@ export interface ManagementResponse {
   resaleCmv: number;
   resaleProfit: number;
   resaleAverageTicket: number;
+
+  // Fluxo de Caixa e Saúde
+  availableCash: number;
+  financialStatus: 'VERDE' | 'AMARELO' | 'VERMELHO';
+  healthScore: number;
 }
 
 @Injectable({

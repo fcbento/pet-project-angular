@@ -1,8 +1,8 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { switchMap } from 'rxjs';
+import { combineLatest, switchMap } from 'rxjs';
 import { Button } from '../../../ui/button/button';
 import { FormInput } from '../../../ui/form-input/form-input';
 import { FormSelect } from '../../../ui/form-select/form-select';
@@ -10,7 +10,6 @@ import { Modal } from '../../../ui/modal/modal';
 import { Table } from '../../../ui/table/table';
 import { TableAction, TableColumn } from '../../../ui/table/table.model';
 import { PurchaseRequest, PurchaseResponse, PurchaseService } from '../purchase.service';
-import { CurrencyPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-purchase-list',
@@ -25,12 +24,17 @@ export class PurchaseList {
   private readonly currencyPipe = inject(CurrencyPipe);
   private readonly datePipe = inject(DatePipe);
 
-  public readonly startDate = signal(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]);
-  public readonly endDate = signal(new Date().toISOString().split('T')[0]);
+  public readonly startDate = signal(this.getFormattedDate(new Date(new Date().getFullYear(), new Date().getMonth(), 1)));
+  public readonly endDate = signal(this.getFormattedDate(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)));
+  private readonly refreshTrigger = signal(0);
 
   public readonly purchases = toSignal(
-    toObservable(this.startDate).pipe(
-      switchMap(() => this.purchaseService.findAll(this.startDate(), this.endDate()))
+    combineLatest([
+      toObservable(this.startDate),
+      toObservable(this.endDate),
+      toObservable(this.refreshTrigger)
+    ]).pipe(
+      switchMap(([start, end]) => this.purchaseService.findAll(start, end))
     ),
     { initialValue: [] as PurchaseResponse[] }
   );
@@ -70,7 +74,7 @@ export class PurchaseList {
   public readonly currentId = signal<number | null>(null);
 
   // Form fields
-  public readonly formDate = signal(new Date().toISOString().substring(0, 16));
+  public readonly formDate = signal(new Date().toLocaleString('sv-SE').substring(0, 16).replace(' ', 'T'));
   public readonly formSupplier = signal('');
   public readonly formProduct = signal('');
   public readonly formQuantity = signal(1);
@@ -85,20 +89,19 @@ export class PurchaseList {
   ];
 
   public reload(): void {
-    this.startDate.set(this.startDate());
+    this.refreshTrigger.update(v => v + 1);
   }
 
   public openAdd(): void {
     this.isEditing.set(false);
     this.currentId.set(null);
-    this.formDate.set(new Date().toISOString().substring(0, 16));
+    this.formDate.set(new Date().toLocaleString('sv-SE').substring(0, 16).replace(' ', 'T'));
     this.formSupplier.set('');
     this.formProduct.set('');
     this.formQuantity.set(1);
     this.formPrice.set(0);
     this.formType.set('INSUMOS');
     this.isModalOpen.set(true);
-    console.log(this.isModalOpen())
   }
 
   public openEdit(purchase: PurchaseResponse): void {
@@ -150,5 +153,16 @@ export class PurchaseList {
   public setNumber(signal: { set: (v: number) => void }, value: string | number | null): void {
     if (value === null) return;
     signal.set(Number(value));
+  }
+
+  public String(val: any): string {
+    return String(val);
+  }
+
+  private getFormattedDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }

@@ -36,8 +36,8 @@
       <app-form-input label="Produto/Item" type="text" [value]="formProduct()" (valueChange)="setString(formProduct, $event)" placeholder="Ex: Leite Condensado"></app-form-input>
       
       <div class="form-row">
-        <app-form-input label="Quantidade" type="number" [value]="formQuantity()" (valueChange)="setNumber(formQuantity, $event)"></app-form-input>
-        <app-form-input label="Preço Total" type="number" [value]="formPrice()" (valueChange)="setNumber(formPrice, $event)"></app-form-input>
+        <app-form-input label="Quantidade" type="number" [value]="String(formQuantity())" (valueChange)="setNumber(formQuantity, $event)"></app-form-input>
+        <app-form-input label="Preço Total" type="number" [value]="String(formPrice())" (valueChange)="setNumber(formPrice, $event)"></app-form-input>
       </div>
     </div>
 

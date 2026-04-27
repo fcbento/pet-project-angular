@@ -176,6 +176,19 @@ export class SaleRegister {
     }
 
     const origem = this.registerForm.registerForm().value().origem;
+
+    // Validação de Revenda (US-013)
+    if (origem === 'REVENDA') {
+      if (!product.hasResale || !product.resalePrice || product.resalePrice <= 0) {
+        this.toast({
+          title: 'Produto não habilitado',
+          message: `O produto "${product.name}" não está habilitado para revenda. Você pode habilitá-lo na Ficha Técnica.`,
+          type: 'warning',
+        });
+        return;
+      }
+    }
+
     let sellPrice = product.sellPrice;
     
     if (origem === 'IFOOD' && product.ifoodSellPrice) {

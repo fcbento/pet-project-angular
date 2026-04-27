@@ -6,6 +6,7 @@ import { Store } from '@ngxs/store';
 import { CurrencyPipe, CommonModule, DecimalPipe } from '@angular/common';
 import { Button } from '../../../../ui/button/button';
 import { FormInput } from '../../../../ui/form-input/form-input';
+import { FormSwitch } from '../../../../ui/form-switch/form-switch';
 import { OpenToast } from '../../../../utility/store/toast/toast.actions';
 import { ProductService } from '../../product.service';
 import { CategoryService } from '../../../category/category.service';
@@ -15,7 +16,8 @@ import { IngredientDTO, TechnicalSheetRequest } from '../technical-sheet.models'
 
 @Component({
   selector: 'app-technical-sheet-register',
-  imports: [FormInput, Button, CurrencyPipe, DecimalPipe, Field, CommonModule],
+  standalone: true,
+  imports: [FormInput, FormSwitch, Button, CurrencyPipe, DecimalPipe, Field, CommonModule],
   templateUrl: './register.html',
   styleUrl: './register.scss',
   providers: [TechnicalSheetForm, CurrencyPipe],
@@ -129,6 +131,8 @@ export class TechnicalSheetRegister {
   }
 
   private loadExistingSheet(productId: number): void {
+    const product = this.selectedProduct();
+    
     this.service.getByProductId(productId).subscribe({
       next: (sheet) => {
         this.isEditMode.set(true);
@@ -145,6 +149,7 @@ export class TechnicalSheetRegister {
           packagingType: sheet.packaging.packagingType || 'SAQUINHO',
           sellPrice: sheet.sellPrice || 0,
           ifoodSellPrice: sheet.ifoodSellPrice || 0,
+          hasResale: product?.hasResale || false, // Carrega do produto (US-013)
           resalePrice: sheet.resalePrice || 0,
         });
         this.ingredients.set(sheet.ingredients);
@@ -153,6 +158,18 @@ export class TechnicalSheetRegister {
         // No existing sheet — show blank form for new registration
         this.isEditMode.set(false);
         this.registerForm.resetForm();
+        
+        // Se já temos o produto carregado, podemos pegar o hasResale atual dele
+        if (product) {
+            this.registerForm.registerForm().reset({
+                ...this.registerForm.registerForm().value(),
+                hasResale: product.hasResale || false,
+                sellPrice: product.sellPrice || 0,
+                ifoodSellPrice: product.ifoodSellPrice || 0,
+                resalePrice: product.resalePrice || 0
+            });
+        }
+        
         this.ingredients.set([]);
       },
     });
@@ -316,13 +333,13 @@ export class TechnicalSheetRegister {
   });
 
   // Resale Calculations
-  public readonly hasResale = computed(() => this.selectedProduct()?.hasResale || false);
+  public readonly hasResaleValue = computed(() => this.registerForm.registerForm().value().hasResale);
 
-  public readonly resalePrice = computed(() => Number(this.registerForm.registerForm().value().resalePrice) || 0);
+  public readonly resalePriceValue = computed(() => Number(this.registerForm.registerForm().value().resalePrice) || 0);
 
-  public readonly resaleProfitUnit = computed(() => this.resalePrice() - this.unitCost());
+  public readonly resaleProfitUnit = computed(() => this.resalePriceValue() - this.unitCost());
   public readonly resaleMargin = computed(() => {
-    const price = this.resalePrice();
+    const price = this.resalePriceValue();
     return price > 0 ? (this.resaleProfitUnit() / price) * 100 : 0;
   });
 
@@ -335,8 +352,8 @@ export class TechnicalSheetRegister {
     const ifoodSellPrice = Number(this.registerForm.registerForm().value().ifoodSellPrice) || 0;
     const suggestedIfood = this.suggestedIfoodPrice();
 
-    const resalePrice = this.resalePrice();
-    const resaleValid = !this.hasResale() || (resalePrice >= this.unitCost());
+    const resalePrice = this.resalePriceValue();
+    const resaleValid = !this.hasResaleValue() || (resalePrice >= this.unitCost());
 
     return !!this.selectedProductId() &&
       this.ingredients().length > 0 &&
@@ -370,7 +387,8 @@ export class TechnicalSheetRegister {
       },
       sellPrice: Number(formVal.sellPrice) || 0,
       ifoodSellPrice: Number(formVal.ifoodSellPrice) || 0,
-      resalePrice: this.hasResale() ? Number(formVal.resalePrice) : undefined,
+      hasResale: formVal.hasResale, // US-013: Agora vem do formulário
+      resalePrice: formVal.hasResale ? Number(formVal.resalePrice) : undefined,
     };
 
     this.service.save(request).subscribe({

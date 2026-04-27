@@ -103,9 +103,16 @@
       </div>
     </div>
 
-    <div class="card resale-card" *ngIf="hasResale()">
+    <div class="card resale-card">
       <h3>Canal de Revenda</h3>
-      <div class="form-grid">
+      <div class="resale-toggle mb-4">
+        <app-form-switch 
+            label="Habilitar Revenda para este produto?" 
+            [field]="registerForm.registerForm.hasResale">
+        </app-form-switch>
+      </div>
+
+      <div class="form-grid" *ngIf="hasResaleValue()">
         <div class="info-item">
           <label>Custo Unitário:</label>
           <strong>{{ unitCost() | currency: 'BRL' }}</strong>
@@ -114,7 +121,7 @@
         </app-form-input>
       </div>
 
-      <div class="resale-summary mt-4">
+      <div class="resale-summary mt-4" *ngIf="hasResaleValue()">
         <div class="summary-row">
           <span>Lucro Unitário:</span>
           <strong [class.positive]="resaleProfitUnit() >= 0" [class.negative]="resaleProfitUnit() < 0">
@@ -125,7 +132,7 @@
           <span>Margem de Revenda:</span>
           <strong>{{ resaleMargin() | number: '1.2-2' }}%</strong>
         </div>
-        <div *ngIf="resalePrice() > 0 && resalePrice() < unitCost()" class="error-msg">
+        <div *ngIf="resalePriceValue() > 0 && resalePriceValue() < unitCost()" class="error-msg">
           O preço de revenda não pode ser inferior ao custo unitário.
         </div>
       </div>

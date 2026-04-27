@@ -3,7 +3,7 @@ export interface SaleItemRequest {
   quantity: number;
 }
 
-export type SaleOrigin = 'IFOOD' | 'CONDOMINIO' | 'ESCOLA' | 'OUTROS';
+export type SaleOrigin = 'IFOOD' | 'CONDOMINIO' | 'ESCOLA' | 'OUTROS' | 'REVENDA';
 
 export interface SaleRequest {
   origem: SaleOrigin;

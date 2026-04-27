@@ -27,6 +27,7 @@ export interface SaleItemDraft {
 
 @Component({
   selector: 'app-sale-register',
+  standalone: true,
   imports: [FormInput, FormDate, FormSelect, Button, CurrencyPipe, Field],
   templateUrl: './register.html',
   styleUrl: './register.scss',
@@ -50,9 +51,13 @@ export class SaleRegister {
           const product = item.product;
           if (!product) return item;
           
-          const newPrice = origem === 'IFOOD' && product.ifoodSellPrice 
-                        ? product.ifoodSellPrice 
-                        : product.sellPrice;
+          let newPrice = product.sellPrice;
+          
+          if (origem === 'IFOOD' && product.ifoodSellPrice) {
+            newPrice = product.ifoodSellPrice;
+          } else if (origem === 'REVENDA' && product.resalePrice) {
+            newPrice = product.resalePrice;
+          }
                         
           if (newPrice !== item.sellPrice) {
             changed = true;
@@ -95,8 +100,10 @@ export class SaleRegister {
 
   public readonly origemOptions = signal([
     { label: 'iFood', value: 'IFOOD' },
+    { label: 'Balcão', value: 'BALCAO' },
     { label: 'Condomínio', value: 'CONDOMINIO' },
     { label: 'Escola', value: 'ESCOLA' },
+    { label: 'Revenda', value: 'REVENDA' },
     { label: 'Outros', value: 'OUTROS' },
   ]);
 
@@ -143,15 +150,10 @@ export class SaleRegister {
   }
 
   public addItem(): void {
-    console.log('addItem called');
     const productId = this.selectedProductId();
     const quantity = this.selectedQuantity();
 
-    console.log('productId:', productId, 'type:', typeof productId);
-    console.log('quantity:', quantity, 'type:', typeof quantity);
-
     if (!productId || quantity <= 0) {
-      console.warn('Invalid productId or quantity');
       this.toast({
         title: 'Erro',
         message: 'Selecione um produto e uma quantidade válida',
@@ -161,13 +163,10 @@ export class SaleRegister {
     }
 
     const options = this.productOptions();
-    console.log('productOptions length:', options.length);
-
     const option = options.find((p) => String(p.value) === String(productId));
     const product = option?.product;
 
     if (!product) {
-      console.warn('Product not found for id:', productId);
       this.toast({
         title: 'Erro',
         message: 'Produto não encontrado',
@@ -176,7 +175,14 @@ export class SaleRegister {
       return;
     }
 
-    console.log('Found product:', product.name);
+    const origem = this.registerForm.registerForm().value().origem;
+    let sellPrice = product.sellPrice;
+    
+    if (origem === 'IFOOD' && product.ifoodSellPrice) {
+      sellPrice = product.ifoodSellPrice;
+    } else if (origem === 'REVENDA' && product.resalePrice) {
+      sellPrice = product.resalePrice;
+    }
 
     this.saleItems.update((items) => {
       const existing = items.find((i) => String(i.productId) === String(productId));
@@ -189,16 +195,12 @@ export class SaleRegister {
         {
           productId: product.id,
           productName: product.name,
-          sellPrice: this.registerForm.registerForm().value().origem === 'IFOOD' && product.ifoodSellPrice 
-                        ? product.ifoodSellPrice 
-                        : product.sellPrice,
+          sellPrice: sellPrice,
           quantity,
           product,
         },
       ];
     });
-
-    console.log('saleItems updated, new length:', this.saleItems().length);
 
     // Reset item form
     this.selectedProductId.set(null);

@@ -24,8 +24,8 @@ export interface ManagementResponse {
   totalProfit: number;
   ifoodSales: number;
   counterSales: number;
+  resaleSales: number; // US-012
   
-  // US-010 & US-011
   averageTicket: number;
   averageMargin: number;
   breakEvenPoint: number;

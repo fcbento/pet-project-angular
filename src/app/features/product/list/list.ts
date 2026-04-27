@@ -10,6 +10,8 @@ import { FormSelect } from '../../../ui/form-select/form-select';
 import { Button } from '../../../ui/button/button';
 import { SummaryCard } from '../../../ui/summary-card/summary-card';
 import { ProductResponse } from './list.models';
+import { Store } from '@ngxs/store';
+import { OpenToast } from '../../../utility/store/toast/toast.actions';
 
 @Component({
   selector: 'app-product-list',
@@ -24,6 +26,7 @@ export class ProductList {
   private readonly datePipe = inject(DatePipe);
   private readonly currencyPipe = inject(CurrencyPipe);
   private readonly router = inject(Router);
+  private readonly store = inject(Store);
 
   public readonly updateTable = input<unknown>();
 
@@ -200,8 +203,31 @@ export class ProductList {
 
   private delete(row: ProductResponse): void {
     if (confirm(`Deseja realmente excluir o produto ${row.name}?`)) {
-      this.service.delete(row.id).subscribe(() => {
-        this.productResource.reload();
+      this.service.delete(row.id).subscribe({
+        next: () => {
+          this.store.dispatch(new OpenToast({
+            title: 'Sucesso',
+            message: 'Produto excluído com sucesso',
+            type: 'success'
+          }));
+          this.productResource.reload();
+        },
+        error: (err) => {
+          // Se o erro for 409 (Conflict), exibimos a mensagem amigável vinda do backend
+          if (err.status === 409) {
+            this.store.dispatch(new OpenToast({
+              title: 'Não é possível excluir',
+              message: err.error?.message || 'Este produto possui vendas cadastradas e não pode ser removido.',
+              type: 'warning'
+            }));
+          } else {
+            this.store.dispatch(new OpenToast({
+              title: 'Erro ao excluir',
+              message: 'Ocorreu um erro ao tentar excluir o produto.',
+              type: 'error'
+            }));
+          }
+        }
       });
     }
   }

@@ -1,0 +1,200 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+@use 'styles/abstracts/mixins' as mixins;
+
+.budget {
+  padding: vars.$space-lg;
+
+  &__header {
+    @include mixins.flex-center;
+    justify-content: space-between;
+    margin-bottom: vars.$space-xl;
+
+    h1 {
+      font-size: vars.$font-size-xl;
+      color: colors.$text-primary;
+      margin: 0;
+    }
+
+    .actions {
+      display: flex;
+      gap: vars.$space-md;
+    }
+  }
+
+  &__container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: vars.$space-lg;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
+    background: colors.$bg-surface;
+    border-radius: vars.$radius-lg;
+    border: 1px solid colors.$border-default;
+    padding: vars.$space-lg;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: vars.$space-md;
+      color: colors.$text-secondary;
+      font-size: vars.$font-size-lg;
+      border-bottom: 1px solid colors.$border-default;
+      padding-bottom: vars.$space-xs;
+    }
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: vars.$space-md;
+    margin-bottom: vars.$space-lg;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$space-xs;
+
+    label {
+      font-weight: 600;
+      font-size: vars.$font-size-sm;
+      color: colors.$text-secondary;
+    }
+
+    select,
+    input {
+      padding: vars.$space-sm;
+      border: 1px solid colors.$border-default;
+      border-radius: vars.$radius-md;
+      font-size: vars.$font-size-md;
+      transition: border-color 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: colors.$color-primary;
+      }
+
+      &:disabled {
+        background: colors.$bg-disabled;
+        cursor: not-allowed;
+      }
+
+      &.invalid {
+        border-color: colors.$red-600;
+        background-color: colors.$red-50;
+      }
+    }
+
+    .error {
+      color: colors.$red-600;
+      font-size: vars.$font-size-xs;
+    }
+  }
+
+  .indicators {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: vars.$space-md;
+    background: colors.$bg-muted;
+    padding: vars.$space-md;
+    border-radius: vars.$radius-md;
+    margin-bottom: vars.$space-lg;
+
+    .indicator {
+      display: flex;
+      flex-direction: column;
+
+      .label {
+        font-size: vars.$font-size-xs;
+        color: colors.$text-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .value {
+        font-size: vars.$font-size-lg;
+        font-weight: 700;
+        color: colors.$text-primary;
+      }
+
+      &.highlight .value {
+        color: colors.$color-success;
+      }
+
+      &.total {
+        grid-column: span 2;
+        border-top: 1px solid colors.$border-default;
+        padding-top: vars.$space-xs;
+        margin-top: vars.$space-xs;
+
+        .value {
+          font-size: vars.$font-size-xl;
+          color: colors.$color-primary;
+        }
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: vars.$space-md;
+      text-align: left;
+      border-bottom: 1px solid colors.$border-default;
+      font-size: vars.$font-size-md;
+    }
+
+    th {
+      font-weight: 600;
+      color: colors.$text-muted;
+      font-size: vars.$font-size-sm;
+    }
+
+    tfoot {
+      td {
+        border-top: 2px solid colors.$border-strong;
+        font-weight: 700;
+        font-size: vars.$font-size-lg;
+      }
+    }
+  }
+
+  .btn-remove {
+    background: none;
+    border: none;
+    color: colors.$red-600;
+    font-size: vars.$font-size-lg;
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    border-radius: vars.$radius-sm;
+
+    &:hover {
+      background: colors.$red-50;
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: vars.$space-xl;
+    color: colors.$text-muted;
+    font-style: italic;
+  }
+
+  .text-right {
+    text-align: right;
+  }
+}

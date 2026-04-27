@@ -1,0 +1,134 @@
+<section class="budget">
+  <header class="budget__header">
+    <h1>Menu Orçamento</h1>
+    <div class="actions">
+      @if (items().length > 0) {
+      <app-button name="Gerar PDF" type="primary" [disabled]="false" (clicked)="generatePdf()" />
+      }
+    </div>
+  </header>
+
+  <main class="budget__container">
+    <!-- Formulário de Adição -->
+    <div class="card budget__form">
+      <h3>Adicionar Item</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Categoria</label>
+          <select [(ngModel)]="selectedCategoryId" (change)="onCategoryChange()">
+            <option [ngValue]="null">Selecione...</option>
+            @for (cat of availableCategories(); track cat.id) {
+            <option [ngValue]="cat.id">{{ cat.nome }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Produto</label>
+          <select [(ngModel)]="selectedProductId" [disabled]="!selectedCategoryId()" (change)="onProductChange()">
+            <option [ngValue]="null">Selecione...</option>
+            @for (prod of productsResource.value(); track prod.id) {
+            <option [ngValue]="prod.id">{{ prod.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Quantidade</label>
+          <input type="number" [(ngModel)]="quantity" min="1" />
+        </div>
+
+        <div class="form-group">
+          <label>Preço de Revenda (R$)</label>
+          <input type="number" [(ngModel)]="customSellPrice" [class.invalid]="isPriceInvalid()"
+            [disabled]="!selectedProductId()" />
+          @if (isPriceInvalid()) {
+          <small class="error">Mínimo: {{ minSellPrice() | currency:'BRL' }}</small>
+          }
+        </div>
+      </div>
+
+      <!-- Indicadores Reativos do Item -->
+      @if (selectedProduct()) {
+      <div class="indicators">
+        <div class="indicator">
+          <span class="label">Custo Unit.</span>
+          <span class="value">{{ currentCostPrice() | currency:'BRL' }}</span>
+        </div>
+        <div class="indicator" [class.highlight]="currentMargin() > 0">
+          <span class="label">Margem</span>
+          <span class="value">{{ currentMargin() | number:'1.2-2' }}%</span>
+        </div>
+        <div class="indicator">
+          <span class="label">Markup</span>
+          <span class="value">{{ currentMarkup() | number:'1.2-2' }}x</span>
+        </div>
+        <div class="indicator total">
+          <span class="label">Total Item</span>
+          <span class="value">{{ currentTotal() | currency:'BRL' }}</span>
+        </div>
+        <div class="indicator total" [class.highlight]="currentProfit() > 0">
+          <span class="label">Lucro Item</span>
+          <span class="value">{{ currentProfit() | currency:'BRL' }}</span>
+        </div>
+      </div>
+      }
+
+      <div class="form-actions">
+        <app-button name="Adicionar ao Orçamento" type="primary"
+          [disabled]="!selectedProductId() || isPriceInvalid() || quantity() <= 0" (clicked)="addItem()" />
+      </div>
+    </div>
+
+    <!-- Lista de Itens -->
+    <div class="card budget__list">
+      <h3>Itens do Orçamento</h3>
+      @if (items().length === 0) {
+      <div class="empty-state">
+        Nenhum item adicionado ao orçamento.
+      </div>
+      } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Qtd</th>
+            <th>Preço Unit.</th>
+            <th>Margem</th>
+            <th>Total</th>
+            <th>Lucro</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of items(); track $index) {
+          <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.sellPrice | currency:'BRL' }}</td>
+            <td>{{ item.margin | number:'1.2-2' }}%</td>
+            <td>{{ item.total | currency:'BRL' }}</td>
+            <td [style.color]="item.profit > 0 ? '#28a745' : '#dc3545'">
+              {{ item.profit | currency:'BRL' }}
+            </td>
+            <td>
+              <button class="btn-remove" (click)="removeItem($index)">✕</button>
+            </td>
+          </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" class="text-right"><strong>Totais:</strong></td>
+            <td><strong>{{ totalBudget() | currency:'BRL' }}</strong></td>
+            <td colspan="2" [style.color]="totalProfit() > 0 ? '#28a745' : '#dc3545'">
+              <strong [style.color]="totalProfit() > 0 ? '#28a745' : '#dc3545'">{{ totalProfit() | currency:'BRL'
+                }}</strong>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+      }
+    </div>
+  </main>
+</section>

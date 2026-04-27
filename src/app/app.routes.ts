@@ -41,6 +41,10 @@ export const routes: Routes = [
         path: 'venda',
         loadChildren: () => import('./features/sale/sale.const').then((m) => m.SALE_ROUTES),
       },
+      {
+        path: 'orcamento',
+        loadComponent: () => import('./features/budget/budget').then((m) => m.Budget),
+      },
     ],
   },
   { path: '**', redirectTo: 'login' },

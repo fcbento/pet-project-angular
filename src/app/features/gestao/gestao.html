@@ -73,13 +73,35 @@
       </div>
     </div>
 
-    <div class="card card--fixed-costs">
-      <div class="card__icon">🏢</div>
+    <div class="card card--cost-item">
+      <div class="card__icon">⚡</div>
       <div class="card__content">
-        <span class="label">Custos Fixos Totais</span>
-        <span class="value negative">{{ s.totalFixedCosts | currency: 'BRL' }}</span>
+        <span class="label">Luz</span>
+        <span class="value negative">{{ s.luzCost | currency: 'BRL' }}</span>
         <div class="info-row">
-          <span>Rateado por unidade vendida</span>
+          <span>Mensal (Rateado)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card--cost-item">
+      <div class="card__icon">⛽</div>
+      <div class="card__content">
+        <span class="label">Gasolina</span>
+        <span class="value negative">{{ s.gasolinaCost | currency: 'BRL' }}</span>
+        <div class="info-row">
+          <span>Mensal (Rateado)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card--cost-item">
+      <div class="card__icon">👤</div>
+      <div class="card__content">
+        <span class="label">Pró-labore</span>
+        <span class="value negative">{{ s.proLaboreCost | currency: 'BRL' }}</span>
+        <div class="info-row">
+          <span>Mensal (Rateado)</span>
         </div>
       </div>
     </div>

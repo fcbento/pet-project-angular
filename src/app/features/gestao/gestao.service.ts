@@ -64,6 +64,11 @@ export interface ManagementResponse {
   availableCash: number;
   financialStatus: 'VERDE' | 'AMARELO' | 'VERMELHO';
   healthScore: number;
+
+  // Detalhamento de Custos Fixos
+  luzCost: number;
+  gasolinaCost: number;
+  proLaboreCost: number;
 }
 
 @Injectable({

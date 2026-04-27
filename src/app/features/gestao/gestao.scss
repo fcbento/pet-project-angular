@@ -179,6 +179,17 @@
 
     &--revenue &__icon { background: #ecfdf5; color: #059669; }
     &--cmv &__icon { background: #fff1f2; color: #e11d48; }
+    
+    // Detalhamento de Custos Fixos
+    &--cost-item {
+        & .card__icon {
+            background: #f1f5f9;
+        }
+        &:nth-child(2) .card__icon { background: #fffbeb; color: #d97706; } // Luz (Amarelo)
+        &:nth-child(3) .card__icon { background: #ecfdf5; color: #059669; } // Gasolina (Verde)
+        &:nth-child(4) .card__icon { background: #eff6ff; color: #2563eb; } // Pró-labore (Azul)
+    }
+
     &--fixed-costs &__icon { background: #fff7ed; color: #ea580c; }
     &--profit {
       background: #f8fafc;

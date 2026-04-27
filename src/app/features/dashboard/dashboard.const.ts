@@ -27,6 +27,10 @@ export const DASHBOARD_ROUTES = [
     name: 'Orçamento',
     link: 'orcamento',
   },
+  {
+    name: 'Gestão',
+    link: 'gestao',
+  },
   // {
   //   name: 'Compra',
   //   link: 'compra',

@@ -1,0 +1,195 @@
+<section class="gestao">
+  <header class="gestao__header">
+    <div class="title-group">
+      <h1>Gestão Financeira</h1>
+      <span class="subtitle">Análise avançada de performance mensal</span>
+    </div>
+    
+    @if (summary(); as s) {
+      <div class="sentiment" [class.sentiment--unhealthy]="!s.isHealthy" 
+           [title]="s.isHealthy ? 'Ganhos maiores que custos' : 'Atenção: Custos operacionais elevados'">
+        @if (s.isHealthy) {
+          <span class="emoji">😊</span>
+          <span class="sentiment-text">Saúde Financeira OK</span>
+        } @else {
+          <span class="emoji">⚠️</span>
+          <span class="sentiment-text">Atenção aos Custos</span>
+        }
+      </div>
+    }
+  </header>
+
+  @if (summary(); as s) {
+    <!-- Barra de Metas -->
+    <section class="gestao__section gestao__section--goal">
+      <div class="goal-container">
+        <div class="goal-info">
+          <div class="goal-label">
+            <div class="label-with-action">
+              <strong>Meta do Mês</strong>
+              <button class="btn-edit" (click)="openEditGoal()" title="Editar Meta">✏️</button>
+            </div>
+            <span>{{ s.totalRevenue | currency:'BRL' }} de {{ s.monthlyGoal | currency:'BRL' }}</span>
+          </div>
+          <span class="goal-pct">{{ s.goalProgress | number:'1.1-1' }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="s.goalProgress > 100 ? 100 : s.goalProgress"></div>
+        </div>
+      </div>
+    </section>
+
+    <main class="gestao__grid">
+      <!-- Cards Principais -->
+      <div class="card card--revenue">
+        <div class="card__icon">💰</div>
+        <div class="card__content">
+          <span class="label">Total de Pedidos</span>
+          <span class="value">{{ s.totalSales }} <small>pedidos</small></span>
+          <div class="info-row">
+            <span>Faturamento:</span>
+            <strong>{{ s.totalRevenue | currency:'BRL' }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card--profit">
+        <div class="card__icon">📈</div>
+        <div class="card__content">
+          <span class="label">Lucro Total</span>
+          <span class="value">{{ s.totalProfit | currency:'BRL' }}</span>
+          <div class="info-row">
+            <span>Margem Média:</span>
+            <strong class="trend">{{ s.averageMargin | number:'1.1-1' }}%</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Indicadores Avançados -->
+      <div class="card card--advanced">
+        <div class="card__icon">🎟️</div>
+        <div class="card__content">
+          <span class="label">Ticket Médio</span>
+          <span class="value">{{ s.averageTicket | currency:'BRL' }}</span>
+          <div class="info-row"><span>Média por pedido</span></div>
+        </div>
+      </div>
+
+      <div class="card card--advanced">
+        <div class="card__icon">⚖️</div>
+        <div class="card__content">
+          <span class="label">Ponto de Equilíbrio</span>
+          <span class="value">{{ s.breakEvenPoint | currency:'BRL' }}</span>
+          <div class="info-row"><span>Meta de faturamento</span></div>
+        </div>
+      </div>
+
+      <div class="card card--ifood">
+        <div class="card__icon">🛵</div>
+        <div class="card__content">
+          <span class="label">Vendas iFood</span>
+          <span class="value">{{ s.ifoodSales }} <small>pedidos</small></span>
+          <div class="info-row">
+            <span>CAC Médio:</span>
+            <strong>{{ s.cacIfood | currency:'BRL' }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card--counter">
+        <div class="card__icon">🏬</div>
+        <div class="card__content">
+          <span class="label">Vendas Balcão</span>
+          <span class="value">{{ s.counterSales }} <small>pedidos</small></span>
+          <div class="info-row">
+            <span>Venda Presencial</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card--cost">
+        <div class="card__icon">👤</div>
+        <div class="card__content">
+          <span class="label">Pró-labore</span>
+          <span class="value">{{ s.totalProLabore | currency:'BRL' }}</span>
+          <div class="info-row"><span>Base: {{ s.totalUnits }} unidades</span></div>
+        </div>
+      </div>
+
+      <div class="card card--cost">
+        <div class="card__icon">⚡</div>
+        <div class="card__content">
+          <span class="label">Luz / Gasolina</span>
+          <span class="value">{{ (s.totalElectricity + s.totalGasoline) | currency:'BRL' }}</span>
+          <div class="info-row"><span>Base: {{ s.totalUnits }} unidades</span></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Mix de Produtos e Crescimento -->
+    <section class="gestao__footer">
+      <div class="mix-card">
+        <h2>Mix de Produtos (Top 3)</h2>
+        <div class="mix-list">
+          @for (p of s.topProducts; track p.name) {
+            <div class="mix-item">
+              <div class="mix-info">
+                <span class="name">{{ p.name }}</span>
+                <span class="stats">{{ p.quantity }} unid. ({{ p.percentage | number:'1.0-0' }}%)</span>
+              </div>
+              <div class="item-bar">
+                <div class="fill" [style.width.%]="p.percentage"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="growth-card">
+        <h2>Crescimento (MoM)</h2>
+        <div class="growth-content" [class.growth-content--positive]="s.growthMoM > 0" [class.growth-content--negative]="s.growthMoM < 0">
+          <div class="growth-value">
+            <span class="arrow">@if(s.growthMoM > 0){ ↑ }@else if(s.growthMoM < 0){ ↓ }</span>
+            <span class="pct">{{ s.growthMoM | number:'1.1-1' }}%</span>
+          </div>
+          <p>em relação ao mês anterior</p>
+          <div class="growth-icon">📊</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal para Editar Meta -->
+    <app-modal [title]="'Definir Meta de Faturamento'" [(isOpen)]="isGoalModalOpen">
+      <div class="goal-form">
+        <p>Informe o valor desejado de faturamento para o mês vigente.</p>
+        <app-form-input 
+          [label]="'Valor da Meta (R$)'" 
+          [type]="'number'" 
+          [placeholder]="'Ex: 5000'"
+          [(value)]="newGoalValue">
+        </app-form-input>
+      </div>
+
+      <div footer>
+        <app-button 
+          [type]="'secondary'" 
+          [name]="'Cancelar'" 
+          [disabled]="false" 
+          (clicked)="isGoalModalOpen.set(false)">
+        </app-button>
+        <app-button 
+          [type]="'primary'" 
+          [name]="'Salvar Meta'" 
+          [disabled]="newGoalValue() <= 0" 
+          (clicked)="saveGoal()">
+        </app-button>
+      </div>
+    </app-modal>
+
+  } @else {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Gerando análise estratégica...</p>
+    </div>
+  }
+</section>

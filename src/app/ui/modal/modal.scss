@@ -1,0 +1,71 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+@use 'styles/abstracts/mixins' as mixins;
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  @include mixins.flex-center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-container {
+  background: colors.$bg-surface;
+  width: 90%;
+  max-width: 500px;
+  border-radius: vars.$radius-lg;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-header {
+  padding: vars.$space-lg;
+  border-bottom: 1px solid colors.$border-default;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 { margin: 0; font-size: vars.$font-size-lg; color: colors.$text-primary; }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: colors.$text-muted;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+    &:hover { color: colors.$text-primary; }
+  }
+}
+
+.modal-content {
+  padding: vars.$space-lg;
+  color: colors.$text-secondary;
+}
+
+.modal-footer {
+  padding: vars.$space-lg;
+  border-top: 1px solid colors.$border-default;
+  display: flex;
+  justify-content: flex-end;
+  gap: vars.$space-md;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

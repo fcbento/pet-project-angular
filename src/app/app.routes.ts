@@ -45,6 +45,10 @@ export const routes: Routes = [
         path: 'orcamento',
         loadComponent: () => import('./features/budget/budget').then((m) => m.Budget),
       },
+      {
+        path: 'gestao',
+        loadComponent: () => import('./features/gestao/gestao').then((m) => m.Gestao),
+      },
     ],
   },
   { path: '**', redirectTo: 'login' },

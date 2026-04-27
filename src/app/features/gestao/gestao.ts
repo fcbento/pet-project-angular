@@ -16,27 +16,45 @@ import { GestaoService, ManagementResponse } from './gestao.service';
 })
 export class Gestao {
   private readonly gestaoService = inject(GestaoService);
+  public readonly String = String;
   
-  // Controle de Refresh para recarregar dados após salvar meta
+  // Controle de Refresh
   private readonly refreshTrigger = signal<number>(0);
   
   // Controle do Modal
   public readonly isGoalModalOpen = signal<boolean>(false);
   public readonly newGoalValue = signal<number>(0);
 
-  // Range de datas fixo para o resumo (mês atual)
-  private readonly dateRange = computed(() => {
-    const now = new Date();
-    const start = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
-    return { start, end };
-  });
+  // Filtros de Data
+  public readonly startDate = signal<string>(this.getDefaultStartDate());
+  public readonly endDate = signal<string>(this.getDefaultEndDate());
 
-  // Converte o trigger e dateRange em um Observable para fazer o switchMap
+  private getDefaultStartDate(): string {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+  }
+
+  private getDefaultEndDate(): string {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+  }
+
+  public setString(sig: any, val: string | number | null): void {
+    if (val !== null) sig.set(String(val));
+  }
+
+  // Resumo Reativo
   public readonly summary = toSignal(
-    toObservable(computed(() => ({ trigger: this.refreshTrigger(), range: this.dateRange() }))).pipe(
-      switchMap(({ range }) => {
-        return this.gestaoService.getSummary(range.start, range.end).pipe(
+    toObservable(computed(() => ({ 
+      trigger: this.refreshTrigger(), 
+      start: this.startDate(), 
+      end: this.endDate() 
+    }))).pipe(
+      switchMap(({ start, end }) => {
+        const startTime = `${start}T00:00:00.000Z`;
+        const endTime = `${end}T23:59:59.999Z`;
+        
+        return this.gestaoService.getSummary(startTime, endTime).pipe(
           map(res => res.data),
           catchError(() => of(null))
         );
@@ -45,7 +63,11 @@ export class Gestao {
     { initialValue: null as ManagementResponse | null }
   );
 
-  public openEditGoal(): void {
+  public loadSummary(): void {
+    this.refreshTrigger.update(v => v + 1);
+  }
+
+  public openGoalModal(): void {
     const currentGoal = this.summary()?.monthlyGoal || 0;
     this.newGoalValue.set(currentGoal);
     this.isGoalModalOpen.set(true);
@@ -60,7 +82,7 @@ export class Gestao {
     this.gestaoService.saveGoal(month, year, value).subscribe({
       next: () => {
         this.isGoalModalOpen.set(false);
-        this.refreshTrigger.update(v => v + 1); // Força recarregamento do resumo
+        this.refreshTrigger.update(v => v + 1);
       },
       error: (err) => console.error('Erro ao salvar meta:', err)
     });

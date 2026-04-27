@@ -33,20 +33,38 @@ export interface ManagementResponse {
   goalProgress: number;
   growthMoM: number;
   topProducts: ProductMixDTO[];
+  
   totalProLabore: number;
   totalElectricity: number;
   totalGasoline: number;
+  totalFixedCosts: number;
+  totalCmv: number;
+
   isHealthy: boolean;
 
-  // US-014: Módulo de Compras
   totalPurchasesValue: number;
   totalPurchasesCount: number;
   grossProfit: number;
-  
-  // US-014 Evolução
   totalPurchasesUnits: number;
   inventoryTurnover: number;
+
   netProfit: number;
+
+  // Detalhes por Canal
+  counterRevenue: number;
+  counterCmv: number;
+  counterProfit: number;
+  counterAverageTicket: number;
+
+  ifoodRevenue: number;
+  ifoodCmv: number;
+  ifoodProfit: number;
+  ifoodAverageTicket: number;
+
+  resaleRevenue: number;
+  resaleCmv: number;
+  resaleProfit: number;
+  resaleAverageTicket: number;
 }
 
 @Injectable({

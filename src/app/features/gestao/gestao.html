@@ -1,202 +1,232 @@
-<section class="gestao">
-  <header class="gestao__header">
+@if (summary(); as s) {
+<div class="gestao-container">
+  <header class="gestao-header">
     <div class="title-group">
-      <h1>Gestão Financeira</h1>
-      <span class="subtitle">Análise avançada de performance mensal</span>
+      <h1>Análise Avançada de Performance</h1>
+      <p>Competência: {{ startDate() | date: 'MMMM / yyyy' : '' : 'pt-BR' }}</p>
     </div>
-
-    @if (summary(); as s) {
-    <div class="sentiment" [class.sentiment--unhealthy]="!s.isHealthy"
-      [title]="s.isHealthy ? 'Ganhos maiores que custos' : 'Atenção: Custos operacionais elevados'">
-      @if (s.isHealthy) {
-      <span class="emoji">😊</span>
-      <span class="sentiment-text">Saúde Financeira OK</span>
-      } @else {
-      <span class="emoji">⚠️</span>
-      <span class="sentiment-text">Atenção ao Lucro Real</span>
-      }
+    <div class="filters">
+      <app-form-input label="Início" type="date" [value]="startDate()"
+        (valueChange)="setString(startDate, $event)"></app-form-input>
+      <app-form-input label="Fim" type="date" [value]="endDate()" (valueChange)="setString(endDate, $event)"></app-form-input>
+      <app-button name="Atualizar" type="primary" [disabled]="false" (clicked)="loadSummary()"></app-button>
     </div>
-    }
   </header>
 
-  @if (summary(); as s) {
-  <!-- Barra de Metas -->
-  <section class="gestao__section gestao__section--goal">
-    <div class="goal-container">
-      <div class="goal-info">
-        <div class="goal-label">
-          <div class="label-with-action">
-            <strong>Meta do Mês</strong>
-            <button class="btn-edit" (click)="openEditGoal()" title="Editar Meta">✏️</button>
-          </div>
-          <span>{{ s.totalRevenue | currency:'BRL' }} de {{ s.monthlyGoal | currency:'BRL' }}</span>
-        </div>
-        <span class="goal-pct">{{ s.goalProgress | number:'1.1-1' }}%</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" [style.width.%]="s.goalProgress > 100 ? 100 : s.goalProgress"></div>
-      </div>
-    </div>
-  </section>
-
-  <main class="gestao__grid">
-    <!-- Cards Principais -->
-
+  <!-- Principais Indicadores Financeiros -->
+  <main class="stats-grid">
     <div class="card card--revenue">
       <div class="card__icon">💰</div>
       <div class="card__content">
-        <span class="label">Faturamento</span>
-        <strong class="value">{{ s.totalRevenue | currency:'BRL' }}</strong>
+        <span class="label">Faturamento Total</span>
+        <span class="value">{{ s.totalRevenue | currency: 'BRL' }}</span>
+        <div class="info-row">
+          <span>{{ s.totalSales }} pedidos</span>
+          <span [class.positive]="s.growthMoM >= 0" [class.negative]="s.growthMoM < 0">
+            {{ s.growthMoM | number: '1.1-1' }}% MoM
+          </span>
+        </div>
       </div>
     </div>
 
-    <!-- US-014 Evolução: Lucro Real (Desconta Compras Operacionais) -->
-    <div class="card card--profit" [style.border-left-color]="s.netProfit > 0 ? '#4caf50' : '#f44336'">
-      <div class="card__icon">📊</div>
+    <div class="card card--cmv">
+      <div class="card__icon">📦</div>
+      <div class="card__content">
+        <span class="label">CMV Total (Variável)</span>
+        <span class="value negative">{{ s.totalCmv | currency: 'BRL' }}</span>
+        <div class="info-row">
+          <span>Ingredientes + Embalagem</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card--fixed-costs">
+      <div class="card__icon">🏢</div>
+      <div class="card__content">
+        <span class="label">Custos Fixos Totais</span>
+        <span class="value negative">{{ s.totalFixedCosts | currency: 'BRL' }}</span>
+        <div class="info-row">
+          <span>Rateado por unidade vendida</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card--profit" [class.healthy]="s.isHealthy">
+      <div class="card__icon">{{ s.isHealthy ? '✅' : '⚠️' }}</div>
       <div class="card__content">
         <span class="label">Lucro Líquido Final</span>
-        <strong class="value">{{ s.netProfit | currency:'BRL' }}</strong>
+        <span class="value" [class.positive]="s.isHealthy" [class.negative]="!s.isHealthy">
+          {{ s.netProfit | currency: 'BRL' }}
+        </span>
         <div class="info-row">
-          <span>Teórico:</span>
-          <strong>{{ s.totalProfit | currency:'BRL' }}</strong>
-        </div>
-      </div>
-    </div>
-
-    <div class="card card--purchase">
-      <div class="card__icon">🛒</div>
-      <div class="card__content">
-        <span class="label">Compras (Operacional)</span>
-        <span class="value">{{ s.totalPurchasesValue | currency:'BRL' }}</span>
-        <div class="info-row"><span>{{ s.totalPurchasesCount }} registros</span></div>
-      </div>
-    </div>
-
-    <!-- US-014 Evolução: Giro de Estoque -->
-    <div class="card card--advanced">
-      <div class="card__icon">🔄</div>
-      <div class="card__content">
-        <span class="label">Giro de Estoque</span>
-        <span class="value">{{ s.inventoryTurnover | number:'1.1-2' }}</span>
-        <div class="info-row"><span>Itens Comprados vs Vendidos</span></div>
-      </div>
-    </div>
-
-    <div class="card card--advanced">
-      <div class="card__icon">🎟️</div>
-      <div class="card__content">
-        <span class="label">Ticket Médio</span>
-        <span class="value">{{ s.averageTicket | currency:'BRL' }}</span>
-        <div class="info-row"><span>Média por pedido</span></div>
-      </div>
-    </div>
-
-    <div class="card card--advanced">
-      <div class="card__icon">⚖️</div>
-      <div class="card__content">
-        <span class="label">Ponto de Equilíbrio</span>
-        <span class="value">{{ s.breakEvenPoint | currency:'BRL' }}</span>
-        <div class="info-row"><span>Faturamento Mínimo</span></div>
-      </div>
-    </div>
-
-    <div class="card card--cost">
-      <div class="card__icon">👤</div>
-      <div class="card__content">
-        <span class="label">Custos Operacionais</span>
-        <span class="value">{{ (s.totalProLabore + s.totalElectricity + s.totalGasoline) | currency:'BRL' }}</span>
-        <div class="info-row"><span>Fixos do Mês</span></div>
-      </div>
-    </div>
-
-    <div class="card card--ifood">
-      <div class="card__icon">🛵</div>
-      <div class="card__content">
-        <span class="label">Vendas iFood</span>
-        <span class="value">{{ s.ifoodSales }} <small>pedidos</small></span>
-        <div class="info-row">
-          <span>CAC Médio:</span>
-          <strong>{{ s.cacIfood | currency:'BRL' }}</strong>
-        </div>
-      </div>
-    </div>
-
-    <div class="card card--counter">
-      <div class="card__icon">🏬</div>
-      <div class="card__content">
-        <span class="label">Vendas Balcão</span>
-        <span class="value">{{ s.counterSales }} <small>pedidos</small></span>
-        <div class="info-row">
-          <span>Venda Presencial</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="card card--resale">
-      <div class="card__icon">🤝</div>
-      <div class="card__content">
-        <span class="label">Vendas Revenda</span>
-        <span class="value">{{ s.resaleSales }} <small>pedidos</small></span>
-        <div class="info-row">
-          <span>Canal B2B</span>
+          <span>Resultado Real (Competência)</span>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Mix de Produtos e Crescimento -->
-  <section class="gestao__footer">
-    <div class="mix-card">
-      <h2>Mix de Produtos (Top 3)</h2>
-      <div class="mix-list">
-        @for (p of s.topProducts; track p.name) {
+  <!-- Análise por Canal (NOVO) -->
+  <h2 class="section-title">Desempenho por Canal</h2>
+  <div class="channels-grid">
+    <div class="channel-card">
+      <div class="channel-header">
+        <span class="icon">🏬</span>
+        <h3>Balcão</h3>
+      </div>
+      <div class="channel-stats">
+        <div class="stat">
+          <span class="label">Faturamento</span>
+          <span class="value">{{ s.counterRevenue | currency: 'BRL' }}</span>
+        </div>
+        <div class="stat">
+          <span class="label">CMV</span>
+          <span class="value neg">{{ s.counterCmv | currency: 'BRL' }}</span>
+        </div>
+        <div class="stat highlight">
+          <span class="label">Lucro</span>
+          <span class="value">{{ s.counterProfit | currency: 'BRL' }}</span>
+        </div>
+        <div class="stat">
+          <span class="label">Ticket Médio</span>
+          <span class="value">{{ s.counterAverageTicket | currency: 'BRL' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="channel-card">
+      <div class="channel-header">
+        <span class="icon">🛵</span>
+        <h3>iFood</h3>
+      </div>
+      <div class="channel-stats">
+        <div class="stat">
+          <span class="label">Faturamento</span>
+          <span class="value">{{ s.ifoodRevenue | currency: 'BRL' }}</span>
+        </div>
+        <div class="stat">
+          <span class="label">CMV</span>
+          <span class="value neg">{{ s.ifoodCmv | currency: 'BRL' }}</span>
+        </div>
+        <div class="stat highlight">
+          <span class="label">Lucro (Líquido Taxas)</span>
+          <span class="value">{{ s.ifoodProfit | currency: 'BRL' }}</span>
+        </div>
+        <div class="stat">
+          <span class="label">Ticket Médio</span>
+          <span class="value">{{ s.ifoodAverageTicket | currency: 'BRL' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="channel-card">
+      <div class="channel-header">
+        <span class="icon">🤝</span>
+        <h3>Revenda</h3>
+      </div>
+      <div class="channel-stats">
+        <div class="stat">
+          <span class="label">Faturamento</span>
+          <span class="value">{{ s.resaleRevenue | currency: 'BRL' }}</span>
+        </div>
+        <div class="stat">
+          <span class="label">CMV</span>
+          <span class="value neg">{{ s.resaleCmv | currency: 'BRL' }}</span>
+        </div>
+        <div class="stat highlight">
+          <span class="label">Lucro</span>
+          <span class="value">{{ s.resaleProfit | currency: 'BRL' }}</span>
+        </div>
+        <div class="stat">
+          <span class="label">Ticket Médio</span>
+          <span class="value">{{ s.resaleAverageTicket | currency: 'BRL' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Outros Indicadores -->
+  <div class="stats-grid mt-6">
+    <div class="card card--breakeven">
+      <div class="card__icon">⚖️</div>
+      <div class="card__content">
+        <span class="label">Ponto de Equilíbrio</span>
+        <span class="value">{{ s.breakEvenPoint | currency: 'BRL' }}</span>
+        <div class="info-row">
+          <span>Meta mínima para lucro</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card--purchases">
+      <div class="card__icon">🛒</div>
+      <div class="card__content">
+        <span class="label">Saída de Caixa (Compras)</span>
+        <span class="value">{{ s.totalPurchasesValue | currency: 'BRL' }}</span>
+        <div class="info-row">
+          <span>Fluxo de Caixa Real</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card--turnover">
+      <div class="card__icon">🔄</div>
+      <div class="card__content">
+        <span class="label">Giro de Estoque</span>
+        <span class="value">{{ s.inventoryTurnover | number: '1.2-2' }}</span>
+        <div class="info-row">
+          <span>Compras / Vendas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="details-section mt-6">
+    <div class="card mix-card">
+      <h3>Mix de Produtos (Top 3)</h3>
+      <div class="product-mix">
+        @for (item of s.topProducts; track item.name) {
         <div class="mix-item">
           <div class="mix-info">
-            <span class="name">{{ p.name }}</span>
-            <span class="stats">{{ p.quantity }} unid. ({{ p.percentage | number:'1.0-0' }}%)</span>
+            <span class="name">{{ item.name }}</span>
+            <span class="pct">{{ item.percentage | number: '1.1-1' }}%</span>
           </div>
-          <div class="item-bar">
-            <div class="fill" [style.width.%]="p.percentage"></div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="item.percentage"></div>
           </div>
         </div>
         }
       </div>
     </div>
 
-    <div class="growth-card">
-      <h2>Crescimento (MoM)</h2>
-      <div class="growth-content" [class.growth-content--positive]="s.growthMoM > 0"
-        [class.growth-content--negative]="s.growthMoM < 0">
-        <div class="growth-value">
-          <span class="arrow">@if(s.growthMoM > 0){ ↑ }@else if(s.growthMoM < 0){ ↓ }</span>
-              <span class="pct">{{ s.growthMoM | number:'1.1-1' }}%</span>
+    <div class="card goal-card">
+      <h3>Meta de Faturamento</h3>
+      <div class="goal-content">
+        <div class="goal-main">
+          <span class="current">{{ s.totalRevenue | currency: 'BRL' }}</span>
+          <span class="target">/ {{ s.monthlyGoal | currency: 'BRL' }}</span>
         </div>
-        <p>em relação ao mês anterior</p>
+        <div class="progress-circle" [style.--progress]="s.goalProgress">
+          <span>{{ s.goalProgress | number: '1.0-0' }}%</span>
+        </div>
+        <app-button name="Ajustar Meta" type="primary" [disabled]="false" (clicked)="openGoalModal()"></app-button>
       </div>
     </div>
   </section>
+</div>
 
-  <!-- Modal para Editar Meta -->
-  <app-modal [title]="'Definir Meta de Faturamento'" [(isOpen)]="isGoalModalOpen">
-    <div class="goal-form">
-      <p>Informe o valor desejado de faturamento para o mês vigente.</p>
-      <app-form-input [label]="'Valor da Meta (R$)'" [type]="'number'" [placeholder]="'Ex: 5000'"
-        [(value)]="newGoalValue">
-      </app-form-input>
+<!-- Modal de Meta -->
+<app-modal [isOpen]="isGoalModalOpen()" (isOpenChange)="isGoalModalOpen.set($event)" title="Definir Meta do Mês">
+  <div class="modal-body">
+    <app-form-input label="Valor da Meta" type="number" [value]="String(newGoalValue())"
+      (valueChange)="newGoalValue.set(+$event)"></app-form-input>
+    <div class="modal-actions">
+      <app-button name="Cancelar" type="secondary" [disabled]="false" (clicked)="isGoalModalOpen.set(false)"></app-button>
+      <app-button name="Salvar Meta" type="primary" [disabled]="false" (clicked)="saveGoal()"></app-button>
     </div>
-
-    <div footer>
-      <app-button [type]="'secondary'" [name]="'Cancelar'" [disabled]="false" (clicked)="isGoalModalOpen.set(false)">
-      </app-button>
-      <app-button [type]="'primary'" [name]="'Salvar Meta'" [disabled]="newGoalValue() <= 0" (clicked)="saveGoal()">
-      </app-button>
-    </div>
-  </app-modal>
-
-  } @else {
-  <div class="loading-state">
-    <div class="spinner"></div>
-    <p>Gerando análise estratégica...</p>
   </div>
-  }
-</section>
+</app-modal>
+} @else {
+<div class="loading-state">
+  <p>Carregando análise de performance...</p>
+</div>
+}

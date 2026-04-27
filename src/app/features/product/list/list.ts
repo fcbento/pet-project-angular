@@ -120,8 +120,9 @@ export class ProductList {
           label: 'Margem Balcão',
           field: 'profitMargin',
           cell: (row: ProductResponse) => {
-            if (!row.sellPrice) return '-';
-            const margin = (row.profit / row.sellPrice) * 100;
+            if (!row.sellPrice || !row.costPrice) return '-';
+            const profit = row.sellPrice - row.costPrice;
+            const margin = (profit / row.sellPrice) * 100;
             return `${margin.toFixed(2)}%`;
           },
         },
@@ -151,7 +152,9 @@ export class ProductList {
           field: 'ifoodProfit',
           cell: (row: ProductResponse) => {
             if (!row.ifoodSellPrice || !row.costPrice) return '-';
-            const ifoodProfit = (row.ifoodSellPrice * 0.72) - row.costPrice;
+            const fee = row.marketplaceFee || 28;
+            const multiplier = (1 - (fee / 100));
+            const ifoodProfit = (row.ifoodSellPrice * multiplier) - row.costPrice;
             return this.currencyPipe.transform(ifoodProfit, 'BRL', 'symbol', '1.2-2');
           },
         },
@@ -160,7 +163,9 @@ export class ProductList {
           field: 'ifoodProfitMargin',
           cell: (row: ProductResponse) => {
             if (!row.ifoodSellPrice || !row.costPrice) return '-';
-            const ifoodNetRevenue = row.ifoodSellPrice * 0.72;
+            const fee = row.marketplaceFee || 28;
+            const multiplier = (1 - (fee / 100));
+            const ifoodNetRevenue = row.ifoodSellPrice * multiplier;
             const ifoodProfit = ifoodNetRevenue - row.costPrice;
             const margin = (ifoodProfit / ifoodNetRevenue) * 100;
             return `${margin.toFixed(2)}%`;

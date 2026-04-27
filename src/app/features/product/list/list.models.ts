@@ -10,6 +10,7 @@ export interface ProductResponse {
   sellPrice: number;
   ifoodSellPrice: number;
   profit: number;
+  marketplaceFee: number;
   hasResale: boolean;
   resalePrice: number;
   resaleQuantity: number;

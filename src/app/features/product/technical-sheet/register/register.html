@@ -42,7 +42,7 @@
               <td>{{ ing.quantity }}</td>
               <td>{{ ing.unit }}</td>
               <td>{{ ing.value | currency: 'BRL' }}</td>
-              <td>{{ ing.value | currency: 'BRL' }}</td>
+              <td>{{ (ing.value / ing.quantity) | currency: 'BRL' }}</td>
               <td>
                 <button class="btn-remove" [disabled]="ingredients().length === 1"
                   (click)="removeIngredient($index)">Remover</button>

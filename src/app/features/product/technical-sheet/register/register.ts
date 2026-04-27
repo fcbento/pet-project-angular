@@ -238,7 +238,11 @@ export class TechnicalSheetRegister {
 
   // Cost Calculations
   public readonly totalIngredientsCost = computed(() => {
-    return this.ingredients().reduce((acc, curr) => acc + (Number(curr.value) || 0), 0);
+    return this.ingredients().reduce((acc, curr) => {
+      const qty = Number(curr.quantity) || 1;
+      const val = Number(curr.value) || 0;
+      return acc + (val / qty);
+    }, 0);
   });
 
   public readonly totalPackagingCost = computed(() => {

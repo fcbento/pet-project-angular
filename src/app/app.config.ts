@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, LOCALE_ID } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -13,6 +13,7 @@ import { UserState } from './utility/store/user/user.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideStore(

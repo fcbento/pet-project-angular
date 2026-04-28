@@ -274,7 +274,7 @@ export class TechnicalSheetRegister {
   });
 
   // Fixed Operational Cost
-  public readonly fixedOperationalCost = signal(1.74);
+  public readonly fixedOperationalCost = signal(0.74);
 
   public readonly totalCost = computed(() => {
     const yieldUnits = Number(this.registerForm.registerForm().value().yieldUnits) || 1;

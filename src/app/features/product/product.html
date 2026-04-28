@@ -1,19 +1,18 @@
 <section class="product">
   <header class="product__header">
-    <h1>Produtos</h1>
-    <app-button
-      [name]="formOpen() ? 'Listar produtos' : 'Cadastrar produto'"
-      [disabled]="false"
-      type="primary"
-      (clicked)="openForm()"
-    />
+    <div class="title-group">
+      <h1>Produtos</h1>
+      <span class="subtitle">Controle de itens comercializados</span>
+    </div>
+    <app-button [name]="formOpen() ? 'Listar produtos' : 'Cadastrar produto'" [disabled]="false" type="primary"
+      (clicked)="openForm()" />
   </header>
 
   <main class="product__main">
     @if (!formOpen()) {
-      <app-product-list [updateTable]="updateTable()" />
+    <app-product-list [updateTable]="updateTable()" />
     } @else {
-      <app-product-register (success)="onSuccess()" />
+    <app-product-register (success)="onSuccess()" />
     }
   </main>
 </section>

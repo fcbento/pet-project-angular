@@ -1,5 +1,8 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+
 .gestao-container {
-  padding: 2rem;
+  padding: vars.$space-lg;
   background-color: #f8fafc;
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
@@ -9,21 +12,6 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2.5rem;
-
-    .title-group {
-      h1 {
-        font-size: 2rem;
-        font-weight: 800;
-        color: #1e293b;
-        margin: 0;
-        letter-spacing: -0.025em;
-      }
-      p {
-        color: #64748b;
-        margin: 0.25rem 0 0;
-        text-transform: capitalize;
-      }
-    }
 
     .filters {
       display: flex;
@@ -40,7 +28,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    
+
     &::after {
       content: '';
       flex: 1;
@@ -57,7 +45,7 @@
 
   .health-overview {
     .stats-grid {
-        grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
     }
   }
 
@@ -83,8 +71,15 @@
       padding-bottom: 1rem;
       border-bottom: 1px dashed #e2e8f0;
 
-      .icon { font-size: 1.5rem; }
-      h3 { margin: 0; font-size: 1.1rem; color: #1e293b; }
+      .icon {
+        font-size: 1.5rem;
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #1e293b;
+      }
     }
 
     .channel-stats {
@@ -109,11 +104,16 @@
           font-weight: 700;
           color: #1e293b;
 
-          &.neg { color: #ef4444; }
+          &.neg {
+            color: #ef4444;
+          }
         }
 
         &.highlight {
-          .value { color: #059669; font-size: 1.25rem; }
+          .value {
+            color: #059669;
+            font-size: 1.25rem;
+          }
         }
       }
     }
@@ -172,68 +172,136 @@
         justify-content: space-between;
         align-items: center;
 
-        .positive { color: #059669; font-weight: 600; }
-        .negative { color: #dc2626; font-weight: 600; }
+        .positive {
+          color: #059669;
+          font-weight: 600;
+        }
+
+        .negative {
+          color: #dc2626;
+          font-weight: 600;
+        }
       }
     }
 
-    &--revenue &__icon { background: #ecfdf5; color: #059669; }
-    &--cmv &__icon { background: #fff1f2; color: #e11d48; }
-    
-    // Detalhamento de Custos Fixos
-    &--cost-item {
-        & .card__icon {
-            background: #f1f5f9;
-        }
-        &:nth-child(2) .card__icon { background: #fffbeb; color: #d97706; } // Luz (Amarelo)
-        &:nth-child(3) .card__icon { background: #ecfdf5; color: #059669; } // Gasolina (Verde)
-        &:nth-child(4) .card__icon { background: #eff6ff; color: #2563eb; } // Pró-labore (Azul)
+    &--revenue &__icon {
+      background: #ecfdf5;
+      color: #059669;
     }
 
-    &--fixed-costs &__icon { background: #fff7ed; color: #ea580c; }
+    &--cmv &__icon {
+      background: #fff1f2;
+      color: #e11d48;
+    }
+
+    // Detalhamento de Custos Fixos
+    &--cost-item {
+      & .card__icon {
+        background: #f1f5f9;
+      }
+
+      &:nth-child(2) .card__icon {
+        background: #fffbeb;
+        color: #d97706;
+      }
+
+      // Luz (Amarelo)
+      &:nth-child(3) .card__icon {
+        background: #ecfdf5;
+        color: #059669;
+      }
+
+      // Gasolina (Verde)
+      &:nth-child(4) .card__icon {
+        background: #eff6ff;
+        color: #2563eb;
+      }
+
+      // Pró-labore (Azul)
+    }
+
+    &--fixed-costs &__icon {
+      background: #fff7ed;
+      color: #ea580c;
+    }
+
     &--profit {
       background: #f8fafc;
       border: 2px solid #e2e8f0;
+
       &.healthy {
         background: #f0fdf4;
         border-color: #86efac;
       }
     }
-    &--breakeven &__icon { background: #faf5ff; color: #9333ea; }
-    &--purchases &__icon { background: #fef2f2; color: #b91c1c; }
-    
+
+    &--breakeven &__icon {
+      background: #faf5ff;
+      color: #9333ea;
+    }
+
+    &--purchases &__icon {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
     // Novas cores de Liquidez e Saúde
     &--cash {
-        background: #fff;
-        &.healthy { border-left: 6px solid #10b981; }
-        &.critical { border-left: 6px solid #ef4444; }
-        
-        .status-badge {
-            font-weight: 800;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            &[data-status="VERDE"] { background: #dcfce7; color: #166534; }
-            &[data-status="VERMELHO"] { background: #fee2e2; color: #991b1b; }
-            &[data-status="AMARELO"] { background: #fef9c3; color: #854d0e; }
+      background: #fff;
+
+      &.healthy {
+        border-left: 6px solid #10b981;
+      }
+
+      &.critical {
+        border-left: 6px solid #ef4444;
+      }
+
+      .status-badge {
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 0.7rem;
+
+        &[data-status="VERDE"] {
+          background: #dcfce7;
+          color: #166534;
         }
+
+        &[data-status="VERMELHO"] {
+          background: #fee2e2;
+          color: #991b1b;
+        }
+
+        &[data-status="AMARELO"] {
+          background: #fef9c3;
+          color: #854d0e;
+        }
+      }
     }
 
     &--health {
-        .progress-bar-mini {
-            height: 6px;
-            background: #f1f5f9;
-            border-radius: 3px;
-            margin: 4px 0;
-            overflow: hidden;
-            .progress-fill {
-                height: 100%;
-                background: #3b82f6;
-                transition: width 0.5s ease-out;
-                &.low { background: #ef4444; }
-                &.high { background: #10b981; }
-            }
+      .progress-bar-mini {
+        height: 6px;
+        background: #f1f5f9;
+        border-radius: 3px;
+        margin: 4px 0;
+        overflow: hidden;
+
+        .progress-fill {
+          height: 100%;
+          background: #3b82f6;
+          transition: width 0.5s ease-out;
+
+          &.low {
+            background: #ef4444;
+          }
+
+          &.high {
+            background: #10b981;
+          }
         }
+      }
     }
   }
 
@@ -244,7 +312,12 @@
 
     .card {
       display: block;
-      h3 { margin: 0 0 1.5rem; font-size: 1.1rem; font-weight: 700; }
+
+      h3 {
+        margin: 0 0 1.5rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
     }
   }
 
@@ -259,14 +332,26 @@
         justify-content: space-between;
         margin-bottom: 0.5rem;
         font-weight: 600;
-        .name { color: #334155; }
-        .pct { color: #3b82f6; }
+
+        .name {
+          color: #334155;
+        }
+
+        .pct {
+          color: #3b82f6;
+        }
       }
+
       .progress-bar {
         height: 8px;
         background: #f1f5f9;
         border-radius: 4px;
-        .progress-fill { height: 100%; background: #3b82f6; border-radius: 4px; }
+
+        .progress-fill {
+          height: 100%;
+          background: #3b82f6;
+          border-radius: 4px;
+        }
       }
     }
   }
@@ -280,8 +365,18 @@
 
     .goal-main {
       text-align: center;
-      .current { font-size: 2rem; font-weight: 800; color: #1e293b; display: block; }
-      .target { font-size: 1rem; color: #64748b; }
+
+      .current {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1e293b;
+        display: block;
+      }
+
+      .target {
+        font-size: 1rem;
+        color: #64748b;
+      }
     }
 
     .progress-circle {
@@ -303,12 +398,23 @@
         border-radius: 50%;
       }
 
-      span { position: relative; z-index: 1; font-size: 1.5rem; font-weight: 800; color: #3b82f6; }
+      span {
+        position: relative;
+        z-index: 1;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #3b82f6;
+      }
     }
   }
 
-  .mb-6 { margin-bottom: 2rem; }
-  .mt-6 { margin-top: 2rem; }
+  .mb-6 {
+    margin-bottom: 2rem;
+  }
+
+  .mt-6 {
+    margin-top: 2rem;
+  }
 }
 
 .modal-actions {

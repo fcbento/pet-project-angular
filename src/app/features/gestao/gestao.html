@@ -5,18 +5,20 @@
       <h1>Análise Avançada de Performance</h1>
       <p>Competência: {{ startDate() | date: 'MMMM / yyyy' : '' : 'pt-BR' }}</p>
     </div>
-    <div class="filters">
+    <!-- <div class="filters">
       <app-form-input label="Início" type="date" [value]="startDate()"
         (valueChange)="setString(startDate, $event)"></app-form-input>
-      <app-form-input label="Fim" type="date" [value]="endDate()" (valueChange)="setString(endDate, $event)"></app-form-input>
+      <app-form-input label="Fim" type="date" [value]="endDate()"
+        (valueChange)="setString(endDate, $event)"></app-form-input>
       <app-button name="Atualizar" type="primary" [disabled]="false" (clicked)="loadSummary()"></app-button>
-    </div>
+    </div> -->
   </header>
 
   <!-- NOVOS: Saúde e Liquidez -->
   <section class="health-overview mb-6">
     <div class="stats-grid">
-      <div class="card card--cash" [class.healthy]="s.financialStatus === 'VERDE'" [class.critical]="s.financialStatus === 'VERMELHO'">
+      <div class="card card--cash" [class.healthy]="s.financialStatus === 'VERDE'"
+        [class.critical]="s.financialStatus === 'VERMELHO'">
         <div class="card__icon">{{ s.financialStatus === 'VERDE' ? '💰' : '📉' }}</div>
         <div class="card__content">
           <span class="label">Caixa Disponível (Real)</span>
@@ -36,7 +38,8 @@
           <span class="label">Saúde do Negócio (Score)</span>
           <span class="value">{{ s.healthScore | number: '1.0-0' }}%</span>
           <div class="progress-bar-mini">
-            <div class="progress-fill" [style.width.%]="s.healthScore" [class.low]="s.healthScore < 70" [class.high]="s.healthScore >= 100"></div>
+            <div class="progress-fill" [style.width.%]="s.healthScore" [class.low]="s.healthScore < 70"
+              [class.high]="s.healthScore >= 100"></div>
           </div>
           <div class="info-row">
             <span>Base: Cobertura vs Ponto de Equilíbrio</span>
@@ -275,7 +278,8 @@
     <app-form-input label="Valor da Meta" type="number" [value]="String(newGoalValue())"
       (valueChange)="newGoalValue.set(+$event)"></app-form-input>
     <div class="modal-actions">
-      <app-button name="Cancelar" type="secondary" [disabled]="false" (clicked)="isGoalModalOpen.set(false)"></app-button>
+      <app-button name="Cancelar" type="secondary" [disabled]="false"
+        (clicked)="isGoalModalOpen.set(false)"></app-button>
       <app-button name="Salvar Meta" type="primary" [disabled]="false" (clicked)="saveGoal()"></app-button>
     </div>
   </div>

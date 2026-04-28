@@ -1,6 +1,9 @@
 <section class="budget">
   <header class="budget__header">
-    <h1>Menu Orçamento</h1>
+    <div class="title-group">
+      <h1>Orçamento</h1>
+      <span class="subtitle">Orçamentos de produtos para revenda</span>
+    </div>
     <div class="actions">
       @if (items().length > 0) {
       <app-button name="Gerar PDF" type="primary" [disabled]="false" (clicked)="generatePdf()" />
@@ -8,6 +11,7 @@
     </div>
   </header>
 
+  @if (allProductsResource.value() && allProductsResource.value()!.length > 0) {
   <main class="budget__container">
     <!-- Formulário de Adição -->
     <div class="card budget__form">
@@ -131,4 +135,10 @@
       }
     </div>
   </main>
+  } @else if (allProductsResource.value() && allProductsResource.value()!.length === 0) {
+  <div class="empty-state-card">
+    <span class="icon">📦</span>
+    <p>Não é possível fazer orçamento sem produtos cadastrados. Vamos cadastrar o primeiro? ✨</p>
+  </div>
+  }
 </section>

@@ -9,15 +9,5 @@
     @include mixins.flex-center;
     justify-content: space-between;
     margin-bottom: vars.$space-xl;
-
-    h1 {
-      font-size: vars.$font-size-xl;
-      color: colors.$text-primary;
-      margin: 0;
-    }
-  }
-
-  &__main {
-    // Content is now separate sections (filters, summary, table)
   }
 }

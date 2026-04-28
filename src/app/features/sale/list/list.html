@@ -1,19 +1,18 @@
 <header class="list-header">
-  <h2>Vendas</h2>
+  <div class="title-group">
+    <h1>Vendas</h1>
+    <span class="subtitle">Controle de vendas realizadas</span>
+  </div>
   <app-button name="Nova Venda" type="primary" [disabled]="false" (clicked)="newSale()"></app-button>
 </header>
 
 <section class="filters">
   <div class="filters-row">
-    <app-form-select 
-      label="Origem" 
-      placeholder="Todas as origens" 
-      [options]="origemOptions()" 
-      [(value)]="origemFilter" 
-    />
+    <app-form-select label="Origem" placeholder="Todas as origens" [options]="origemOptions()"
+      [(value)]="origemFilter" />
     <app-form-date label="Data Inicial" [(value)]="startDateFilter" />
     <app-form-date label="Data Final" [(value)]="endDateFilter" />
-    
+
     <div class="filter-actions">
       <app-button name="Limpar Filtros" type="secondary" [disabled]="false" (clicked)="clearFilters()"></app-button>
     </div>
@@ -21,43 +20,18 @@
 </section>
 
 <section class="summary-cards">
-  <app-summary-card 
-    label="Total de Vendas" 
-    [value]="summary().totalSell" 
-    icon="🛍️"
-  />
-  <app-summary-card 
-    label="Receita Total" 
-    [value]="summary().totalPrice" 
-    type="currency" 
-    icon="💰"
-  />
-  <app-summary-card 
-    label="Lucro Total" 
-    [value]="summary().totalProfit" 
-    type="currency" 
-    variant="success" 
-    icon="📈"
-  />
-  <app-summary-card 
-    label="Margem de Lucro" 
-    [value]="summary().profitMargin" 
-    type="percentage" 
-    variant="warning" 
-    icon="📊"
-  />
+  <app-summary-card label="Total de Vendas" [value]="summary().totalSell" icon="🛍️" />
+  <app-summary-card label="Receita Total" [value]="summary().totalPrice" type="currency" icon="💰" />
+  <app-summary-card label="Lucro Total" [value]="summary().totalProfit" type="currency" variant="success" icon="📈" />
+  <app-summary-card label="Margem de Lucro" [value]="summary().profitMargin" type="percentage" variant="warning"
+    icon="📊" />
 </section>
 
 @if (sales().length > 0) {
-  <app-table
-    [columns]="columns"
-    [data]="sales()"
-    [actions]="rowActions"
-    (selectionChange)="onRowsSelected($event)"
-  />
+<app-table [columns]="columns" [data]="sales()" [actions]="rowActions" (selectionChange)="onRowsSelected($event)" />
 } @else {
-  <div class="empty-state-card">
-    <span class="icon">🔍</span>
-    <p>Nenhuma venda realizada ainda. Vamos vender! 🚀</p>
-  </div>
+<div class="empty-state-card">
+  <span class="icon">🔍</span>
+  <p>Nenhuma venda realizada ainda. Vamos vender! 🚀</p>
+</div>
 }

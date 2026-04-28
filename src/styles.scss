@@ -5,3 +5,19 @@
 @use './styles/base/_globals';
 @use './styles/base/_auth';
 @use './styles/base/_typography';
+
+.title-group {
+    h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0;
+        letter-spacing: -0.025em;
+    }
+
+    p {
+        color: #64748b;
+        margin: 0.25rem 0 0;
+        text-transform: capitalize;
+    }
+}

@@ -39,16 +39,16 @@
   width: 100%;
   overflow: visible; // Permite que o menu flutue no desktop
   position: relative;
-  
+
   @media (max-width: 1024px) {
     overflow-x: auto; // Ativa scroll apenas no mobile
     scrollbar-width: thin;
   }
-  
+
   &::-webkit-scrollbar {
     height: 6px;
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background: colors.$border-default;
     border-radius: 3px;
@@ -75,7 +75,7 @@
       color: colors.$text-secondary;
       border-bottom: 1px solid colors.$border-default;
       white-space: nowrap;
-      
+
       &.sortable {
         cursor: pointer;
         user-select: none;
@@ -145,21 +145,17 @@
     .action-list {
       display: flex;
       flex-direction: column;
-      padding: vars.$space-xs;
-      background: white;
-      border-radius: vars.$radius-md;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-      border: 1px solid colors.$border-default;
+      padding: vars.$space-sm;
 
       .action-item {
         display: flex;
         align-items: center;
-        gap: vars.$space-sm;
-        padding: vars.$space-sm vars.$space-md;
+        gap: vars.$space-xs;
+        padding: 0.3rem 0.5rem;
         border-radius: vars.$radius-sm;
         cursor: pointer;
-        font-size: 0.9rem;
-        color: colors.$text-primary;
+        font-size: 0.85rem;
+        color: colors.$text-secondary;
         transition: all 0.2s;
 
         &:hover {

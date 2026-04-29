@@ -170,16 +170,14 @@ export class ProductList {
 
   public readonly rowActions = [
     {
-      label: 'Ficha Técnica',
+      label: 'Ficha',
+      icon: '📋',
       callback: (row: ProductResponse) => this.fichaTecnica(row),
     },
     {
       label: 'Excluir',
+      icon: '🗑️',
       callback: (row: ProductResponse) => this.delete(row),
-    },
-    {
-      label: 'Editar',
-      callback: (row: ProductResponse) => this.edit(row),
     },
   ];
 
@@ -192,10 +190,6 @@ export class ProductList {
   public onRowsSelected = (rows: ProductResponse[]): void => {
     console.log('selecionados', rows);
   };
-
-  private edit(row: ProductResponse): void {
-    console.log('edit', row);
-  }
 
   private delete(row: ProductResponse): void {
     if (confirm(`Deseja realmente excluir o produto ${row.name}?`)) {

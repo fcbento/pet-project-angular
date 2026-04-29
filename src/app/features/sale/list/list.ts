@@ -129,6 +129,7 @@ export class SaleList {
   public readonly rowActions = [
     {
       label: 'Excluir',
+      icon: '🗑️',
       callback: (row: SaleResponse) => this.delete(row),
     },
   ];

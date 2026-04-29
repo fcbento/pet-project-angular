@@ -73,21 +73,14 @@ export class List {
   public readonly rowActions = [
     {
       label: 'Excluir',
+      icon: '🗑️',
       callback: (row: CategoryResponse) => this.delete(row),
-    },
-    {
-      label: 'Editar',
-      callback: (row: CategoryResponse) => this.edit(row),
     },
   ];
 
   public onRowsSelected = (rows: CategoryResponse[]): void => {
     console.log('selecionados', rows);
   };
-
-  private edit(row: CategoryResponse): void {
-    console.log('edit', row);
-  }
 
   private delete(row: CategoryResponse): void {
     if (confirm(`Deseja realmente excluir a categoria "${row.nome}"?`)) {

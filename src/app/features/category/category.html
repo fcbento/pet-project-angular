@@ -6,10 +6,8 @@
     </div>
     <app-button [disabled]="false" (clicked)="openForm()" name="Nova Categoria" type="primary" />
   </header>
-  @if (formOpen()) {
-  <div class="category__register">
+  <app-modal title="Nova Categoria" [(isOpen)]="formOpen">
     <app-register (success)="onSuccess()" />
-  </div>
-  }
+  </app-modal>
   <app-list [updateTable]="updateTable()" />
 </section>

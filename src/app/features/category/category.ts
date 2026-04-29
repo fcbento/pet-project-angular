@@ -2,10 +2,11 @@ import { Component, signal } from '@angular/core';
 import { Button } from '../../ui/button/button';
 import { List } from './list/list';
 import { Register } from './register/register';
+import { Modal } from '../../ui/modal/modal';
 
 @Component({
   selector: 'app-category',
-  imports: [List, Button, Register],
+  imports: [List, Button, Register, Modal],
   templateUrl: './category.html',
   styleUrl: './category.scss',
 })
@@ -18,6 +19,7 @@ export class Category {
   }
 
   public onSuccess(): void {
-    this.updateTable.set(this.updateTable() ? false : true);
+    this.updateTable.update(v => !v);
+    this.formOpen.set(false);
   }
 }

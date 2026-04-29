@@ -110,7 +110,7 @@
     </div>
 
     <div class="card card--profit" [class.healthy]="s.isHealthy">
-      <div class="card__icon">{{ s.isHealthy ? '✅' : '⚠️' }}</div>
+      <div class="card__icon">{{ !s.isHealthy ? '✅' : '⚠️' }}</div>
       <div class="card__content">
         <span class="label">Lucro Líquido Final</span>
         <span class="value" [class.positive]="s.isHealthy" [class.negative]="!s.isHealthy">

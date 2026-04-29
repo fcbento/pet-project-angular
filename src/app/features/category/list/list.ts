@@ -10,10 +10,11 @@ import { SummaryCard } from '../../../ui/summary-card/summary-card';
 import { Store } from '@ngxs/store';
 import { OpenToast } from '../../../utility/store/toast/toast.actions';
 import { CategoryResponse } from './list.models';
+import { ConfirmDialog } from '../../../ui/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-list',
-  imports: [Table, FormInput, Button, CommonModule, SummaryCard],
+  imports: [Table, FormInput, Button, CommonModule, SummaryCard, ConfirmDialog],
   templateUrl: './list.html',
   styleUrl: './list.scss',
   providers: [DatePipe],
@@ -35,6 +36,10 @@ export class List {
 
   // Filters
   public readonly nameFilter = signal('');
+
+  // Dialog State
+  public readonly isDeleteDialogOpen = signal(false);
+  public readonly categoryToDelete = signal<CategoryResponse | null>(null);
 
   public readonly categories = computed(() => {
     let data = this.categoryResource.value()?.data || [];
@@ -82,29 +87,35 @@ export class List {
     console.log('selecionados', rows);
   };
 
-  private delete(row: CategoryResponse): void {
-    if (confirm(`Deseja realmente excluir a categoria "${row.nome}"?`)) {
-      this.service.delete(row.id).subscribe({
-        next: (response) => {
-          this.store.dispatch(
-            new OpenToast({
-              title: 'Sucesso',
-              message: response.message || 'Categoria excluída com sucesso',
-              type: 'success',
-            })
-          );
-          this.categoryResource.reload();
-        },
-        error: (err) => {
-          this.store.dispatch(
-            new OpenToast({
-              title: 'Erro',
-              message: err.error?.message || 'Erro ao excluir categoria',
-              type: 'error',
-            })
-          );
-        },
-      });
-    }
+  public delete(row: CategoryResponse): void {
+    this.categoryToDelete.set(row);
+    this.isDeleteDialogOpen.set(true);
+  }
+
+  public confirmDelete(): void {
+    const row = this.categoryToDelete();
+    if (!row) return;
+
+    this.service.delete(row.id).subscribe({
+      next: (response) => {
+        this.store.dispatch(
+          new OpenToast({
+            title: 'Sucesso',
+            message: response.message || 'Categoria excluída com sucesso',
+            type: 'success',
+          })
+        );
+        this.categoryResource.reload();
+      },
+      error: (err) => {
+        this.store.dispatch(
+          new OpenToast({
+            title: 'Erro',
+            message: err.error?.message || 'Erro ao excluir categoria',
+            type: 'error',
+          })
+        );
+      },
+    });
   }
 }

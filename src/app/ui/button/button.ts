@@ -15,6 +15,7 @@ export class Button {
     'button--secondary': this.type() === 'secondary',
     'button--tertiary': this.type() === 'tertiary',
     'button--link': this.type() === 'link',
+    'button--danger': this.type() === 'danger',
   }));
 
   protected readonly disableButton = computed(() => this.disabled() || this.loading());

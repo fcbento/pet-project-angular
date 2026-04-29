@@ -28,11 +28,15 @@
 </section>
 
 @if (sales().length > 0) {
-<app-table [columns]="columns" [data]="sales()" [actions]="rowActions" [withPagination]="true" title="Histórico de Vendas"
-  subtitle="Listagem detalhada de todas as vendas realizadas" (selectionChange)="onRowsSelected($event)" />
+<app-table [columns]="columns" [data]="sales()" [actions]="rowActions" [withPagination]="true"
+  title="Histórico de Vendas" subtitle="Listagem detalhada de todas as vendas realizadas"
+  (selectionChange)="onRowsSelected($event)" />
 } @else {
 <div class="empty-state-card">
   <span class="icon">🔍</span>
   <p>Nenhuma venda realizada ainda. Vamos vender! 🚀</p>
 </div>
 }
+<app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Venda"
+  [message]="'Deseja excluir a venda de ID ' + (saleToDelete()?.id || '') + '?'" confirmText="Sim, Excluir"
+  cancelText="Cancelar" type="danger" (confirm)="confirmDelete()"></app-confirm-dialog>

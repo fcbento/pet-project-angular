@@ -4,16 +4,16 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Button } from '../../../ui/button/button';
 import { FormDate } from '../../../ui/form-date/form-date';
-import { FormInput } from '../../../ui/form-input/form-input';
 import { FormSelect } from '../../../ui/form-select/form-select';
 import { Table } from '../../../ui/table/table';
 import { SummaryCard } from '../../../ui/summary-card/summary-card';
 import { SaleService } from '../sale.service';
 import { SaleResponse } from '../sale.models';
+import { ConfirmDialog } from '../../../ui/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-sale-list',
-  imports: [Table, FormDate, FormSelect, Button, CommonModule, SummaryCard],
+  imports: [Table, FormDate, FormSelect, Button, CommonModule, SummaryCard, ConfirmDialog],
   templateUrl: './list.html',
   styleUrl: './list.scss',
   providers: [DatePipe, CurrencyPipe],
@@ -39,6 +39,10 @@ export class SaleList {
   public readonly origemFilter = signal('');
   public readonly startDateFilter = signal('');
   public readonly endDateFilter = signal('');
+
+  // Dialog State
+  public readonly isDeleteDialogOpen = signal(false);
+  public readonly saleToDelete = signal<SaleResponse | null>(null);
 
   public readonly origemOptions = computed(() => {
     const data = this.saleResource.value()?.data || [];
@@ -138,12 +142,19 @@ export class SaleList {
     console.log('selecionados', rows);
   };
 
-  private delete(row: SaleResponse): void {
-    if (confirm(`Deseja realmente excluir a venda de ID ${row.id}?`)) {
-      this.service.delete(row.id).subscribe(() => {
-        this.saleResource.reload();
-      });
-    }
+  public delete(row: SaleResponse): void {
+    this.saleToDelete.set(row);
+    this.isDeleteDialogOpen.set(true);
+  }
+
+  public confirmDelete(): void {
+    const row = this.saleToDelete();
+    if (!row) return;
+
+    this.service.delete(row.id).subscribe(() => {
+      this.saleResource.reload();
+      this.isDeleteDialogOpen.set(false);
+    });
   }
 
   public clearFilters(): void {

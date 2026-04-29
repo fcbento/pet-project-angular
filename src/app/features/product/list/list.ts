@@ -12,10 +12,11 @@ import { SummaryCard } from '../../../ui/summary-card/summary-card';
 import { ProductResponse } from './list.models';
 import { Store } from '@ngxs/store';
 import { OpenToast } from '../../../utility/store/toast/toast.actions';
+import { ConfirmDialog } from '../../../ui/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-product-list',
-  imports: [Table, FormInput, FormSelect, Button, CommonModule, SummaryCard],
+  imports: [Table, FormInput, FormSelect, Button, CommonModule, SummaryCard, ConfirmDialog],
   templateUrl: './list.html',
   styleUrl: './list.scss',
   providers: [DatePipe, CurrencyPipe],
@@ -46,6 +47,10 @@ export class ProductList {
   // Filters
   public readonly nameFilter = signal('');
   public readonly categoryFilter = signal<string>('');
+
+  // Dialog State
+  public readonly isDeleteDialogOpen = signal(false);
+  public readonly productToDelete = signal<ProductResponse | null>(null);
 
   public readonly categoryOptions = computed(() => {
     const categories = this.categoryResource.value()?.data || [];
@@ -191,35 +196,40 @@ export class ProductList {
     console.log('selecionados', rows);
   };
 
-  private delete(row: ProductResponse): void {
-    if (confirm(`Deseja realmente excluir o produto ${row.name}?`)) {
-      this.service.delete(row.id).subscribe({
-        next: () => {
+  public delete(row: ProductResponse): void {
+    this.productToDelete.set(row);
+    this.isDeleteDialogOpen.set(true);
+  }
+
+  public confirmDelete(): void {
+    const row = this.productToDelete();
+    if (!row) return;
+
+    this.service.delete(row.id).subscribe({
+      next: () => {
+        this.store.dispatch(new OpenToast({
+          title: 'Sucesso',
+          message: 'Produto excluído com sucesso',
+          type: 'success'
+        }));
+        this.productResource.reload();
+      },
+      error: (err) => {
+        if (err.status === 409) {
           this.store.dispatch(new OpenToast({
-            title: 'Sucesso',
-            message: 'Produto excluído com sucesso',
-            type: 'success'
+            title: 'Não é possível excluir',
+            message: err.error?.message || 'Este produto possui vendas cadastradas e não pode ser removido.',
+            type: 'warning'
           }));
-          this.productResource.reload();
-        },
-        error: (err) => {
-          // Se o erro for 409 (Conflict), exibimos a mensagem amigável vinda do backend
-          if (err.status === 409) {
-            this.store.dispatch(new OpenToast({
-              title: 'Não é possível excluir',
-              message: err.error?.message || 'Este produto possui vendas cadastradas e não pode ser removido.',
-              type: 'warning'
-            }));
-          } else {
-            this.store.dispatch(new OpenToast({
-              title: 'Erro ao excluir',
-              message: 'Ocorreu um erro ao tentar excluir o produto.',
-              type: 'error'
-            }));
-          }
+        } else {
+          this.store.dispatch(new OpenToast({
+            title: 'Erro ao excluir',
+            message: 'Ocorreu um erro ao tentar excluir o produto.',
+            type: 'error'
+          }));
         }
-      });
-    }
+      }
+    });
   }
 
   public onRowClick(row: ProductResponse): void {

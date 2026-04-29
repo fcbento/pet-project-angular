@@ -1,0 +1,23 @@
+@if (isOpen()) {
+<div class="dialog-backdrop" (click)="onCancel()">
+  <div class="dialog-container" (click)="$event.stopPropagation()">
+    <div class="dialog-header" [class]="type()">
+      <div class="icon-circle">
+        @if (type() === 'danger') { 🗑️ }
+        @else if (type() === 'success') { ✅ }
+        @else { ℹ️ }
+      </div>
+    </div>
+
+    <div class="dialog-body">
+      <h2>{{ title() }}</h2>
+      <p>{{ message() }}</p>
+    </div>
+
+    <div class="dialog-footer">
+      <app-button [name]="cancelText()" type="secondary" [disabled]="false" (clicked)="onCancel()"></app-button>
+      <app-button [name]="confirmText()" [type]="type() === 'danger' ? 'danger' : 'primary'" [disabled]="false" (clicked)="onConfirm()"></app-button>
+    </div>
+  </div>
+</div>
+}

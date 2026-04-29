@@ -1,1 +1,1 @@
-export type ButtonType = 'primary' | 'secondary' | 'tertiary' | 'link';
+export type ButtonType = 'primary' | 'secondary' | 'tertiary' | 'link' | 'danger';

@@ -102,3 +102,16 @@ button.button--link {
     color: colors.$blue-400;
   }
 }
+
+button.button--danger {
+  background-color: #ef4444;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: #dc2626;
+  }
+
+  &:active:not(:disabled) {
+    background-color: #b91c1c;
+  }
+}

@@ -8,13 +8,14 @@ import { FormInput } from '../../../ui/form-input/form-input';
 import { FormSelect } from '../../../ui/form-select/form-select';
 import { Modal } from '../../../ui/modal/modal';
 import { Table } from '../../../ui/table/table';
+import { ConfirmDialog } from '../../../ui/confirm-dialog/confirm-dialog';
 import { TableAction, TableColumn } from '../../../ui/table/table.model';
 import { PurchaseRequest, PurchaseResponse, PurchaseService } from '../purchase.service';
 
 @Component({
   selector: 'app-purchase-list',
   standalone: true,
-  imports: [CommonModule, Table, Button, FormInput, FormSelect, Modal, FormsModule],
+  imports: [CommonModule, Table, Button, FormInput, FormSelect, Modal, FormsModule, ConfirmDialog],
   providers: [CurrencyPipe, DatePipe],
   templateUrl: './list.html',
   styleUrl: './list.scss'
@@ -72,6 +73,10 @@ export class PurchaseList {
   public readonly isModalOpen = signal(false);
   public readonly isEditing = signal(false);
   public readonly currentId = signal<number | null>(null);
+
+  // Dialog State
+  public readonly isDeleteDialogOpen = signal(false);
+  public readonly purchaseIdToDelete = signal<number | null>(null);
 
   // Form fields
   public readonly formDate = signal(new Date().toLocaleString('sv-SE').substring(0, 16).replace(' ', 'T'));
@@ -140,9 +145,18 @@ export class PurchaseList {
   }
 
   public delete(id: number): void {
-    if (confirm('Deseja realmente excluir esta compra?')) {
-      this.purchaseService.delete(id).subscribe(() => this.reload());
-    }
+    this.purchaseIdToDelete.set(id);
+    this.isDeleteDialogOpen.set(true);
+  }
+
+  public confirmDelete(): void {
+    const id = this.purchaseIdToDelete();
+    if (!id) return;
+
+    this.purchaseService.delete(id).subscribe(() => {
+      this.reload();
+      this.isDeleteDialogOpen.set(false);
+    });
   }
 
   public setString(signal: { set: (v: string) => void }, value: string | number | null): void {

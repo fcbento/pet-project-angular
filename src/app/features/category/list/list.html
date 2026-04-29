@@ -1,7 +1,6 @@
 <section class="filters">
   <div class="filters-row">
     <app-form-input label="Nome" placeholder="Buscar por nome..." [(value)]="nameFilter" />
-    
     <div class="filter-actions">
       <app-button name="Limpar Filtros" type="secondary" [disabled]="false" (clicked)="clearFilters()"></app-button>
     </div>
@@ -9,26 +8,16 @@
 </section>
 
 <section class="summary-cards">
-  <app-summary-card 
-    label="Total de Categorias" 
-    [value]="summary().totalCategories" 
-    icon="📁"
-  />
+  <app-summary-card label="Total de Categorias" [value]="summary().totalCategories" icon="📁" />
 </section>
 
 @if (categories().length > 0) {
-  <app-table
-    [columns]="columns"
-    [data]="categories()"
-    [actions]="rowActions"
-    [withPagination]="true"
-    title="Categorias"
-    subtitle="Organização de produtos por categorias"
-    (selectionChange)="onRowsSelected($event)"
-  ></app-table>
+  <app-table [columns]="columns" [data]="categories()" [actions]="rowActions" [withPagination]="true" title="Categorias" subtitle="Organização de produtos por categorias" (selectionChange)="onRowsSelected($event)"></app-table>
 } @else {
   <div class="empty-state-card">
     <span class="icon">📁</span>
     <p>Nenhuma categoria cadastrada ainda. Comece criando uma nova! ✨</p>
   </div>
 }
+
+<app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Categoria" [message]="'Deseja excluir a categoria ' + (categoryToDelete()?.nome || '') + '?'" confirmText="Sim, Excluir" cancelText="Cancelar" type="danger" (confirm)="confirmDelete()"></app-confirm-dialog>

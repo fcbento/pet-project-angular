@@ -77,7 +77,16 @@ export class Budget {
 
   // Calculations for current item in form
   public currentCostPrice = computed(() => this.selectedProduct()?.costPrice || 0);
-  public minSellPrice = computed(() => this.selectedProduct()?.resalePrice || 0);
+  
+  public minBudgetPrice = computed(() => {
+    const cost = this.currentCostPrice();
+    return cost > 0 ? Math.round((cost / 0.8) * 100) / 100 : 0;
+  });
+
+  public maxBudgetPrice = computed(() => {
+    const cost = this.currentCostPrice();
+    return cost > 0 ? Math.round((cost / 0.75) * 100) / 100 : 0;
+  });
   
   public currentMargin = computed(() => {
     const revenda = this.customSellPrice();
@@ -97,9 +106,11 @@ export class Budget {
   public currentProfit = computed(() => (this.customSellPrice() - this.currentCostPrice()) * this.quantity());
 
   public isPriceInvalid = computed(() => {
-    const revenda = this.customSellPrice();
-    const min = this.minSellPrice();
-    return revenda > 0 && revenda < min;
+    const price = this.customSellPrice();
+    if (price === 0) return false;
+    const min = this.minBudgetPrice();
+    const max = this.maxBudgetPrice();
+    return price < min || price > max;
   });
 
   // Budget List

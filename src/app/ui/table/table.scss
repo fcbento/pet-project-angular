@@ -7,7 +7,6 @@
   border-radius: vars.$radius-lg;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid colors.$border-default;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -129,11 +128,11 @@
 
     .actions-menu {
       position: absolute;
-      z-index: 100;
+      z-index: 999;
       min-width: 160px;
       right: vars.$space-md;
-      top: 100%;
-      margin-top: -10px;
+      top: 50%;
+      transform: translateY(10px);
     }
 
     .action-list {

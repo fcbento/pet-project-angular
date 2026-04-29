@@ -197,6 +197,16 @@ export class SaleRegister {
       sellPrice = product.resalePrice;
     }
 
+    // Validação de Preço Zerado (US-021)
+    if (!sellPrice || sellPrice <= 0) {
+      this.toast({
+        title: 'Preço não configurado',
+        message: `O produto "${product.name}" não possui preço configurado para a origem "${origem}". Configure o preço na Ficha Técnica antes de vender.`,
+        type: 'warning',
+      });
+      return;
+    }
+
     this.saleItems.update((items) => {
       const existing = items.find((i) => String(i.productId) === String(productId));
       if (existing) {

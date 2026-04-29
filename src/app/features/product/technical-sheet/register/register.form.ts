@@ -51,6 +51,14 @@ export class TechnicalSheetForm {
     });
   }
 
+  public patchHasResale(value: boolean): void {
+    const current = this.registerForm().value();
+    this.registerForm().reset({
+        ...current,
+        hasResale: value
+    });
+  }
+
   public resetForm(): void {
     this.registerForm().reset({
       yieldUnits: 1,

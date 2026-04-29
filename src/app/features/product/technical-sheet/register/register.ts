@@ -128,6 +128,7 @@ export class TechnicalSheetRegister {
         this.registerForm.patchIfoodPrice(suggested);
       }
     }, { allowSignalWrites: true });
+
   }
 
   private loadExistingSheet(productId: number): void {
@@ -149,7 +150,7 @@ export class TechnicalSheetRegister {
           packagingType: sheet.packaging.packagingType || 'SAQUINHO',
           sellPrice: sheet.sellPrice || 0,
           ifoodSellPrice: sheet.ifoodSellPrice || 0,
-          hasResale: product?.hasResale || false, // Carrega do produto (US-013)
+          hasResale: product?.hasResale || ((sheet.resalePrice ?? 0) > 0) || false,
           resalePrice: sheet.resalePrice || 0,
         });
         this.ingredients.set(sheet.ingredients);
@@ -159,7 +160,7 @@ export class TechnicalSheetRegister {
         this.isEditMode.set(false);
         this.registerForm.resetForm();
         
-        // Se já temos o produto carregado, podemos pegar o hasResale atual dele
+        // Se já temos o produto carregado, pegamos o estado dele (US-020)
         if (product) {
             this.registerForm.registerForm().reset({
                 ...this.registerForm.registerForm().value(),
@@ -338,8 +339,23 @@ export class TechnicalSheetRegister {
 
   // Resale Calculations
   public readonly hasResaleValue = computed(() => this.registerForm.registerForm().value().hasResale);
-
   public readonly resalePriceValue = computed(() => Number(this.registerForm.registerForm().value().resalePrice) || 0);
+
+  public readonly minResalePrice = computed(() => {
+    const cost = this.unitCost();
+    return cost > 0 ? Math.round((cost / 0.8) * 100) / 100 : 0;
+  });
+
+  public readonly maxResalePrice = computed(() => {
+    const cost = this.unitCost();
+    return cost > 0 ? Math.round((cost / 0.75) * 100) / 100 : 0;
+  });
+
+  public readonly isResaleMarginValid = computed(() => {
+    if (!this.hasResaleValue()) return true;
+    const price = this.resalePriceValue();
+    return price >= this.minResalePrice() && price <= this.maxResalePrice();
+  });
 
   public readonly resaleProfitUnit = computed(() => this.resalePriceValue() - this.unitCost());
   public readonly resaleMargin = computed(() => {
@@ -357,7 +373,7 @@ export class TechnicalSheetRegister {
     const suggestedIfood = this.suggestedIfoodPrice();
 
     const resalePrice = this.resalePriceValue();
-    const resaleValid = !this.hasResaleValue() || (resalePrice >= this.unitCost());
+    const resaleValid = !this.hasResaleValue() || this.isResaleMarginValid();
 
     return !!this.selectedProductId() &&
       this.ingredients().length > 0 &&
@@ -391,8 +407,8 @@ export class TechnicalSheetRegister {
       },
       sellPrice: Number(formVal.sellPrice) || 0,
       ifoodSellPrice: Number(formVal.ifoodSellPrice) || 0,
-      hasResale: formVal.hasResale, // US-013: Agora vem do formulário
-      resalePrice: formVal.hasResale ? Number(formVal.resalePrice) : undefined,
+      hasResale: formVal.hasResale,
+      resalePrice: formVal.hasResale ? Number(formVal.resalePrice) : 0,
     };
 
     this.service.save(request).subscribe({

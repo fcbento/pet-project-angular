@@ -46,8 +46,11 @@
           <label>Preço de Revenda (R$)</label>
           <input type="number" [(ngModel)]="customSellPrice" [class.invalid]="isPriceInvalid()"
             [disabled]="!selectedProductId()" />
-          @if (isPriceInvalid()) {
-          <small class="error">Mínimo: {{ minSellPrice() | currency:'BRL' }}</small>
+          @if (isPriceInvalid() && selectedProduct()) {
+          <small class="error" style="color: #e53e3e; display: block; margin-top: 4px; font-weight: 500;">
+            Intervalo Sugerido (20%-25%): <br>
+            {{ minBudgetPrice() | currency:'BRL' }} a {{ maxBudgetPrice() | currency:'BRL' }}
+          </small>
           }
         </div>
       </div>
@@ -61,7 +64,7 @@
         </div>
         <div class="indicator" [class.highlight]="currentMargin() > 0">
           <span class="label">Margem</span>
-          <span class="value">{{ currentMargin() | number:'1.2-2' }}%</span>
+          <span class="value" [style.color]="isPriceInvalid() ? '#dc3545' : '#28a745'">{{ currentMargin() | number:'1.2-2' }}%</span>
         </div>
         <div class="indicator">
           <span class="label">Markup</span>

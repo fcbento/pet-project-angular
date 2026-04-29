@@ -130,9 +130,19 @@
         </div>
         <div class="summary-row">
           <span>Margem de Revenda:</span>
-          <strong>{{ resaleMargin() | number: '1.2-2' }}%</strong>
+          <strong [class.positive]="isResaleMarginValid()" [class.negative]="!isResaleMarginValid()">{{ resaleMargin() | number: '1.2-2' }}%</strong>
         </div>
-        <div *ngIf="resalePriceValue() > 0 && resalePriceValue() < unitCost()" class="error-msg">
+        
+        <div *ngIf="!isResaleMarginValid()" class="error-msg mt-2" style="color: #e53e3e; font-size: 0.85rem; font-weight: 500; line-height: 1.4;">
+           Atenção: A margem de revenda deve estar entre 20% e 25%. <br>
+           Intervalo sugerido: {{ minResalePrice() | currency: 'BRL' }} a {{ maxResalePrice() | currency: 'BRL' }}
+        </div>
+
+        <div *ngIf="isResaleMarginValid() && resalePriceValue() > 0" class="success-msg mt-2" style="color: #38a169; font-size: 0.85rem; font-weight: 500;">
+          Preço dentro da margem permitida.
+        </div>
+
+        <div *ngIf="resalePriceValue() > 0 && resalePriceValue() < unitCost()" class="error-msg mt-2" style="color: #e53e3e; font-size: 0.85rem;">
           O preço de revenda não pode ser inferior ao custo unitário.
         </div>
       </div>

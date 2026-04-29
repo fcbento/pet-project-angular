@@ -23,4 +23,8 @@ export class CategoryService {
   public getAll(): Observable<ApiResponse<CategoryResponse[]>> {
     return this.http.get<ApiResponse<CategoryResponse[]>>(`${this.apiUrl}/categoria`);
   }
+
+  public delete(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/categoria/${id}`);
+  }
 }

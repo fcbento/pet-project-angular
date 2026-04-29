@@ -78,12 +78,12 @@ export class TechnicalSheetRegister {
 
   public readonly isGeladinho = computed(() => {
     const catName = this.selectedProduct()?.category?.nome?.toLowerCase() || '';
-    return catName.includes('geladinho');
+    return catName.includes('geladinho') || catName.includes('gelado');
   });
 
   public readonly isPicole = computed(() => {
     const catName = this.selectedProduct()?.category?.nome?.toLowerCase() || '';
-    return catName.includes('picolé');
+    return catName.includes('picolé') || catName.includes('picole');
   });
 
   public readonly isPapel = computed(() => this.registerForm.registerForm().value().packagingType === 'PAPEL');

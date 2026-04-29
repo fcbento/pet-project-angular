@@ -7,6 +7,8 @@ import { Table } from '../../../ui/table/table';
 import { FormInput } from '../../../ui/form-input/form-input';
 import { Button } from '../../../ui/button/button';
 import { SummaryCard } from '../../../ui/summary-card/summary-card';
+import { Store } from '@ngxs/store';
+import { OpenToast } from '../../../utility/store/toast/toast.actions';
 import { CategoryResponse } from './list.models';
 
 @Component({
@@ -19,6 +21,7 @@ import { CategoryResponse } from './list.models';
 export class List {
   private readonly service = inject(CategoryService);
   private readonly datePipe = inject(DatePipe);
+  private readonly store = inject(Store);
   public readonly updateTable = input<unknown>();
 
   public readonly updateTableSignal = effect(() => {
@@ -87,6 +90,28 @@ export class List {
   }
 
   private delete(row: CategoryResponse): void {
-    console.log('delete', row);
+    if (confirm(`Deseja realmente excluir a categoria "${row.nome}"?`)) {
+      this.service.delete(row.id).subscribe({
+        next: (response) => {
+          this.store.dispatch(
+            new OpenToast({
+              title: 'Sucesso',
+              message: response.message || 'Categoria excluída com sucesso',
+              type: 'success',
+            })
+          );
+          this.categoryResource.reload();
+        },
+        error: (err) => {
+          this.store.dispatch(
+            new OpenToast({
+              title: 'Erro',
+              message: err.error?.message || 'Erro ao excluir categoria',
+              type: 'error',
+            })
+          );
+        },
+      });
+    }
   }
 }

@@ -83,16 +83,16 @@
           [field]="registerForm.registerForm.stickCost">
         </app-form-input>
 
-        <!-- Only for Geladinho OR (Picole + Saquinho) -->
-        <app-form-input *ngIf="isGeladinho() || (isPicole() && isSaquinho())" label="Custo Saquinho" type="number"
+        <!-- Standard fields for anything NOT (Picole + Paper) -->
+        <app-form-input *ngIf="!isPicole() || (isPicole() && isSaquinho())" label="Custo Saquinho" type="number"
           [field]="registerForm.registerForm.bagCost">
         </app-form-input>
 
-        <app-form-input *ngIf="isGeladinho() || (isPicole() && isSaquinho())" label="Custo Etiqueta Marca" type="number"
+        <app-form-input *ngIf="!isPicole() || (isPicole() && isSaquinho())" label="Custo Etiqueta Marca" type="number"
           [field]="registerForm.registerForm.brandLabelCost">
         </app-form-input>
 
-        <app-form-input *ngIf="isGeladinho() || (isPicole() && isSaquinho())" label="Custo Etiqueta Sabor" type="number"
+        <app-form-input *ngIf="!isPicole() || (isPicole() && isSaquinho())" label="Custo Etiqueta Sabor" type="number"
           [field]="registerForm.registerForm.flavorLabelCost">
         </app-form-input>
 

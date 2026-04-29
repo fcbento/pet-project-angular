@@ -9,37 +9,38 @@
 
   .purchase__header {
     display: flex;
-    flex-direction: column;
-    gap: vars.$space-lg;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: vars.$space-md;
 
-    .purchase__title {
-      h1 {
-        font-size: vars.$font-size-xl;
-        margin: 0;
-        color: colors.$text-primary;
-      }
 
-      .subtitle {
-        color: colors.$text-muted;
-        font-size: vars.$font-size-sm;
-      }
+    .subtitle {
+      color: colors.$text-secondary;
+      font-size: vars.$font-size-sm;
     }
+  }
 
-    .purchase__actions {
+  .filters {
+    background: colors.$bg-surface;
+    padding: vars.$space-md;
+    border-radius: vars.$radius-md;
+    border: 1px solid colors.$border-default;
+    margin-bottom: vars.$space-md;
+
+    .filters-row {
       display: flex;
-      justify-content: space-between;
+      gap: vars.$space-md;
       align-items: flex-end;
       flex-wrap: wrap;
-      gap: vars.$space-md;
-      width: 100%;
 
-      .filters {
-        display: flex;
-        gap: vars.$space-md;
-        align-items: flex-end;
-        background: colors.$bg-muted;
-        padding: vars.$space-md;
-        border-radius: vars.$radius-md;
+      >* {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .filter-actions {
+        flex: 0 0 auto;
+        margin-bottom: vars.$space-xs;
       }
     }
   }

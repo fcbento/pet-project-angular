@@ -5,19 +5,23 @@
       <span class="subtitle">Controle manual de entradas e fornecedores</span>
     </div>
 
-    <div class="purchase__actions">
-      <div class="filters">
-        <app-form-input label="Início" type="date" [value]="startDate()"
-          (valueChange)="setString(startDate, $event)"></app-form-input>
-        <app-form-input label="Fim" type="date" [value]="endDate()"
-          (valueChange)="setString(endDate, $event)"></app-form-input>
-        <app-button name="Atualizar" type="secondary" (clicked)="reload()" [disabled]="false"></app-button>
-      </div>
-      <div class="main-action">
-        <app-button name="Adicionar Compra" type="primary" (clicked)="openAdd()" [disabled]="false"></app-button>
-      </div>
+    <div class="main-action">
+      <app-button name="Adicionar Compra" type="primary" (clicked)="openAdd()" [disabled]="false"></app-button>
     </div>
   </header>
+
+  <section class="filters">
+    <div class="filters-row">
+      <app-form-input label="Início" type="date" [value]="startDate()"
+        (valueChange)="setString(startDate, $event)"></app-form-input>
+      <app-form-input label="Fim" type="date" [value]="endDate()"
+        (valueChange)="setString(endDate, $event)"></app-form-input>
+      
+      <div class="filter-actions">
+        <app-button name="Atualizar" type="secondary" (clicked)="reload()" [disabled]="false"></app-button>
+      </div>
+    </div>
+  </section>
 
   @if (purchases().length > 0) {
   <main class="purchase__content">

@@ -8,7 +8,14 @@
   flex-direction: column;
   gap: vars.$space-lg;
   width: 100%;
-  padding: 24px;
+  padding: vars.$space-lg;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: vars.$space-md;
+  }
 
   &__register {
     width: 20%;

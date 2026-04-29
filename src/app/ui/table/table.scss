@@ -2,114 +2,222 @@
 @use 'styles/abstracts/colors' as colors;
 @use 'styles/abstracts/mixins' as mixins;
 
+.table-card {
+  background-color: white;
+  border-radius: vars.$radius-lg;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid colors.$border-default;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.table-header {
+  padding: vars.$space-md vars.$space-lg;
+  border-bottom: 1px solid colors.$border-default;
+  background-color: #ffffff;
+
+  .title-group {
+    h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: colors.$text-primary;
+    }
+
+    p {
+      margin: vars.$space-xs 0 0 0;
+      font-size: 0.875rem;
+      color: colors.$text-secondary;
+    }
+  }
+}
+
 .table-container {
   width: 100%;
   overflow-x: auto;
+  scrollbar-width: thin;
+  
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: colors.$border-default;
+    border-radius: 3px;
+  }
 
   table.responsive-table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+    border-collapse: collapse;
     min-width: 600px;
-    border: 1px solid colors.$border-default;
-    border-radius: vars.$radius-md;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
     th,
     td {
-      padding: vars.$space-sm vars.$space-md;
+      padding: vars.$space-md vars.$space-lg;
       text-align: left;
       vertical-align: middle;
     }
 
     th {
-      background-color: colors.$bg-surface;
+      background-color: #fafbfc;
       font-weight: 600;
-      position: sticky;
-      top: 0;
-      z-index: 2;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+      color: colors.$text-secondary;
       border-bottom: 1px solid colors.$border-default;
+      white-space: nowrap;
+      
+      &.sortable {
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: colors.$bg-surface-hover;
+          color: colors.$color-primary;
+        }
+      }
+
+      .sort-icon {
+        margin-left: vars.$space-xs;
+        color: colors.$color-primary;
+        font-weight: bold;
+      }
     }
 
     td {
       background-color: white;
       border-bottom: 1px solid colors.$border-default;
-      padding: 1px 16px;
-    }
-
-    th.sortable {
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .actions-cell {
-      position: relative;
-    }
-
-    .action-trigger {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.2em;
-      padding: 0;
-    }
-
-    .actions-menu {
-      position: absolute;
-      z-index: 10;
-      min-width: 120px;
-      top: -20px;
-    }
-    .action-list {
-      //padding: vars.$space-sm;
-      display: flex;
-      flex-direction: column;
-      gap: vars.$space-sm;
-    }
-
-    .action-list .action-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: vars.$space-xs;
-      padding: 4px 10px;
-      border-radius: vars.$radius-sm;
-      cursor: pointer;
+      color: colors.$text-primary;
+      font-size: 0.95rem;
       transition: background-color 0.2s;
-      border-bottom: 1px solid colors.$border-default;
-      margin: 0 -14px;
-    }
-
-    .action-list .action-item:nth-last-child(1) {
-      border-bottom: none;
-    }
-
-    .selector-cell .select-controls {
-      display: flex;
-      flex-direction: column;
-      gap: vars.$space-xs;
     }
 
     .clickable-row {
       cursor: pointer;
-      transition: background-color 0.15s ease;
 
       &:hover td {
+        background-color: #f8fafc;
+      }
+    }
+
+    .actions-header {
+      width: 60px;
+    }
+
+    .actions-cell {
+      position: relative;
+      text-align: center;
+    }
+
+    .action-trigger {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      transition: background-color 0.2s;
+
+      &:hover {
         background-color: colors.$bg-surface-hover;
       }
     }
 
-    .checkbox-cell {
-      width: 100px;
+    .actions-menu {
+      position: absolute;
+      z-index: 100;
+      min-width: 160px;
+      right: vars.$space-md;
+      top: 100%;
+      margin-top: -10px;
+    }
+
+    .action-list {
+      display: flex;
+      flex-direction: column;
+      padding: vars.$space-xs;
+      background: white;
+      border-radius: vars.$radius-md;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      border: 1px solid colors.$border-default;
+
+      .action-item {
+        display: flex;
+        align-items: center;
+        gap: vars.$space-sm;
+        padding: vars.$space-sm vars.$space-md;
+        border-radius: vars.$radius-sm;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: colors.$text-primary;
+        transition: all 0.2s;
+
+        &:hover {
+          background-color: rgba(colors.$color-primary, 0.1);
+          color: colors.$color-primary;
+        }
+
+        .icon {
+          font-size: 1.1rem;
+        }
+      }
     }
   }
 }
 
-.pagination {
+.pagination-container {
   display: flex;
   align-items: center;
-  gap: vars.$space-sm;
-  justify-content: center;
-  margin-top: vars.$space-md;
+  justify-content: space-between;
+  padding: vars.$space-md vars.$space-lg;
+  background-color: #ffffff;
+  border-top: 1px solid colors.$border-default;
+  flex-wrap: wrap;
+  gap: vars.$space-md;
+
+  .page-size-selector {
+    display: flex;
+    align-items: center;
+    gap: vars.$space-sm;
+    font-size: 0.875rem;
+    color: colors.$text-secondary;
+
+    select {
+      padding: 6px 12px;
+      border-radius: vars.$radius-md;
+      border: 1px solid colors.$border-default;
+      background-color: #f8fafc;
+      cursor: pointer;
+      outline: none;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+
+      &:focus {
+        border-color: colors.$color-primary;
+        box-shadow: 0 0 0 2px rgba(colors.$color-primary, 0.1);
+      }
+
+      &:hover {
+        border-color: colors.$color-primary;
+      }
+    }
+  }
+
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: vars.$space-md;
+
+    .page-info {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: colors.$text-primary;
+      min-width: 120px;
+      text-align: center;
+    }
+  }
 }

@@ -18,7 +18,8 @@
 </section>
 
 @if (products().length > 0) {
-<app-table [columns]="columns()" [data]="products()" [actions]="rowActions" (selectionChange)="onRowsSelected($event)"
+<app-table [columns]="columns()" [data]="products()" [actions]="rowActions" [withPagination]="true"
+  title="Produtos" subtitle="Gerenciamento e controle de estoque de produtos" (selectionChange)="onRowsSelected($event)"
   (rowClick)="onRowClick($event)" />
 } @else {
 <div class="empty-state-card">

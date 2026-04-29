@@ -1,63 +1,81 @@
-<div class="table-container">
-  <table class="responsive-table">
-    <thead>
-      <tr>
-        <!-- <th class="selector-cell"></th> -->
-        @for (col of columns(); track col) {
-        <th [style.width]="col.width" (click)="sortBy(col)" [class.sortable]="col.sortable">
-          {{ col.label }}
-          @if (sortField() === col.field) {
-          <span>{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
-          }
-        </th>
-        }
-        @if (actions()?.length) {
-        <th></th>
-        }
-      </tr>
-    </thead>
-    <tbody>
-      @for (row of currentPageData(); track row) {
-      <tr class="clickable-row" (click)="rowClick.emit(row)">
-        <!-- <td class="checkbox-cell" (click)="$event.stopPropagation()">
-            <input type="checkbox" [checked]="isSelected(row)" (change)="toggleRow(row)" />
-          </td> -->
-        @for (col of columns(); track col) {
-        <td>
-          {{ col.cell ? col.cell(row) : cellValue(row, col.field) }}
-        </td>
-        }
-        @if (actions()?.length) {
-        <td class="actions-cell" (mouseenter)="actionMenuFor.set(row)" (mouseleave)="actionMenuFor.set(null)"
-          (click)="$event.stopPropagation()">
-          <app-button class="action-trigger" name="⋮" type="tertiary" [disabled]="false"></app-button>
-          @if (actionMenuFor() === row) {
-          <div class="actions-menu">
-            <app-card class="action-list">
-              @for (act of actions(); track act) {
-              <div class="action-item" (click)="runAction(act, row, $event)" (keyup.enter)="runAction(act, row, $event)"
-                tabindex="0" type="secondary">
-                @if (act.icon) {
-                <span class="icon">{{ act.icon }}</span>
-                }
-                {{ act.label }}
-              </div>
-              }
-            </app-card>
-          </div>
-          }
-        </td>
-        }
-      </tr>
-      }
-    </tbody>
-  </table>
-
-  @if (pageCount() > 1) {
-  <div class="pagination">
-    <button (click)="prevPage()" [disabled]="page() === 1">&lt;</button>
-    <span>Page {{ page() }} / {{ pageCount() }}</span>
-    <button (click)="nextPage()" [disabled]="page() === pageCount()">&gt;</button>
+<div class="table-card">
+  @if (title() || subtitle()) {
+  <div class="table-header">
+    <div class="title-group">
+      @if (title()) { <h2>{{ title() }}</h2> }
+      @if (subtitle()) { <p>{{ subtitle() }}</p> }
+    </div>
   </div>
   }
-</div>
+
+  <div class="table-container">
+    <table class="responsive-table">
+      <thead>
+        <tr>
+          @for (col of columns(); track col) {
+          <th [style.width]="col.width" (click)="sortBy(col)" [class.sortable]="col.sortable">
+            {{ col.label }}
+            @if (sortField() === col.field) {
+            <span class="sort-icon">{{ sortDirection() === 'asc' ? '↑' : '↓' }}</span>
+            }
+          </th>
+          }
+          @if (actions()?.length) {
+          <th class="actions-header"></th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of currentPageData(); track row) {
+        <tr class="clickable-row" (click)="rowClick.emit(row)">
+          @for (col of columns(); track col) {
+          <td>
+            {{ col.cell ? col.cell(row) : cellValue(row, col.field) }}
+          </td>
+          }
+          @if (actions()?.length) {
+          <td class="actions-cell" (mouseenter)="actionMenuFor.set(row)" (mouseleave)="actionMenuFor.set(null)"
+            (click)="$event.stopPropagation()">
+            <app-button class="action-trigger" name="⋮" type="tertiary" [disabled]="false"></app-button>
+            @if (actionMenuFor() === row) {
+            <div class="actions-menu">
+              <app-card class="action-list">
+                @for (act of actions(); track act) {
+                <div class="action-item" (click)="runAction(act, row, $event)"
+                  (keyup.enter)="runAction(act, row, $event)" tabindex="0" type="secondary">
+                  @if (act.icon) {
+                  <span class="icon">{{ act.icon }}</span>
+                  }
+                  {{ act.label }}
+                </div>
+                }
+              </app-card>
+            </div>
+            }
+          </td>
+          }
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (withPagination()) {
+  <div class="pagination-container">
+    <div class="page-size-selector">
+      <span>Itens por página:</span>
+      <select [value]="pageSize()" (change)="onPageSizeChange($event)">
+        @for (option of pageSizeOptions(); track option) {
+        <option [value]="option">{{ option }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="pagination-controls">
+      <app-button (click)="prevPage()" [disabled]="page() === 1" name="Anterior" type="secondary"></app-button>
+      <span class="page-info">Página {{ page() }} de {{ pageCount() }}</span>
+      <app-button (click)="nextPage()" [disabled]="page() === pageCount()" name="Próximo" type="secondary"></app-button>
+    </div>
+  </div>
+  }
+</div>

@@ -28,7 +28,8 @@
 </section>
 
 @if (sales().length > 0) {
-<app-table [columns]="columns" [data]="sales()" [actions]="rowActions" (selectionChange)="onRowsSelected($event)" />
+<app-table [columns]="columns" [data]="sales()" [actions]="rowActions" [withPagination]="true" title="Histórico de Vendas"
+  subtitle="Listagem detalhada de todas as vendas realizadas" (selectionChange)="onRowsSelected($event)" />
 } @else {
 <div class="empty-state-card">
   <span class="icon">🔍</span>

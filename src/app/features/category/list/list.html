@@ -21,6 +21,9 @@
     [columns]="columns"
     [data]="categories()"
     [actions]="rowActions"
+    [withPagination]="true"
+    title="Categorias"
+    subtitle="Organização de produtos por categorias"
     (selectionChange)="onRowsSelected($event)"
   ></app-table>
 } @else {

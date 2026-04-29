@@ -15,6 +15,10 @@ export class Table<T> {
   public readonly columns = input.required<TableColumn<T>[]>();
   public readonly data = input.required<T[]>();
   public readonly actions = input<TableAction<T>[]>();
+  public readonly withPagination = input<boolean>(false);
+  public readonly pageSizeOptions = input<number[]>([10, 50, 100]);
+  public readonly title = input<string>();
+  public readonly subtitle = input<string>();
   private readonly _selected = signal<Set<T>>(new Set());
   public readonly selectedCount = computed(() => this._selected().size);
   public readonly allSelected = computed(
@@ -33,7 +37,10 @@ export class Table<T> {
 
   public readonly page = signal(1);
   public readonly pageSize = signal(10);
-  public readonly pageCount = computed(() => Math.ceil(this.sortedData().length / this.pageSize()));
+  public readonly pageCount = computed(() => {
+    if (!this.withPagination()) return 1;
+    return Math.ceil(this.sortedData().length / this.pageSize());
+  });
 
   public readonly actionMenuFor = signal<T | null>(null);
 
@@ -68,6 +75,9 @@ export class Table<T> {
 
   public readonly currentPageData = computed(() => {
     const sd = this.sortedData();
+    if (!this.withPagination()) {
+      return sd;
+    }
     const start = (this.page() - 1) * this.pageSize();
     return sd.slice(start, start + this.pageSize());
   });
@@ -157,5 +167,15 @@ export class Table<T> {
     if (this.page() > 1) {
       this.page.update((p) => p - 1);
     }
+  }
+
+  public setPageSize(size: number): void {
+    this.pageSize.set(size);
+    this.page.set(1);
+  }
+
+  public onPageSizeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.setPageSize(Number(target.value));
   }
 }

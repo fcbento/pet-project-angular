@@ -21,7 +21,8 @@
 
   @if (purchases().length > 0) {
   <main class="purchase__content">
-    <app-table [columns]="columns" [data]="purchases()" [actions]="actions">
+    <app-table [columns]="columns" [data]="purchases()" [actions]="actions" [withPagination]="true" title="Compras e Entradas"
+      subtitle="Registro de entradas de mercadorias e insumos">
     </app-table>
   </main>
   } @else {

@@ -14,7 +14,7 @@ export type DialogType = 'danger' | 'info' | 'success';
 export class ConfirmDialog {
   public readonly isOpen = model(false);
   public readonly title = input<string>('Confirmação');
-  public readonly message = input<string>('Você tem certeza que deseja realizar esta ação?');
+  public readonly message = input<string>('');
   public readonly confirmText = input<string>('Confirmar');
   public readonly cancelText = input<string>('Cancelar');
   public readonly type = input<DialogType>('danger');

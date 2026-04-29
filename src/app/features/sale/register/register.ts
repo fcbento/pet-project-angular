@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, computed, inject, signal, effect } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Field } from '@angular/forms/signals';
@@ -12,6 +12,7 @@ import { OpenToast } from '../../../utility/store/toast/toast.actions';
 import { ToastModel } from '../../../utility/store/toast/toast.models';
 import { ProductService } from '../../product/product.service';
 import { CategoryService } from '../../category/category.service';
+import { ConfirmDialog } from '../../../ui/confirm-dialog/confirm-dialog';
 import { ProductResponse } from '../../product/list/list.models';
 import { SaleService } from '../sale.service';
 import { SaleRegisterForm } from './register.form';
@@ -28,7 +29,7 @@ export interface SaleItemDraft {
 @Component({
   selector: 'app-sale-register',
   standalone: true,
-  imports: [FormInput, FormDate, FormSelect, Button, CurrencyPipe, Field],
+  imports: [CommonModule, FormInput, FormDate, FormSelect, Button, CurrencyPipe, DatePipe, Field, ConfirmDialog],
   templateUrl: './register.html',
   styleUrl: './register.scss',
   providers: [SaleRegisterForm],
@@ -125,6 +126,9 @@ export class SaleRegister {
   });
   public readonly selectedQuantity = signal<number>(1);
   public readonly saleItems = signal<SaleItemDraft[]>([]); // items added to the sale
+  
+  // Confirmation State
+  public readonly isConfirmDialogOpen = signal(false);
   
   public readonly totalSalePrice = computed(() => {
     return this.saleItems().reduce((acc, curr) => acc + (curr.sellPrice * curr.quantity), 0);
@@ -243,7 +247,7 @@ export class SaleRegister {
 
     if (!form().valid() || !form().value().origem?.trim() || !form().value().sellDate) {
        this.toast({
-        title: 'Erro ao cadastrar venda',
+        title: 'Dados incompletos',
         message: 'Preencha os campos obrigatórios (Origem e Data)',
         type: 'error',
        });
@@ -252,13 +256,19 @@ export class SaleRegister {
 
     if (this.saleItems().length === 0) {
       this.toast({
-        title: 'Erro ao cadastrar venda',
+        title: 'Sem itens',
         message: 'A venda deve possuir pelo menos um produto',
         type: 'error',
        });
       return;
     }
 
+    this.isConfirmDialogOpen.set(true);
+  }
+
+  public executeSave(): void {
+    const form = this.registerForm.registerForm;
+    this.isConfirmDialogOpen.set(false);
     this.registerForm.isSubmitting.set(true);
 
     const payload = {

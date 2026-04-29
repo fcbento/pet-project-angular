@@ -1,116 +1,135 @@
 @if (hasProducts()) {
-  <section class="form-card">
-    <h2>Nova Venda</h2>
-    
-    <div class="form-row">
-      <app-form-select 
-        label="Origem" 
-        placeholder="Selecione..." 
-        [options]="origemOptions()"
-        [field]="registerForm.registerForm.origem"
-      />
-      <app-form-date 
-        label="Data da Venda" 
-        [field]="registerForm.registerForm.sellDate"
-      />
-    </div>
+<section class="form-card">
+  <h2>Nova Venda</h2>
 
-    <hr class="divider" />
+  <div class="form-row">
+    <app-form-select label="Origem" placeholder="Selecione..." [options]="origemOptions()"
+      [field]="registerForm.registerForm.origem" />
+    <app-form-date label="Data da Venda" [field]="registerForm.registerForm.sellDate" />
+  </div>
 
-    <h3>Itens da Venda</h3>
-    @if (saleItems().length > 0) {
-      <div class="header-actions">
-        <app-button name="Limpar Itens" type="tertiary" [disabled]="false" (clicked)="clearItems()"></app-button>
-      </div>
+  <hr class="divider" />
+
+  <h3>Itens da Venda</h3>
+  @if (saleItems().length > 0) {
+  <div class="header-actions">
+    <app-button name="Limpar Itens" type="tertiary" [disabled]="false" (clicked)="clearItems()"></app-button>
+  </div>
+  }
+  <div class="add-item-row">
+    <app-form-select label="Categoria" placeholder="Selecione..." [options]="categoryOptions()"
+      [(value)]="selectedCategoryId" (valueChange)="selectedProductId.set(null)" />
+
+    @if (selectedCategoryId()) {
+    <app-form-select label="Produto" placeholder="Selecione..." [options]="productOptions()"
+      [(value)]="selectedProductId" />
     }
-    <div class="add-item-row">
-      <app-form-select 
-        label="Categoria" 
-        placeholder="Selecione..."
-        [options]="categoryOptions()"
-        [(value)]="selectedCategoryId"
-        (valueChange)="selectedProductId.set(null)"
-      />
 
-      @if (selectedCategoryId()) {
-        <app-form-select 
-          label="Produto" 
-          placeholder="Selecione..."
-          [options]="productOptions()"
-          [(value)]="selectedProductId"
-        />
-      }
-
-      <app-form-input 
-        label="Quantidade" 
-        type="number"
-        [value]="selectedQuantity().toString()"
-        (valueChange)="selectedQuantity.set(+$event)"
-      />
-      <div class="add-action">
-        <app-button name="Adicionar Item" type="primary" [disabled]="!canAddItem()" (clicked)="addItem()"></app-button>
-      </div>
-    </div>
-
-    <div class="items-list">
-      @if (saleItems().length === 0) {
-        <p class="empty-list">Nenhum item adicionado à venda ainda.</p>
-      } @else {
-        <table class="items-table">
-          <thead>
-            <tr>
-              <th>Produto</th>
-              <th>Preço Unit.</th>
-              <th>Quantidade</th>
-              <th>Subtotal</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (item of saleItems(); track $index) {
-              <tr>
-                <td>{{ item.productName }}</td>
-                <td>{{ item.sellPrice | currency:'BRL':'symbol':'1.2-2' }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.sellPrice * item.quantity | currency:'BRL':'symbol':'1.2-2' }}</td>
-                <td>
-                  <button class="btn-remove" (click)="removeItem($index)">Remover</button>
-                </td>
-              </tr>
-            }
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="3" class="total-label">Total da Venda</td>
-              <td colspan="2" class="total-value">{{ totalSalePrice() | currency:'BRL':'symbol':'1.2-2' }}</td>
-            </tr>
-          </tfoot>
-        </table>
-      }
-    </div>
-
-    <div class="actions">
-      <app-button 
-        name="Cancelar" 
-        type="secondary" 
-        (clicked)="cancel()" 
-        [disabled]="registerForm.isSubmitting()"
-      />
-      <app-button 
-        name="Salvar Venda" 
-        type="primary" 
-        (clicked)="submit()" 
-        [disabled]="registerForm.isSubmitting() || !canSubmit()"
-        [loading]="registerForm.isSubmitting()"
-      />
-    </div>
-  </section>
-} @else {
-  <div class="empty-state-card">
-    <span class="icon">🚫</span>
-    <p>Não há produtos cadastrados. Não é possível realizar uma venda sem produtos.</p>
-    <div class="actions">
-      <app-button name="Voltar" type="secondary" [disabled]="false" (clicked)="cancel()"></app-button>
+    <app-form-input label="Quantidade" type="number" [value]="selectedQuantity().toString()"
+      (valueChange)="selectedQuantity.set(+$event)" />
+    <div class="add-action">
+      <app-button name="Adicionar Item" type="primary" [disabled]="!canAddItem()" (clicked)="addItem()"></app-button>
     </div>
   </div>
+
+  <div class="items-list">
+    @if (saleItems().length === 0) {
+    <p class="empty-list">Nenhum item adicionado à venda ainda.</p>
+    } @else {
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Preço Unit.</th>
+          <th>Quantidade</th>
+          <th>Subtotal</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of saleItems(); track $index) {
+        <tr>
+          <td>{{ item.productName }}</td>
+          <td>{{ item.sellPrice | currency:'BRL':'symbol':'1.2-2' }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.sellPrice * item.quantity | currency:'BRL':'symbol':'1.2-2' }}</td>
+          <td>
+            <button class="btn-remove" (click)="removeItem($index)">Remover</button>
+          </td>
+        </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="total-label">Total da Venda</td>
+          <td colspan="2" class="total-value">{{ totalSalePrice() | currency:'BRL':'symbol':'1.2-2' }}</td>
+        </tr>
+      </tfoot>
+    </table>
+    }
+  </div>
+
+  <div class="actions">
+    <app-button name="Cancelar" type="secondary" (clicked)="cancel()" [disabled]="registerForm.isSubmitting()" />
+    <app-button name="Salvar Venda" type="primary" (clicked)="submit()"
+      [disabled]="registerForm.isSubmitting() || !canSubmit()" [loading]="registerForm.isSubmitting()" />
+  </div>
+</section>
+} @else {
+<div class="empty-state-card">
+  <span class="icon">🚫</span>
+  <p>Não há produtos cadastrados. Não é possível realizar uma venda sem produtos.</p>
+  <div class="actions">
+    <app-button name="Voltar" type="secondary" [disabled]="false" (clicked)="cancel()"></app-button>
+  </div>
+</div>
 }
+<app-confirm-dialog [(isOpen)]="isConfirmDialogOpen" title="Confirmar Venda" confirmText="Confirmar"
+  cancelText="Revisar" type="success" (confirm)="executeSave()">
+
+  <div class="sale-summary-dialog">
+    <div class="summary-header">
+      <p>Confira os dados da venda antes de finalizar:</p>
+    </div>
+
+    <div class="summary-details">
+      <div class="detail-item">
+        <span class="label">Origem:</span>
+        <span class="value">{{ registerForm.registerForm().value().origem }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Data:</span>
+        <span class="value">{{ registerForm.registerForm().value().sellDate | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Total de Itens:</span>
+        <span class="value">{{ saleItems().length }} itens</span>
+      </div>
+      <div class="detail-item total">
+        <span class="label">Total da Venda:</span>
+        <span class="value">{{ totalSalePrice() | currency:'BRL' }}</span>
+      </div>
+    </div>
+
+    <div class="summary-table-wrapper">
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Qtd</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of saleItems(); track $index) {
+          <tr>
+            <td>{{ item.productName }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.sellPrice * item.quantity | currency:'BRL' }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</app-confirm-dialog>

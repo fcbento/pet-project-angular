@@ -164,3 +164,86 @@
     margin-top: vars.$space-lg;
   }
 }
+
+// Sale Summary Dialog Styles
+.sale-summary-dialog {
+  text-align: left;
+  animation: fadeIn 0.3s ease;
+
+  .summary-header {
+    margin-bottom: vars.$space-lg;
+    p {
+      color: colors.$text-secondary;
+      font-size: 0.95rem;
+    }
+  }
+
+  .summary-details {
+    background: #f8fafc;
+    padding: vars.$space-md;
+    border-radius: vars.$radius-lg;
+    margin-bottom: vars.$space-lg;
+    border: 1px solid #e2e8f0;
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: vars.$space-xs;
+      font-size: 0.9rem;
+
+      .label {
+        color: colors.$text-secondary;
+      }
+
+      .value {
+        font-weight: 600;
+        color: colors.$text-primary;
+      }
+
+      &.total {
+        margin-top: vars.$space-sm;
+        padding-top: vars.$space-sm;
+        border-top: 1px dashed #cbd5e1;
+        font-size: 1.1rem;
+
+        .value {
+          color: #059669;
+          font-weight: 800;
+        }
+      }
+    }
+  }
+
+  .summary-table-wrapper {
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: vars.$radius-md;
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+
+      th {
+        position: sticky;
+        top: 0;
+        background: #f1f5f9;
+        padding: vars.$space-xs vars.$space-sm;
+        text-align: left;
+        color: colors.$text-secondary;
+        font-weight: 600;
+      }
+
+      td {
+        padding: vars.$space-xs vars.$space-sm;
+        border-bottom: 1px solid #f1f5f9;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

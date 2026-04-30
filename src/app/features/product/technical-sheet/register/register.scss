@@ -154,15 +154,87 @@
         font-weight: 500;
       }
 
-      .ingredient-add-form {
-        display: grid;
-        grid-template-columns: 2fr 1fr 1fr 1fr auto;
-        gap: 1rem;
-        align-items: flex-end;
+      .card-description {
+        color: #888;
+        font-size: 0.9rem;
+        margin-top: -1rem;
+        margin-bottom: 1rem;
+      }
+
+      .ingredient-checklist {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .ingredient-check-row {
         background: #fdfdfd;
-        padding: 1rem;
+        border: 1px solid #eee;
         border-radius: 8px;
-        border: 1px dashed #ddd;
+        padding: 1rem;
+        transition: all 0.2s ease;
+
+        &.selected {
+          border-color: #007bff;
+          background: #f0f7ff;
+        }
+
+        .ingredient-checkbox {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          cursor: pointer;
+
+          input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #007bff;
+            cursor: pointer;
+          }
+
+          .ingredient-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+
+            strong {
+              font-size: 0.95rem;
+              color: #333;
+            }
+
+            .ingredient-meta {
+              font-size: 0.8rem;
+              color: #888;
+            }
+          }
+        }
+
+        .yield-input {
+          display: flex;
+          align-items: flex-end;
+          gap: 1rem;
+          margin-top: 0.75rem;
+          padding-left: 2.5rem;
+
+          .subtotal-badge {
+            font-size: 0.85rem;
+            color: #27ae60;
+            font-weight: 600;
+            white-space: nowrap;
+            padding-bottom: 0.75rem;
+          }
+        }
+      }
+
+      .empty-ingredients {
+        text-align: center;
+        padding: 2rem;
+        color: #999;
+
+        a {
+          color: #007bff;
+          text-decoration: underline;
+        }
       }
 
       .ingredients-list {
@@ -187,25 +259,6 @@
               text-align: center;
               padding: 3rem;
               color: #999;
-            }
-          }
-
-          .btn-remove {
-            background: #ff7675;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.2s;
-
-            &:hover:not(:disabled) {
-              background: #d63031;
-            }
-
-            &:disabled {
-              background: #ffb8b8;
-              cursor: not-allowed;
             }
           }
         }

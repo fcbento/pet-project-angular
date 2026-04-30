@@ -42,6 +42,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/sale/sale.const').then((m) => m.SALE_ROUTES),
       },
       {
+        path: 'ingredientes',
+        loadComponent: () => import('./features/ingredient/list/list').then((m) => m.IngredientList),
+      },
+      {
         path: 'orcamento',
         loadComponent: () => import('./features/budget/budget').then((m) => m.Budget),
       },

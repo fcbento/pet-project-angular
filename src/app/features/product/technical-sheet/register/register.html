@@ -7,55 +7,69 @@
   </div>
 
   <div class="content-grid">
-    <!-- Reordered DOM: Left Column first -->
-    <!-- Full Width: Ingredients -->
+    <!-- Ingredients Section — Checkboxes from Central Module -->
     <div class="card ingredients-card">
       <h3>Ingredientes</h3>
-      <div class="ingredient-add-form">
-        <app-form-input label="Nome do Ingrediente" placeholder="Ex: Leite Condensado" [value]="newIngredientName()"
-          (valueChange)="newIngredientName.set($event)"></app-form-input>
-        <app-form-input label="Quantidade" type="number" [value]="String(newIngredientQuantity())"
-          (valueChange)="onQuantityChange($event)"></app-form-input>
-        <app-form-input label="Unidade" placeholder="g, kg, ml, un" [value]="newIngredientUnit()"
-          (valueChange)="newIngredientUnit.set($event)"></app-form-input>
-        <app-form-input label="Valor Unitário (Insumo)" type="number" [value]="String(newIngredientValue())"
-          (valueChange)="onValueChange($event)"></app-form-input>
-        <app-button name="Adicionar" type="primary" [disabled]="!canAddItem()" (clicked)="addIngredient()"></app-button>
+      <p class="card-description">Selecione os ingredientes e informe o rendimento de cada um na receita.</p>
+
+      @if (ingredientSelections().length > 0) {
+      <div class="ingredient-checklist">
+        @for (sel of ingredientSelections(); track sel.ingredientId) {
+        <div class="ingredient-check-row" [class.selected]="sel.selected">
+          <label class="ingredient-checkbox">
+            <input type="checkbox" [checked]="sel.selected" (change)="toggleIngredient(sel.ingredientId)">
+            <span class="ingredient-info">
+              <strong>{{ sel.ingredientName }}</strong>
+              <span class="ingredient-meta">{{ sel.unit }} · {{ sel.unitPrice | currency: 'BRL' }}</span>
+            </span>
+          </label>
+
+          @if (sel.selected) {
+          <div class="yield-input">
+            <app-form-input label="Rende" type="number" placeholder="Qtd que rende" [value]="String(sel.yieldQuantity)"
+              (valueChange)="updateYield(sel.ingredientId, $event)"></app-form-input>
+            @if (sel.yieldQuantity > 0) {
+            <span class="subtotal-badge">Subtotal: {{ (sel.unitPrice / sel.yieldQuantity) | currency: 'BRL'
+              }}</span>
+            }
+          </div>
+          }
+        </div>
+        }
       </div>
 
+      <!-- Summary Table -->
+      @if (selectedIngredients().length > 0) {
       <div class="ingredients-list mt-4">
         <table>
           <thead>
             <tr>
               <th>Ingrediente</th>
-              <th>Quantidade</th>
               <th>Unidade</th>
-              <th>Valor Unit.</th>
+              <th>Preço Unit.</th>
+              <th>Rende</th>
               <th>Subtotal</th>
-              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            @for (ing of ingredients(); track $index) {
+            @for (ing of selectedIngredients(); track ing.ingredientId) {
             <tr>
-              <td>{{ ing.name }}</td>
-              <td>{{ ing.quantity }}</td>
+              <td>{{ ing.ingredientName }}</td>
               <td>{{ ing.unit }}</td>
-              <td>{{ ing.value | currency: 'BRL' }}</td>
-              <td>{{ (ing.value / ing.quantity) | currency: 'BRL' }}</td>
-              <td>
-                <button class="btn-remove" [disabled]="ingredients().length === 1"
-                  (click)="removeIngredient($index)">Remover</button>
-              </td>
-            </tr>
-            } @empty {
-            <tr>
-              <td colspan="6" class="empty-state">Nenhum ingrediente adicionado</td>
+              <td>{{ ing.unitPrice | currency: 'BRL' }}</td>
+              <td>{{ ing.yieldQuantity }}</td>
+              <td>{{ (ing.yieldQuantity > 0 ? ing.unitPrice / ing.yieldQuantity : 0) | currency: 'BRL' }}</td>
             </tr>
             }
           </tbody>
         </table>
       </div>
+      }
+      } @else {
+      <div class="empty-ingredients">
+        <p>Nenhum ingrediente cadastrado no sistema. <a routerLink="/dashboard/ingredientes">Cadastre ingredientes primeiro.</a></p>
+      </div>
+      }
     </div>
 
     <!-- Full Width: Packaging -->

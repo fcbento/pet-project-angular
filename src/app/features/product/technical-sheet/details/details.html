@@ -91,22 +91,24 @@
         <thead>
           <tr>
             <th>Ingrediente</th>
-            <th>Quantidade</th>
             <th>Unidade</th>
-            <th>Valor</th>
+            <th>Preço Unit.</th>
+            <th>Rende</th>
+            <th>Subtotal</th>
           </tr>
         </thead>
         <tbody>
-          @for (ing of sheet()!.ingredients; track $index) {
+          @for (ing of sheet()!.ingredients; track ing.ingredientId) {
           <tr>
-            <td>{{ ing.name }}</td>
-            <td>{{ ing.quantity }}</td>
+            <td>{{ ing.ingredientName }}</td>
             <td>{{ ing.unit }}</td>
-            <td>{{ ing.value | currency: 'BRL' }}</td>
+            <td>{{ ing.unitPrice | currency: 'BRL' }}</td>
+            <td>{{ ing.yieldQuantity }}</td>
+            <td>{{ ing.subtotal | currency: 'BRL' }}</td>
           </tr>
           } @empty {
           <tr>
-            <td colspan="4" class="empty-cell">Nenhum ingrediente cadastrado</td>
+            <td colspan="5" class="empty-cell">Nenhum ingrediente cadastrado</td>
           </tr>
           }
         </tbody>

@@ -11,6 +11,10 @@ export const DASHBOARD_ROUTES = [
     name: 'Produto',
     link: 'produto',
   },
+  {
+    name: 'Ingredientes',
+    link: 'ingredientes',
+  },
   // {
   //   name: 'Cliente',
   //   link: 'cliente',

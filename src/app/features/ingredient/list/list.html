@@ -1,0 +1,41 @@
+<section class="ingredient-container">
+  <header class="ingredient__header">
+    <div class="title-group">
+      <h1>Ingredientes</h1>
+      <span class="subtitle">Módulo central de insumos e matéria-prima</span>
+    </div>
+
+    <div class="main-action">
+      <app-button name="Novo Ingrediente" type="primary" (clicked)="openAdd()" [disabled]="false"></app-button>
+    </div>
+  </header>
+
+  @if (ingredients().length > 0) {
+  <main class="ingredient__content">
+    <app-table [columns]="columns" [data]="ingredients()" [actions]="actions" [withPagination]="true" title="Ingredientes Cadastrados" subtitle="Gerencie os insumos utilizados nas fichas técnicas"></app-table>
+  </main>
+  } @else {
+  <div class="empty-state-card">
+    <span class="icon">🧂</span>
+    <p>Nenhum ingrediente cadastrado ainda. Vamos adicionar o primeiro? ✨</p>
+    <app-button name="Cadastrar Ingrediente" type="primary" (clicked)="openAdd()" [disabled]="false"></app-button>
+  </div>
+  }
+
+  <app-modal [title]="isEditing() ? 'Editar Ingrediente' : 'Novo Ingrediente'" [(isOpen)]="isModalOpen">
+    <div class="ingredient-form">
+      <app-form-input label="Nome do Ingrediente" type="text" [value]="formName()" (valueChange)="setString(formName, $event)" placeholder="Ex: Leite Condensado"></app-form-input>
+      <div class="form-row">
+        <app-form-input label="Unidade" type="text" [value]="formUnit()" (valueChange)="setString(formUnit, $event)" placeholder="Ex: kg, g, ml, un"></app-form-input>
+        <app-form-input label="Preço Unitário" type="number" [value]="String(formUnitPrice())" (valueChange)="setNumber(formUnitPrice, $event)"></app-form-input>
+      </div>
+    </div>
+
+    <div footer>
+      <app-button name="Cancelar" type="secondary" (clicked)="isModalOpen.set(false)" [disabled]="false"></app-button>
+      <app-button [name]="isEditing() ? 'Salvar Alterações' : 'Cadastrar'" type="primary" (clicked)="save()" [disabled]="!formName() || formUnitPrice() <= 0"></app-button>
+    </div>
+  </app-modal>
+
+  <app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Ingrediente" [message]="deleteMessage()" confirmText="Sim, Excluir" cancelText="Cancelar" type="danger" (confirm)="confirmDelete()"></app-confirm-dialog>
+</section>

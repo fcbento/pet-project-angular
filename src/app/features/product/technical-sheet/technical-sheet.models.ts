@@ -1,8 +1,17 @@
+// DTO usado no request da ficha técnica (ingredientId + rendimento)
 export interface IngredientDTO {
-  name: string;
-  quantity: number;
+  ingredientId: number;
+  yieldQuantity: number;
+}
+
+// Response enriquecido de ingrediente na ficha técnica
+export interface IngredientSheetItem {
+  ingredientId: number;
+  ingredientName: string;
   unit: string;
-  value: number;
+  unitPrice: number;
+  yieldQuantity: number;
+  subtotal: number;
 }
 
 export interface PackagingDTO {
@@ -37,7 +46,7 @@ export interface TechnicalSheetResponse {
   yieldWeight: number;
   storage: string;
   validity: string;
-  ingredients: IngredientDTO[];
+  ingredients: IngredientSheetItem[];
   packaging: PackagingDTO;
   totalCost: number;
   unitCost: number;

@@ -11,8 +11,20 @@ import { OpenToast } from '../../../../utility/store/toast/toast.actions';
 import { ProductService } from '../../product.service';
 import { CategoryService } from '../../../category/category.service';
 import { TechnicalSheetService } from '../technical-sheet.service';
+import { IngredientService } from '../../../ingredient/ingredient.service';
+import { IngredientResponse } from '../../../ingredient/ingredient.models';
 import { TechnicalSheetForm } from './register.form';
-import { IngredientDTO, TechnicalSheetRequest } from '../technical-sheet.models';
+import { IngredientDTO, IngredientSheetItem, TechnicalSheetRequest } from '../technical-sheet.models';
+
+// Local state for ingredient selection with yield
+interface IngredientSelection {
+  ingredientId: number;
+  ingredientName: string;
+  unit: string;
+  unitPrice: number;
+  selected: boolean;
+  yieldQuantity: number;
+}
 
 @Component({
   selector: 'app-technical-sheet-register',
@@ -27,6 +39,7 @@ export class TechnicalSheetRegister {
   private readonly service = inject(TechnicalSheetService);
   private readonly productService = inject(ProductService);
   private readonly categoryService = inject(CategoryService);
+  private readonly ingredientService = inject(IngredientService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(Store);
@@ -45,6 +58,12 @@ export class TechnicalSheetRegister {
   public readonly productResource = rxResource({
     stream: () => this.productService.getAll(),
   });
+
+  // Central ingredients from API
+  public readonly centralIngredients = signal<IngredientResponse[]>([]);
+
+  // Ingredient selection state (checkboxes + yield)
+  public readonly ingredientSelections = signal<IngredientSelection[]>([]);
 
   // Computed Options — only categories that have at least one product
   public readonly categoryOptions = computed(() => {
@@ -89,17 +108,13 @@ export class TechnicalSheetRegister {
   public readonly isPapel = computed(() => this.registerForm.registerForm().value().packagingType === 'PAPEL');
   public readonly isSaquinho = computed(() => this.registerForm.registerForm().value().packagingType === 'SAQUINHO');
 
-  // Ingredients State
-  public readonly ingredients = signal<IngredientDTO[]>([]);
-  public readonly newIngredientName = signal<string | number>('');
-  public readonly newIngredientQuantity = signal<number>(0);
-  public readonly newIngredientUnit = signal<string | number>('g');
-  public readonly newIngredientValue = signal<number>(0);
-
   // Auto-fill if productId is in query params
   public readonly isEditMode = signal(false);
 
   public constructor() {
+    // Load central ingredients
+    this.loadIngredients();
+
     const params = this.route.snapshot.queryParams;
     if (params['productId']) {
       const id = Number(params['productId']);
@@ -128,7 +143,25 @@ export class TechnicalSheetRegister {
         this.registerForm.patchIfoodPrice(suggested);
       }
     }, { allowSignalWrites: true });
+  }
 
+  private loadIngredients(): void {
+    this.ingredientService.findAll().subscribe({
+      next: (ingredients) => {
+        this.centralIngredients.set(ingredients);
+        // Initialize selection state (all unchecked, yield=0)
+        this.ingredientSelections.set(
+          ingredients.map(ing => ({
+            ingredientId: ing.id,
+            ingredientName: ing.name,
+            unit: ing.unit,
+            unitPrice: ing.unitPrice,
+            selected: false,
+            yieldQuantity: 0,
+          }))
+        );
+      }
+    });
   }
 
   private loadExistingSheet(productId: number): void {
@@ -153,14 +186,23 @@ export class TechnicalSheetRegister {
           hasResale: product?.hasResale || ((sheet.resalePrice ?? 0) > 0) || false,
           resalePrice: sheet.resalePrice || 0,
         });
-        this.ingredients.set(sheet.ingredients);
+
+        // Mark ingredients from the sheet as selected
+        this.ingredientSelections.update(selections => {
+          return selections.map(sel => {
+            const sheetIng = sheet.ingredients.find(i => i.ingredientId === sel.ingredientId);
+            if (sheetIng) {
+              return { ...sel, selected: true, yieldQuantity: sheetIng.yieldQuantity };
+            }
+            return { ...sel, selected: false, yieldQuantity: 0 };
+          });
+        });
       },
       error: () => {
         // No existing sheet — show blank form for new registration
         this.isEditMode.set(false);
         this.registerForm.resetForm();
         
-        // Se já temos o produto carregado, pegamos o estado dele (US-020)
         if (product) {
             this.registerForm.registerForm().reset({
                 ...this.registerForm.registerForm().value(),
@@ -171,7 +213,8 @@ export class TechnicalSheetRegister {
             });
         }
         
-        this.ingredients.set([]);
+        // Reset all ingredient selections
+        this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false, yieldQuantity: 0 })));
       },
     });
   }
@@ -181,7 +224,7 @@ export class TechnicalSheetRegister {
     this.selectedProductId.set(null);
     this.isEditMode.set(false);
     this.registerForm.resetForm();
-    this.ingredients.set([]);
+    this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false, yieldQuantity: 0 })));
   }
 
   public onProductChange(value: string | number | null): void {
@@ -192,7 +235,7 @@ export class TechnicalSheetRegister {
     } else {
       this.isEditMode.set(false);
       this.registerForm.resetForm();
-      this.ingredients.set([]);
+      this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false, yieldQuantity: 0 })));
     }
   }
 
@@ -203,46 +246,39 @@ export class TechnicalSheetRegister {
     });
   }
 
-  public onQuantityChange(value: string | number): void {
-    this.newIngredientQuantity.set(Number(value) || 0);
+  // Ingredient checkbox toggle
+  public toggleIngredient(ingredientId: number): void {
+    this.ingredientSelections.update(sels =>
+      sels.map(s =>
+        s.ingredientId === ingredientId
+          ? { ...s, selected: !s.selected, yieldQuantity: !s.selected ? s.yieldQuantity : 0 }
+          : s
+      )
+    );
   }
 
-  public onValueChange(value: string | number): void {
-    this.newIngredientValue.set(Number(value) || 0);
+  // Update yield for a specific ingredient
+  public updateYield(ingredientId: number, value: string | number | null): void {
+    if (value === null) return;
+    this.ingredientSelections.update(sels =>
+      sels.map(s =>
+        s.ingredientId === ingredientId
+          ? { ...s, yieldQuantity: Number(value) || 0 }
+          : s
+      )
+    );
   }
 
-  public addIngredient(): void {
-    if (!this.newIngredientName() || this.newIngredientQuantity() <= 0) return;
-
-    this.ingredients.update((list) => [
-      ...list,
-      {
-        name: String(this.newIngredientName()),
-        quantity: this.newIngredientQuantity(),
-        unit: String(this.newIngredientUnit()),
-        value: this.newIngredientValue(),
-      },
-    ]);
-
-    this.newIngredientName.set('');
-    this.newIngredientQuantity.set(0);
-    this.newIngredientValue.set(0);
-  }
-
-  public removeIngredient(index: number): void {
-    this.ingredients.update((list) => {
-      const newList = [...list];
-      newList.splice(index, 1);
-      return newList;
-    });
-  }
+  // Selected ingredients only
+  public readonly selectedIngredients = computed(() =>
+    this.ingredientSelections().filter(s => s.selected)
+  );
 
   // Cost Calculations
   public readonly totalIngredientsCost = computed(() => {
-    return this.ingredients().reduce((acc, curr) => {
-      const qty = Number(curr.quantity) || 1;
-      const val = Number(curr.value) || 0;
-      return acc + (val / qty);
+    return this.selectedIngredients().reduce((acc, curr) => {
+      const yield_ = curr.yieldQuantity > 0 ? curr.yieldQuantity : 1;
+      return acc + (curr.unitPrice / yield_);
     }, 0);
   });
 
@@ -363,20 +399,19 @@ export class TechnicalSheetRegister {
     return price > 0 ? (this.resaleProfitUnit() / price) * 100 : 0;
   });
 
-  public readonly canAddItem = computed(() => {
-    return !!this.newIngredientName() && this.newIngredientQuantity() > 0 && this.newIngredientValue() > 0;
-  });
-
   public readonly canSubmit = computed(() => {
     const sellPrice = Number(this.registerForm.registerForm().value().sellPrice) || 0;
     const ifoodSellPrice = Number(this.registerForm.registerForm().value().ifoodSellPrice) || 0;
     const suggestedIfood = this.suggestedIfoodPrice();
 
-    const resalePrice = this.resalePriceValue();
     const resaleValid = !this.hasResaleValue() || this.isResaleMarginValid();
 
+    // All selected ingredients must have yieldQuantity > 0
+    const allYieldsValid = this.selectedIngredients().every(i => i.yieldQuantity > 0);
+
     return !!this.selectedProductId() &&
-      this.ingredients().length > 0 &&
+      this.selectedIngredients().length > 0 &&
+      allYieldsValid &&
       this.registerForm.registerForm().valid() &&
       sellPrice > 0 &&
       ifoodSellPrice >= suggestedIfood &&
@@ -390,13 +425,18 @@ export class TechnicalSheetRegister {
 
     const formVal = this.registerForm.registerForm().value();
 
+    const ingredientDTOs: IngredientDTO[] = this.selectedIngredients().map(sel => ({
+      ingredientId: sel.ingredientId,
+      yieldQuantity: sel.yieldQuantity,
+    }));
+
     const request: TechnicalSheetRequest = {
       productId: this.selectedProductId()!,
       yieldUnits: Number(formVal.yieldUnits),
       yieldWeight: Number(formVal.yieldWeight),
       storage: String(formVal.storage),
       validity: String(formVal.validity),
-      ingredients: this.ingredients(),
+      ingredients: ingredientDTOs,
       packaging: {
         stickCost: Number(formVal.stickCost) || 0,
         brandLabelCost: Number(formVal.brandLabelCost) || 0,

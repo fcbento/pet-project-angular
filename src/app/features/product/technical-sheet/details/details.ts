@@ -34,7 +34,7 @@ export class TechnicalSheetDetails {
   public readonly totalIngredientsCost = computed(() => {
     const s = this.sheet();
     if (!s) return 0;
-    return s.ingredients.reduce((acc, curr) => acc + curr.value, 0);
+    return s.ingredients.reduce((acc, curr) => acc + (curr.subtotal || 0), 0);
   });
 
   public readonly totalPackagingCost = computed(() => {

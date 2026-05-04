@@ -9,6 +9,7 @@ export interface SaleRequest {
   origem: SaleOrigin;
   sellDate: string;
   items: SaleItemRequest[];
+  packagingFee?: number;
 }
 
 export interface SaleItemResponse {
@@ -29,6 +30,7 @@ export interface SaleResponse {
   totalPrice: number;
   totalProfit: number;
   profitMargin: number;
+  packagingFee?: number;
 }
 
 export interface SalesReportResponse {

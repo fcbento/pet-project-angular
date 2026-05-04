@@ -8,6 +8,13 @@
     <app-form-date data-testid="select-date" label="Data da Venda" [field]="registerForm.registerForm.sellDate" />
   </div>
 
+  @if (packagingFee() > 0) {
+  <div class="packaging-notice">
+    <span class="icon">📦</span>
+    <p>Uma taxa de embalagem de <strong>{{ packagingFee() | currency:'BRL' }}</strong> será aplicada a este pedido iFood.</p>
+  </div>
+  }
+
   <hr class="divider" />
 
   <h3>Itens da Venda</h3>
@@ -106,9 +113,19 @@
         <span class="label">Total de Itens:</span>
         <span class="value">{{ saleItems().length }} itens</span>
       </div>
+      @if (packagingFee() > 0) {
+      <div class="detail-item fee">
+        <span class="label">Taxa Embalagem:</span>
+        <span class="value">{{ packagingFee() | currency:'BRL' }}</span>
+      </div>
+      }
       <div class="detail-item total">
         <span class="label">Total da Venda:</span>
         <span class="value">{{ totalSalePrice() | currency:'BRL' }}</span>
+      </div>
+      <div class="detail-item net-profit">
+        <span class="label text-muted">Aviso:</span>
+        <span class="value text-muted">O custo da embalagem será deduzido do lucro líquido deste pedido.</span>
       </div>
     </div>
 

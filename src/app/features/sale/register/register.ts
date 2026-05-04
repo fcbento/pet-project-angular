@@ -16,7 +16,7 @@ import { ConfirmDialog } from '../../../ui/confirm-dialog/confirm-dialog';
 import { ProductResponse } from '../../product/list/list.models';
 import { SaleService } from '../sale.service';
 import { SaleRegisterForm } from './register.form';
-import { SaleItemRequest, SaleOrigin } from '../sale.models';
+import { SaleItemRequest, SaleOrigin, SaleRequest } from '../sale.models';
 
 export interface SaleItemDraft {
   productId: number;
@@ -133,6 +133,10 @@ export class SaleRegister {
 
   public readonly totalSalePrice = computed(() => {
     return this.saleItems().reduce((acc, curr) => acc + (curr.sellPrice * curr.quantity), 0);
+  });
+
+  public readonly packagingFee = computed(() => {
+    return this.registerForm.registerForm().value().origem === 'IFOOD' ? 3.0 : 0.0;
   });
 
   public readonly canAddItem = computed(() => {
@@ -286,13 +290,14 @@ export class SaleRegister {
     this.isConfirmDialogOpen.set(false);
     this.registerForm.isSubmitting.set(true);
 
-    const payload = {
+    const payload: SaleRequest = {
       origem: form().value().origem as SaleOrigin,
       sellDate: new Date(form().value().sellDate).toISOString(),
       items: this.saleItems().map((i): SaleItemRequest => ({
         productId: i.productId,
         quantity: i.quantity,
       })),
+      packagingFee: this.packagingFee(),
     };
 
     this.service.create(payload).subscribe({

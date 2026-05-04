@@ -5,4 +5,5 @@ export interface FormItems {
   type: string;
   field: any;
   options?: { label: string; value: string | number }[];
+  name?: string;
 }

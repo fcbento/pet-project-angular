@@ -15,8 +15,8 @@
           <p class="card-description">Selecione os ingredientes para compor a receita.</p>
         </div>
         <div class="global-yield">
-          <app-form-input label="Rendimento da Receita" type="number" placeholder="Ex: 10"
-            [field]="registerForm.registerForm.yieldUnits"></app-form-input>
+          <app-form-input label="Rendimento (unidades)" type="number" placeholder="Ex: 10"
+            [field]="registerForm.registerForm.yieldUnits" dataTestId="yieldUnits"></app-form-input>
         </div>
       </div>
 
@@ -36,7 +36,8 @@
           <div class="ingredient-details">
             <div class="subtotal-badge">
               <span>Custo Unitário</span>
-              <strong>{{ (sel.unitPrice / (registerForm.registerForm().value().yieldUnits || 1)) | currency: 'BRL' }}</strong>
+              <strong>{{ (sel.unitPrice / (registerForm.registerForm().value().yieldUnits || 1)) | currency: 'BRL'
+                }}</strong>
             </div>
           </div>
           }
@@ -101,25 +102,25 @@
       <div class="form-grid">
         <!-- Always for Picole -->
         <app-form-input *ngIf="isPicole()" label="Custo Palito" type="number"
-          [field]="registerForm.registerForm.stickCost">
+          [field]="registerForm.registerForm.stickCost" dataTestId="stickCost">
         </app-form-input>
 
         <!-- Standard fields for anything NOT (Picole + Paper) -->
         <app-form-input *ngIf="!isPicole() || (isPicole() && isSaquinho())" label="Custo Saquinho" type="number"
-          [field]="registerForm.registerForm.bagCost">
+          [field]="registerForm.registerForm.bagCost" dataTestId="bagCost">
         </app-form-input>
 
         <app-form-input *ngIf="!isPicole() || (isPicole() && isSaquinho())" label="Custo Etiqueta Marca" type="number"
-          [field]="registerForm.registerForm.brandLabelCost">
+          [field]="registerForm.registerForm.brandLabelCost" dataTestId="brandLabelCost">
         </app-form-input>
 
         <app-form-input *ngIf="!isPicole() || (isPicole() && isSaquinho())" label="Custo Etiqueta Sabor" type="number"
-          [field]="registerForm.registerForm.flavorLabelCost">
+          [field]="registerForm.registerForm.flavorLabelCost" dataTestId="flavorLabelCost">
         </app-form-input>
 
         <!-- Only for Picole + Papel -->
         <app-form-input *ngIf="isPicole() && isPapel()" label="Custo Embalagem Papel" type="number"
-          [field]="registerForm.registerForm.paperPackagingCost">
+          [field]="registerForm.registerForm.paperPackagingCost" dataTestId="paperPackagingCost">
         </app-form-input>
       </div>
     </div>
@@ -127,7 +128,8 @@
     <div class="card resale-card">
       <h3>Canal de Revenda</h3>
       <div class="resale-toggle mb-4">
-        <app-form-switch label="Habilitar Revenda para este produto?" [field]="registerForm.registerForm.hasResale">
+        <app-form-switch label="Habilitar Revenda para este produto?" [field]="registerForm.registerForm.hasResale"
+          dataTestId="hasResale">
         </app-form-switch>
       </div>
 
@@ -136,7 +138,8 @@
           <label>Custo Unitário:</label>
           <strong>{{ unitCost() | currency: 'BRL' }}</strong>
         </div>
-        <app-form-input label="Preço de Venda (Revenda)" type="number" [field]="registerForm.registerForm.resalePrice">
+        <app-form-input label="Preço de Venda (Revenda)" type="number" [field]="registerForm.registerForm.resalePrice"
+          dataTestId="resalePrice">
         </app-form-input>
       </div>
 
@@ -194,11 +197,11 @@
       <div class="pricing-section mt-4">
         <h3>Precificação</h3>
         <app-form-input label="Preço de Venda" placeholder="Informe o preço de venda" type="number"
-          [field]="registerForm.registerForm.sellPrice"></app-form-input>
+          [field]="registerForm.registerForm.sellPrice" dataTestId="sellPrice"></app-form-input>
         <app-form-input label="Preço de Venda iFood (Livre)" placeholder="Ex: 21.00" type="number"
-          [field]="registerForm.registerForm.ifoodSellPrice"></app-form-input>
+          [field]="registerForm.registerForm.ifoodSellPrice" dataTestId="ifoodSellPrice"></app-form-input>
         <app-form-input label="Quantidade em Estoque" placeholder="Qtd disponível" type="number"
-          [field]="registerForm.registerForm.stockQuantity"></app-form-input>
+          [field]="registerForm.registerForm.stockQuantity" dataTestId="stockQuantity"></app-form-input>
 
         <div class="summary-details mt-4">
           <div *ngIf="ifoodSellPriceValue() < suggestedIfoodPrice()"
@@ -237,8 +240,9 @@
       </div>
       <div class="actions mt-6">
         <app-button [name]="isEditMode() ? 'Atualizar Ficha Técnica' : 'Salvar Ficha Técnica'" type="primary"
-          [disabled]="!canSubmit()" (clicked)="submit()"></app-button>
-        <app-button name="Cancelar" type="secondary" [disabled]="false" (clicked)="cancel()"></app-button>
+          [disabled]="!canSubmit()" (clicked)="submit()" dataTestId="btn-save-technical-sheet"></app-button>
+        <app-button name="Cancelar" type="secondary" [disabled]="false" (clicked)="cancel()"
+          dataTestId="btn-cancel-technical-sheet"></app-button>
       </div>
     </div>
   </div>

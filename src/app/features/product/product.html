@@ -4,7 +4,7 @@
       <h1>Produtos</h1>
       <span class="subtitle">Controle de itens comercializados</span>
     </div>
-    <app-button [name]="formOpen() ? 'Listar produtos' : 'Cadastrar produto'" [disabled]="false" type="primary"
+    <app-button dataTestId="btn-toggle-product-form" [name]="formOpen() ? 'Listar produtos' : 'Cadastrar produto'" [disabled]="false" type="primary"
       (clicked)="openForm()" />
   </header>
 

@@ -41,7 +41,6 @@ export class TechnicalSheetForm {
 
   public readonly registerForm = form(this.technicalSheetModel, (schemaPath) => {
     required(schemaPath.yieldUnits, { message: 'Rendimento é obrigatório' });
-    required(schemaPath.yieldWeight, { message: 'Peso total é obrigatório' });
     required(schemaPath.sellPrice, { message: 'Preço de venda é obrigatório' });
     required(schemaPath.stockQuantity, { message: 'Quantidade em estoque é obrigatória' });
   });

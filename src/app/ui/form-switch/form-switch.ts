@@ -15,6 +15,7 @@ export class FormSwitch implements FormValueControl<boolean> {
   public readonly disabled = input<boolean>(false);
   public readonly invalid = input<boolean>(false);
   public readonly errors = input<readonly ValidationError.WithOptionalField[]>([]);
+  public readonly dataTestId = input<string>();
 
   public toggle(): void {
     if (this.disabled()) return;

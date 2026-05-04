@@ -27,7 +27,7 @@
       </thead>
       <tbody>
         @for (row of currentPageData(); track row) {
-        <tr class="clickable-row" (click)="rowClick.emit(row)">
+        <tr class="clickable-row" (click)="rowClick.emit(row)" data-testid="table-row">
           @for (col of columns(); track col) {
           <td>
             {{ col.cell ? col.cell(row) : cellValue(row, col.field) }}
@@ -72,9 +72,9 @@
     </div>
 
     <div class="pagination-controls">
-      <app-button (click)="prevPage()" [disabled]="page() === 1" name="Anterior" type="secondary"></app-button>
+      <app-button (click)="prevPage()" [disabled]="page() === 1" name="Anterior" type="secondary" dataTestId="btn-prev-page"></app-button>
       <span class="page-info">Página {{ page() }} de {{ pageCount() }}</span>
-      <app-button (click)="nextPage()" [disabled]="page() === pageCount()" name="Próximo" type="secondary"></app-button>
+      <app-button (click)="nextPage()" [disabled]="page() === pageCount()" name="Próximo" type="secondary" dataTestId="btn-next-page"></app-button>
     </div>
   </div>
   }

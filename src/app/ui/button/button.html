@@ -1,4 +1,4 @@
-<button (click)="clicked.emit()" [ngClass]="buttonType()" [disabled]="disableButton()">
+<button (click)="clicked.emit()" [ngClass]="buttonType()" [disabled]="disableButton()" [attr.data-testid]="dataTestId()">
   {{ name() }}
   @if (loading()) {
     <app-loader size="sm" color="primary" />

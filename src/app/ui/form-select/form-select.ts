@@ -18,4 +18,5 @@ export class FormSelect implements FormValueControl<string | number | null> {
 
   public readonly invalid = input<boolean>(false);
   public readonly errors = input<readonly ValidationError.WithOptionalField[]>([]);
+  public readonly dataTestId = input<string>();
 }

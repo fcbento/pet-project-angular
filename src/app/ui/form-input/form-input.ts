@@ -20,4 +20,5 @@ export class FormInput implements FormValueControl<string | number> {
   public readonly hidden = input<boolean>(false);
   public readonly invalid = input<boolean>(false);
   public readonly errors = input<readonly ValidationError.WithOptionalField[]>([]);
+  public readonly dataTestId = input<string>();
 }

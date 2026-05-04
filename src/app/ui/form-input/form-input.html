@@ -12,6 +12,7 @@
     [disabled]="disabled()"
     [value]="value()"
     [class.error]="errors().length && touched()"
+    [attr.data-testid]="dataTestId()"
     (input)="value.set(input.value)"
     (blur)="touched.set(true)"
   />

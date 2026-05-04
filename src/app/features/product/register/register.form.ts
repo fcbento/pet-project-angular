@@ -24,6 +24,7 @@ export class RegisterForm {
       label: 'Nome',
       type: 'text',
       field: this.registerForm.nome,
+      name: 'nome',
     },
     {
       placeholder: 'Selecione uma categoria',
@@ -31,12 +32,14 @@ export class RegisterForm {
       type: 'select',
       field: this.registerForm.categoryId,
       options: [],
+      name: 'categoryId',
     },
     {
       label: 'Produto possui Revenda?',
       type: 'switch',
       field: this.registerForm.hasResale,
       placeholder: 'Produto possui Revenda?',
+      name: 'hasResale',
     },
   ]);
 

@@ -24,6 +24,7 @@ export class Button {
   public readonly type = input.required<ButtonType>();
   public readonly disabled = input.required<boolean>();
   public readonly loading = input<boolean>();
+  public readonly dataTestId = input<string>();
 
   public readonly clicked = output<void>();
 }

@@ -7,11 +7,13 @@
         [label]="item.label"
         [options]="item.options || []"
         [field]="item.field"
+        [dataTestId]="item.name"
       />
     } @else if (item.type === 'switch') {
       <app-form-switch
         [label]="item.label"
         [field]="item.field"
+        [dataTestId]="item.name"
       />
     } @else {
       <app-form-input
@@ -19,6 +21,7 @@
         [label]="item.label"
         [type]="item.type || 'text'"
         [field]="item.field"
+        [dataTestId]="item.name"
       />
     }
   }
@@ -28,6 +31,7 @@
       (clicked)="execute()"
       name="Cadastrar"
       type="primary"
+      dataTestId="btn-save-product"
     />
   </div>
 </section>

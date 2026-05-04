@@ -1,4 +1,4 @@
-<div class="switch-container" [class.disabled]="disabled()" (click)="toggle()">
+<div class="switch-container" [class.disabled]="disabled()" (click)="toggle()" [attr.data-testid]="dataTestId()">
   <div class="switch-content">
     @if (label()) {
     <span class="switch-label">{{ label() }}</span>

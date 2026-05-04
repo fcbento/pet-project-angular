@@ -60,7 +60,6 @@ export class Auth {
     this.authService
       .login(this.authForm.loginForm().value())
       .pipe(
-        finalize(() => this.setLoaders(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({

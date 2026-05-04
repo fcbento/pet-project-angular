@@ -21,7 +21,7 @@ export const TOAST_REGISTER = {
     title: 'Cadastro bem‑sucedido',
     message: 'Você se cadastrou com sucesso. Por favor, faça login.',
     type: 'success' as ToastType,
-    duration: 4000,
+    duration: 1000,
   } as ToastModel,
   error: {
     ...COMMON_ERROR,
@@ -33,7 +33,7 @@ export const TOAST_LOGIN = {
     title: 'Bem‑vindo de volta',
     message: 'Que bom te ver novamente. Estamos carregando seu painel agora.',
     type: 'success' as ToastType,
-    duration: 3000,
+    duration: 1000,
   } as ToastModel,
   error: {
     ...COMMON_ERROR,

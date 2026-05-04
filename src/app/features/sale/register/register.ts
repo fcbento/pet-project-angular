@@ -301,6 +301,7 @@ export class SaleRegister {
           title: 'Sucesso ao cadastrar venda',
           message: 'Venda cadastrada com sucesso',
           type: 'success',
+          duration: 1000,
         });
         this.registerForm.resetForm();
         this.saleItems.set([]);

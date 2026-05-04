@@ -3,15 +3,18 @@
   <header class="gestao-header">
     <div class="title-group">
       <h1>Análise Avançada de Performance</h1>
-      <p>Competência: {{ startDate() | date: 'MMMM / yyyy' : '' : 'pt-BR' }}</p>
+      <p class="competencia-range">
+        Período: {{ startDate() | date: 'dd/MM/yyyy' }} até {{ endDate() | date: 'dd/MM/yyyy' }}
+        <span class="period-badge">{{ selectedPeriod() }}</span>
+      </p>
     </div>
-    <!-- <div class="filters">
-      <app-form-input label="Início" type="date" [value]="startDate()"
-        (valueChange)="setString(startDate, $event)"></app-form-input>
-      <app-form-input label="Fim" type="date" [value]="endDate()"
-        (valueChange)="setString(endDate, $event)"></app-form-input>
-      <app-button name="Atualizar" type="primary" [disabled]="false" (clicked)="loadSummary()"></app-button>
-    </div> -->
+    <div class="period-filters">
+      @for (p of ['Mês Atual', 'Mês Anterior', '3 Meses', '6 Meses', '12 Meses', 'Ano Atual']; track p) {
+      <button class="filter-btn" [class.active]="selectedPeriod() === p" (click)="setPeriod(p)">
+        {{ p }}
+      </button>
+      }
+    </div>
   </header>
 
   <!-- NOVOS: Saúde e Liquidez -->
@@ -256,6 +259,7 @@
       </div>
     </div>
 
+    @if (isMonthlyView()) {
     <div class="card goal-card">
       <h3>Meta de Faturamento</h3>
       <div class="goal-content">
@@ -269,6 +273,7 @@
         <app-button name="Ajustar Meta" type="primary" [disabled]="false" (clicked)="openGoalModal()"></app-button>
       </div>
     </div>
+    }
   </section>
 </div>
 

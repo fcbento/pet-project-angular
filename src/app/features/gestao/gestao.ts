@@ -26,8 +26,13 @@ export class Gestao {
   public readonly newGoalValue = signal<number>(0);
 
   // Filtros de Data
+  public readonly selectedPeriod = signal<string>('Mês Atual');
   public readonly startDate = signal<string>(this.getDefaultStartDate());
   public readonly endDate = signal<string>(this.getDefaultEndDate());
+
+  public readonly isMonthlyView = computed(() => {
+    return this.selectedPeriod() === 'Mês Atual' || this.selectedPeriod() === 'Mês Anterior';
+  });
 
   private getDefaultStartDate(): string {
     const now = new Date();
@@ -37,6 +42,44 @@ export class Gestao {
   private getDefaultEndDate(): string {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+  }
+
+  public setPeriod(period: string): void {
+    const now = new Date();
+    let start = new Date();
+    let end = new Date();
+
+    this.selectedPeriod.set(period);
+
+    switch (period) {
+      case 'Mês Atual':
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        break;
+      case 'Mês Anterior':
+        start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        end = new Date(now.getFullYear(), now.getMonth(), 0);
+        break;
+      case '3 Meses':
+        start = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        break;
+      case '6 Meses':
+        start = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        break;
+      case '12 Meses':
+        start = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        break;
+      case 'Ano Atual':
+        start = new Date(now.getFullYear(), 0, 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        break;
+    }
+
+    this.startDate.set(start.toISOString().split('T')[0]);
+    this.endDate.set(end.toISOString().split('T')[0]);
   }
 
   public setString(sig: any, val: string | number | null): void {

@@ -14,4 +14,5 @@ export class SummaryCard {
   public readonly type = input<'default' | 'currency' | 'number' | 'percentage'>('default');
   public readonly variant = input<'default' | 'success' | 'warning' | 'danger'>('default');
   public readonly icon = input<string>();
+  public readonly details = input<readonly { label: string; value: string | number; type: 'currency' | 'percentage' | 'number' }[]>([]);
 }

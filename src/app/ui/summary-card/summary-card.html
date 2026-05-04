@@ -18,3 +18,22 @@
     </div>
   }
 </div>
+
+@if (details().length > 0) {
+  <div class="summary-card__details">
+    @for (detail of details(); track detail.label) {
+      <div class="summary-card__detail-item">
+        <span class="detail-label">{{ detail.label }}:</span>
+        <span class="detail-value">
+          @if (detail.type === 'currency') {
+            {{ detail.value | currency:'BRL':'symbol':'1.2-2' }}
+          } @else if (detail.type === 'percentage') {
+            {{ (+detail.value / 100) | percent:'1.2-2' }}
+          } @else {
+            {{ detail.value }}
+          }
+        </span>
+      </div>
+    }
+  </div>
+}

@@ -9,9 +9,16 @@
 </section>
 
 <section class="summary-cards">
-  <app-summary-card label="Total de Produtos" [value]="summary().totalProducts" icon="📦" />
-  <app-summary-card label="Valor Total (Venda)" [value]="summary().totalValue" type="currency" icon="💰" />
-  <app-summary-card label="Lucro Estimado" [value]="summary().totalProfit" type="currency" variant="success" icon="📈" />
+  <app-summary-card label="Estoque Total" [value]="summary().units" icon="📦" />
+  
+  <app-summary-card label="Lucro Balcão" [value]="summary().balcaoProfit" [details]="summary().balcao" 
+    type="currency" variant="success" icon="🏪" />
+    
+  <app-summary-card label="Lucro iFood" [value]="summary().ifoodProfit" [details]="summary().ifood" 
+    type="currency" variant="warning" icon="🛵" />
+    
+  <app-summary-card label="Lucro Revenda" [value]="summary().resaleProfit" [details]="summary().resale" 
+    type="currency" variant="danger" icon="🤝" />
 </section>
 
 @if (products().length > 0) {

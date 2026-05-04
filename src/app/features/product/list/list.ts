@@ -80,10 +80,58 @@ export class ProductList {
   // Derived Summary
   public readonly summary = computed(() => {
     const list = this.products();
+    
+    const totals = list.reduce((acc, p) => {
+      const stock = p.stockQuantity || 0;
+      
+      // Balcao
+      const revBalcao = p.sellPrice * stock;
+      const profitBalcao = (p.sellPrice - p.costPrice) * stock;
+      
+      // iFood
+      const fee = p.marketplaceFee || 28;
+      const multiplier = (1 - (fee / 100));
+      const netRevIfood = (p.ifoodSellPrice * multiplier) * stock;
+      const profitIfood = netRevIfood - (p.costPrice * stock);
+      const grossRevIfood = p.ifoodSellPrice * stock;
+      
+      // Revenda
+      const revResale = p.hasResale ? (p.resalePrice * stock) : 0;
+      const profitResale = p.hasResale ? (p.resalePrice - p.costPrice) * stock : 0;
+      
+      acc.units += stock;
+      acc.revBalcao += revBalcao;
+      acc.profitBalcao += profitBalcao;
+      acc.revIfood += grossRevIfood;
+      acc.netRevIfood += netRevIfood;
+      acc.profitIfood += profitIfood;
+      acc.revResale += revResale;
+      acc.profitResale += profitResale;
+      
+      return acc;
+    }, { units: 0, revBalcao: 0, profitBalcao: 0, revIfood: 0, netRevIfood: 0, profitIfood: 0, revResale: 0, profitResale: 0 });
+
+    const marginBalcao = totals.revBalcao > 0 ? (totals.profitBalcao / totals.revBalcao) * 100 : 0;
+    const marginIfood = totals.netRevIfood > 0 ? (totals.profitIfood / totals.netRevIfood) * 100 : 0;
+    const marginResale = totals.revResale > 0 ? (totals.profitResale / totals.revResale) * 100 : 0;
+
     return {
-      totalProducts: list.length,
-      totalValue: list.reduce((acc, curr) => acc + curr.sellPrice, 0),
-      totalProfit: list.reduce((acc, curr) => acc + curr.profit, 0),
+      units: totals.units,
+      balcao: [
+        { label: 'Faturamento Potencial', value: totals.revBalcao, type: 'currency' },
+        { label: 'Margem Média', value: marginBalcao, type: 'percentage' }
+      ] as const,
+      balcaoProfit: totals.profitBalcao,
+      ifood: [
+        { label: 'Faturamento Potencial', value: totals.revIfood, type: 'currency' },
+        { label: 'Margem Média', value: marginIfood, type: 'percentage' }
+      ] as const,
+      ifoodProfit: totals.profitIfood,
+      resale: [
+        { label: 'Faturamento Potencial', value: totals.revResale, type: 'currency' },
+        { label: 'Margem Média', value: marginResale, type: 'percentage' }
+      ] as const,
+      resaleProfit: totals.profitResale
     };
   });
 

@@ -9,29 +9,35 @@
   <div class="content-grid">
     <!-- Ingredients Section — Checkboxes from Central Module -->
     <div class="card ingredients-card">
-      <h3>Ingredientes</h3>
-      <p class="card-description">Selecione os ingredientes e informe o rendimento de cada um na receita.</p>
+      <div class="card-header-actions">
+        <div>
+          <h3>Ingredientes</h3>
+          <p class="card-description">Selecione os ingredientes para compor a receita.</p>
+        </div>
+        <div class="global-yield">
+          <app-form-input label="Rendimento da Receita" type="number" placeholder="Ex: 10"
+            [field]="registerForm.registerForm.yieldUnits"></app-form-input>
+        </div>
+      </div>
 
       @if (ingredientSelections().length > 0) {
       <div class="ingredient-checklist">
         @for (sel of ingredientSelections(); track sel.ingredientId) {
         <div class="ingredient-check-row" [class.selected]="sel.selected">
           <label class="ingredient-checkbox" data-testid="ingredient-checkbox">
-            <input type="checkbox" checked]="sel.selected" (change)="toggleIngredient(sel.ingredientId)">
+            <input type="checkbox" [checked]="sel.selected" (change)="toggleIngredient(sel.ingredientId)">
             <span class="ingredient-info">
               <strong>{{ sel.ingredientName }}</strong>
-              <span class="ingredient-meta">{{ sel.unit }} · {{ sel.unitPrice | currency: 'BRL' }}</span>
+              <span class="ingredient-meta">{{ sel.unitPrice | currency: 'BRL' }} / {{ sel.unit }}</span>
             </span>
           </label>
 
           @if (sel.selected) {
-          <div class="yield-input">
-            <app-form-input label="Rende" type="number" placeholder="Qtd que rende" [value]="String(sel.yieldQuantity)"
-              (valueChange)="updateYield(sel.ingredientId, $event)"></app-form-input>
-            @if (sel.yieldQuantity > 0) {
-            <span class="subtotal-badge">Subtotal: {{ (sel.unitPrice / sel.yieldQuantity) | currency: 'BRL'
-              }}</span>
-            }
+          <div class="ingredient-details">
+            <div class="subtotal-badge">
+              <span>Custo Unitário</span>
+              <strong>{{ (sel.unitPrice / (registerForm.registerForm().value().yieldUnits || 1)) | currency: 'BRL' }}</strong>
+            </div>
           </div>
           }
         </div>
@@ -47,8 +53,8 @@
               <th>Ingrediente</th>
               <th>Unidade</th>
               <th>Preço Unit.</th>
-              <th>Rende</th>
-              <th>Subtotal</th>
+              <th>Rendimento</th>
+              <th>Custo Unit.</th>
             </tr>
           </thead>
           <tbody>
@@ -57,8 +63,8 @@
               <td>{{ ing.ingredientName }}</td>
               <td>{{ ing.unit }}</td>
               <td>{{ ing.unitPrice | currency: 'BRL' }}</td>
-              <td>{{ ing.yieldQuantity }}</td>
-              <td>{{ (ing.yieldQuantity > 0 ? ing.unitPrice / ing.yieldQuantity : 0) | currency: 'BRL' }}</td>
+              <td>{{ registerForm.registerForm().value().yieldUnits }}</td>
+              <td>{{ (ing.unitPrice / (registerForm.registerForm().value().yieldUnits || 1)) | currency: 'BRL' }}</td>
             </tr>
             }
           </tbody>

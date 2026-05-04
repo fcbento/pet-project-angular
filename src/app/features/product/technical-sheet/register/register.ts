@@ -16,14 +16,13 @@ import { IngredientResponse } from '../../../ingredient/ingredient.models';
 import { TechnicalSheetForm } from './register.form';
 import { IngredientDTO, IngredientSheetItem, TechnicalSheetRequest } from '../technical-sheet.models';
 
-// Local state for ingredient selection with yield
+// Local state for ingredient selection
 interface IngredientSelection {
   ingredientId: number;
   ingredientName: string;
   unit: string;
   unitPrice: number;
   selected: boolean;
-  yieldQuantity: number;
 }
 
 @Component({
@@ -157,7 +156,6 @@ export class TechnicalSheetRegister {
             unit: ing.unit,
             unitPrice: ing.unitPrice,
             selected: false,
-            yieldQuantity: 0,
           }))
         );
       }
@@ -192,10 +190,7 @@ export class TechnicalSheetRegister {
         this.ingredientSelections.update(selections => {
           return selections.map(sel => {
             const sheetIng = sheet.ingredients.find(i => i.ingredientId === sel.ingredientId);
-            if (sheetIng) {
-              return { ...sel, selected: true, yieldQuantity: sheetIng.yieldQuantity };
-            }
-            return { ...sel, selected: false, yieldQuantity: 0 };
+            return { ...sel, selected: !!sheetIng };
           });
         });
       },
@@ -216,7 +211,7 @@ export class TechnicalSheetRegister {
         }
 
         // Reset all ingredient selections
-        this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false, yieldQuantity: 0 })));
+        this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false })));
       },
     });
   }
@@ -226,7 +221,7 @@ export class TechnicalSheetRegister {
     this.selectedProductId.set(null);
     this.isEditMode.set(false);
     this.registerForm.resetForm();
-    this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false, yieldQuantity: 0 })));
+    this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false })));
   }
 
   public onProductChange(value: string | number | null): void {
@@ -237,7 +232,7 @@ export class TechnicalSheetRegister {
     } else {
       this.isEditMode.set(false);
       this.registerForm.resetForm();
-      this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false, yieldQuantity: 0 })));
+      this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false })));
     }
   }
 
@@ -253,19 +248,7 @@ export class TechnicalSheetRegister {
     this.ingredientSelections.update(sels =>
       sels.map(s =>
         s.ingredientId === ingredientId
-          ? { ...s, selected: !s.selected, yieldQuantity: !s.selected ? s.yieldQuantity : 0 }
-          : s
-      )
-    );
-  }
-
-  // Update yield for a specific ingredient
-  public updateYield(ingredientId: number, value: string | number | null): void {
-    if (value === null) return;
-    this.ingredientSelections.update(sels =>
-      sels.map(s =>
-        s.ingredientId === ingredientId
-          ? { ...s, yieldQuantity: Number(value) || 0 }
+          ? { ...s, selected: !s.selected }
           : s
       )
     );
@@ -278,9 +261,9 @@ export class TechnicalSheetRegister {
 
   // Cost Calculations
   public readonly totalIngredientsCost = computed(() => {
+    const yieldUnits = Number(this.registerForm.registerForm().value().yieldUnits) || 1;
     return this.selectedIngredients().reduce((acc, curr) => {
-      const yield_ = curr.yieldQuantity > 0 ? curr.yieldQuantity : 1;
-      return acc + (curr.unitPrice / yield_);
+      return acc + (curr.unitPrice / yieldUnits);
     }, 0);
   });
 
@@ -313,16 +296,10 @@ export class TechnicalSheetRegister {
   });
 
   // Fixed Operational Cost
-  public readonly fixedOperationalCost = signal(0.74);
-
-  public readonly totalCost = computed(() => {
-    const yieldUnits = Number(this.registerForm.registerForm().value().yieldUnits) || 1;
-    return this.totalIngredientsCost() + this.totalPackagingCost() + (this.fixedOperationalCost() * yieldUnits);
-  });
+  public readonly fixedOperationalCost = signal(1.00);
 
   public readonly unitCost = computed(() => {
-    const yieldUnits = Number(this.registerForm.registerForm().value().yieldUnits) || 1;
-    return (this.totalIngredientsCost() + this.totalPackagingCost()) / yieldUnits + this.fixedOperationalCost();
+    return this.totalIngredientsCost() + this.totalPackagingCost() + this.fixedOperationalCost();
   });
 
   // Pricing & Profit
@@ -402,41 +379,38 @@ export class TechnicalSheetRegister {
   });
 
   public readonly canSubmit = computed(() => {
-    const sellPrice = Number(this.registerForm.registerForm().value().sellPrice) || 0;
-    const ifoodSellPrice = Number(this.registerForm.registerForm().value().ifoodSellPrice) || 0;
+    const val = this.registerForm.registerForm().value();
+    const sellPrice = Number(val.sellPrice) || 0;
+    const ifoodSellPrice = Number(val.ifoodSellPrice) || 0;
     const suggestedIfood = this.suggestedIfoodPrice();
 
     const resaleValid = !this.hasResaleValue() || this.isResaleMarginValid();
 
-    // All selected ingredients must have yieldQuantity > 0
-    const allYieldsValid = this.selectedIngredients().every(i => i.yieldQuantity > 0);
-    const formVal = this.registerForm.registerForm().value();
-
     return !!this.selectedProductId() &&
       this.selectedIngredients().length > 0 &&
-      allYieldsValid &&
       this.registerForm.registerForm().valid() &&
       sellPrice > 0 &&
       ifoodSellPrice >= suggestedIfood &&
       this.profit() >= 0 &&
       this.profitMargin() >= 0 &&
       resaleValid &&
-      Number(formVal.stockQuantity) > 0;
+      Number(val.stockQuantity) > 0;
   });
 
   public submit(): void {
     if (!this.canSubmit()) return;
 
     const formVal = this.registerForm.registerForm().value();
+    const yieldUnits = Number(formVal.yieldUnits) || 1;
 
     const ingredientDTOs: IngredientDTO[] = this.selectedIngredients().map(sel => ({
       ingredientId: sel.ingredientId,
-      yieldQuantity: sel.yieldQuantity,
+      yieldQuantity: yieldUnits,
     }));
 
     const request: TechnicalSheetRequest = {
       productId: this.selectedProductId()!,
-      yieldUnits: Number(formVal.yieldUnits),
+      yieldUnits: yieldUnits,
       yieldWeight: Number(formVal.yieldWeight),
       storage: String(formVal.storage),
       validity: String(formVal.validity),

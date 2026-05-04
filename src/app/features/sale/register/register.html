@@ -3,9 +3,9 @@
   <h2>Nova Venda</h2>
 
   <div class="form-row">
-    <app-form-select label="Origem" placeholder="Selecione..." [options]="origemOptions()"
+    <app-form-select data-testid="select-origin" label="Origem" placeholder="Selecione..." [options]="origemOptions()"
       [field]="registerForm.registerForm.origem" />
-    <app-form-date label="Data da Venda" [field]="registerForm.registerForm.sellDate" />
+    <app-form-date data-testid="select-date" label="Data da Venda" [field]="registerForm.registerForm.sellDate" />
   </div>
 
   <hr class="divider" />
@@ -17,18 +17,19 @@
   </div>
   }
   <div class="add-item-row">
-    <app-form-select label="Categoria" placeholder="Selecione..." [options]="categoryOptions()"
-      [(value)]="selectedCategoryId" (valueChange)="selectedProductId.set(null)" />
+    <app-form-select data-testid="select-category" label="Categoria" placeholder="Selecione..."
+      [options]="categoryOptions()" [(value)]="selectedCategoryId" (valueChange)="selectedProductId.set(null)" />
 
     @if (selectedCategoryId()) {
-    <app-form-select label="Produto" placeholder="Selecione..." [options]="productOptions()"
-      [(value)]="selectedProductId" />
+    <app-form-select data-testid="select-produtct" label="Produto" placeholder="Selecione..."
+      [options]="productOptions()" [(value)]="selectedProductId" />
     }
 
-    <app-form-input label="Quantidade" type="number" [value]="selectedQuantity().toString()"
+    <app-form-input data-testid="quantity" label="Quantidade" type="number" [value]="selectedQuantity().toString()"
       (valueChange)="selectedQuantity.set(+$event)" />
     <div class="add-action">
-      <app-button name="Adicionar Item" type="primary" [disabled]="!canAddItem()" (clicked)="addItem()"></app-button>
+      <app-button data-testid="add-item" name="Adicionar Item" type="primary" [disabled]="!canAddItem()"
+        (clicked)="addItem()"></app-button>
     </div>
   </div>
 
@@ -71,7 +72,7 @@
 
   <div class="actions">
     <app-button name="Cancelar" type="secondary" (clicked)="cancel()" [disabled]="registerForm.isSubmitting()" />
-    <app-button name="Salvar Venda" type="primary" (clicked)="submit()"
+    <app-button data-testid="save" name="Salvar Venda" type="primary" (clicked)="submit()"
       [disabled]="registerForm.isSubmitting() || !canSubmit()" [loading]="registerForm.isSubmitting()" />
   </div>
 </section>

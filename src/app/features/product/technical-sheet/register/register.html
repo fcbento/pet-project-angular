@@ -16,8 +16,8 @@
       <div class="ingredient-checklist">
         @for (sel of ingredientSelections(); track sel.ingredientId) {
         <div class="ingredient-check-row" [class.selected]="sel.selected">
-          <label class="ingredient-checkbox">
-            <input type="checkbox" [checked]="sel.selected" (change)="toggleIngredient(sel.ingredientId)">
+          <label class="ingredient-checkbox" data-testid="ingredient-checkbox">
+            <input type="checkbox" checked]="sel.selected" (change)="toggleIngredient(sel.ingredientId)">
             <span class="ingredient-info">
               <strong>{{ sel.ingredientName }}</strong>
               <span class="ingredient-meta">{{ sel.unit }} · {{ sel.unitPrice | currency: 'BRL' }}</span>
@@ -67,7 +67,8 @@
       }
       } @else {
       <div class="empty-ingredients">
-        <p>Nenhum ingrediente cadastrado no sistema. <a routerLink="/dashboard/ingredientes">Cadastre ingredientes primeiro.</a></p>
+        <p>Nenhum ingrediente cadastrado no sistema. <a routerLink="/dashboard/ingredientes">Cadastre ingredientes
+            primeiro.</a></p>
       </div>
       }
     </div>
@@ -120,9 +121,7 @@
     <div class="card resale-card">
       <h3>Canal de Revenda</h3>
       <div class="resale-toggle mb-4">
-        <app-form-switch 
-            label="Habilitar Revenda para este produto?" 
-            [field]="registerForm.registerForm.hasResale">
+        <app-form-switch label="Habilitar Revenda para este produto?" [field]="registerForm.registerForm.hasResale">
         </app-form-switch>
       </div>
 
@@ -144,19 +143,23 @@
         </div>
         <div class="summary-row">
           <span>Margem de Revenda:</span>
-          <strong [class.positive]="isResaleMarginValid()" [class.negative]="!isResaleMarginValid()">{{ resaleMargin() | number: '1.2-2' }}%</strong>
-        </div>
-        
-        <div *ngIf="!isResaleMarginValid()" class="error-msg mt-2" style="color: #e53e3e; font-size: 0.85rem; font-weight: 500; line-height: 1.4;">
-           Atenção: A margem de revenda deve estar entre 20% e 25%. <br>
-           Intervalo sugerido: {{ minResalePrice() | currency: 'BRL' }} a {{ maxResalePrice() | currency: 'BRL' }}
+          <strong [class.positive]="isResaleMarginValid()" [class.negative]="!isResaleMarginValid()">{{ resaleMargin() |
+            number: '1.2-2' }}%</strong>
         </div>
 
-        <div *ngIf="isResaleMarginValid() && resalePriceValue() > 0" class="success-msg mt-2" style="color: #38a169; font-size: 0.85rem; font-weight: 500;">
+        <div *ngIf="!isResaleMarginValid()" class="error-msg mt-2"
+          style="color: #e53e3e; font-size: 0.85rem; font-weight: 500; line-height: 1.4;">
+          Atenção: A margem de revenda deve estar entre 20% e 25%. <br>
+          Intervalo sugerido: {{ minResalePrice() | currency: 'BRL' }} a {{ maxResalePrice() | currency: 'BRL' }}
+        </div>
+
+        <div *ngIf="isResaleMarginValid() && resalePriceValue() > 0" class="success-msg mt-2"
+          style="color: #38a169; font-size: 0.85rem; font-weight: 500;">
           Preço dentro da margem permitida.
         </div>
 
-        <div *ngIf="resalePriceValue() > 0 && resalePriceValue() < unitCost()" class="error-msg mt-2" style="color: #e53e3e; font-size: 0.85rem;">
+        <div *ngIf="resalePriceValue() > 0 && resalePriceValue() < unitCost()" class="error-msg mt-2"
+          style="color: #e53e3e; font-size: 0.85rem;">
           O preço de revenda não pode ser inferior ao custo unitário.
         </div>
       </div>

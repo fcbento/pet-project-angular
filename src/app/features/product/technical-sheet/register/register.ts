@@ -166,7 +166,7 @@ export class TechnicalSheetRegister {
 
   private loadExistingSheet(productId: number): void {
     const product = this.selectedProduct();
-    
+
     this.service.getByProductId(productId).subscribe({
       next: (sheet) => {
         this.isEditMode.set(true);
@@ -202,17 +202,17 @@ export class TechnicalSheetRegister {
         // No existing sheet — show blank form for new registration
         this.isEditMode.set(false);
         this.registerForm.resetForm();
-        
+
         if (product) {
-            this.registerForm.registerForm().reset({
-                ...this.registerForm.registerForm().value(),
-                hasResale: product.hasResale || false,
-                sellPrice: product.sellPrice || 0,
-                ifoodSellPrice: product.ifoodSellPrice || 0,
-                resalePrice: product.resalePrice || 0
-            });
+          this.registerForm.registerForm().reset({
+            ...this.registerForm.registerForm().value(),
+            hasResale: product.hasResale || false,
+            sellPrice: product.sellPrice || 0,
+            ifoodSellPrice: product.ifoodSellPrice || 0,
+            resalePrice: product.resalePrice || 0
+          });
         }
-        
+
         // Reset all ingredient selections
         this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false, yieldQuantity: 0 })));
       },
@@ -458,6 +458,7 @@ export class TechnicalSheetRegister {
             title: 'Sucesso',
             message: 'Ficha técnica salva com sucesso',
             type: 'success',
+            duration: 1000
           })
         );
         this.router.navigate(['/dashboard/produto']);

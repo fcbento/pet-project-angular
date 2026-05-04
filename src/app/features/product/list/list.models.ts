@@ -14,4 +14,5 @@ export interface ProductResponse {
   hasResale: boolean;
   resalePrice: number;
   resaleQuantity: number;
+  stockQuantity: number;
 }

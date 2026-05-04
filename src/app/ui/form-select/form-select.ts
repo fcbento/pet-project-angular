@@ -13,7 +13,7 @@ export class FormSelect implements FormValueControl<string | number | null> {
 
   public readonly placeholder = input<string>();
   public readonly label = input<string>();
-  public readonly options = input<{ label: string; value: string | number }[]>([]);
+  public readonly options = input<{ label: string; value: string | number; disabled?: boolean }[]>([]);
   public readonly disabled = input<boolean>(false);
 
   public readonly invalid = input<boolean>(false);

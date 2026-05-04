@@ -191,6 +191,8 @@
           [field]="registerForm.registerForm.sellPrice"></app-form-input>
         <app-form-input label="Preço de Venda iFood (Livre)" placeholder="Ex: 21.00" type="number"
           [field]="registerForm.registerForm.ifoodSellPrice"></app-form-input>
+        <app-form-input label="Quantidade em Estoque" placeholder="Qtd disponível" type="number"
+          [field]="registerForm.registerForm.stockQuantity"></app-form-input>
 
         <div class="summary-details mt-4">
           <div *ngIf="ifoodSellPriceValue() < suggestedIfoodPrice()"

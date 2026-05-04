@@ -185,6 +185,7 @@ export class TechnicalSheetRegister {
           ifoodSellPrice: sheet.ifoodSellPrice || 0,
           hasResale: product?.hasResale || ((sheet.resalePrice ?? 0) > 0) || false,
           resalePrice: sheet.resalePrice || 0,
+          stockQuantity: sheet.stockQuantity || 1,
         });
 
         // Mark ingredients from the sheet as selected
@@ -209,7 +210,8 @@ export class TechnicalSheetRegister {
             hasResale: product.hasResale || false,
             sellPrice: product.sellPrice || 0,
             ifoodSellPrice: product.ifoodSellPrice || 0,
-            resalePrice: product.resalePrice || 0
+            resalePrice: product.resalePrice || 0,
+            stockQuantity: product.stockQuantity || 1
           });
         }
 
@@ -408,6 +410,7 @@ export class TechnicalSheetRegister {
 
     // All selected ingredients must have yieldQuantity > 0
     const allYieldsValid = this.selectedIngredients().every(i => i.yieldQuantity > 0);
+    const formVal = this.registerForm.registerForm().value();
 
     return !!this.selectedProductId() &&
       this.selectedIngredients().length > 0 &&
@@ -417,7 +420,8 @@ export class TechnicalSheetRegister {
       ifoodSellPrice >= suggestedIfood &&
       this.profit() >= 0 &&
       this.profitMargin() >= 0 &&
-      resaleValid;
+      resaleValid &&
+      Number(formVal.stockQuantity) > 0;
   });
 
   public submit(): void {
@@ -449,6 +453,7 @@ export class TechnicalSheetRegister {
       ifoodSellPrice: Number(formVal.ifoodSellPrice) || 0,
       hasResale: formVal.hasResale,
       resalePrice: formVal.hasResale ? Number(formVal.resalePrice) : 0,
+      stockQuantity: Number(formVal.stockQuantity) || 0
     };
 
     this.service.save(request).subscribe({

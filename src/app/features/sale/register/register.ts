@@ -45,28 +45,28 @@ export class SaleRegister {
   constructor() {
     effect(() => {
       const origem = this.registerForm.registerForm().value().origem;
-      
+
       this.saleItems.update((items) => {
         let changed = false;
         const newItems = items.map((item) => {
           const product = item.product;
           if (!product) return item;
-          
+
           let newPrice = product.sellPrice;
-          
+
           if (origem === 'IFOOD' && product.ifoodSellPrice) {
             newPrice = product.ifoodSellPrice;
           } else if (origem === 'REVENDA' && product.resalePrice) {
             newPrice = product.resalePrice;
           }
-                        
+
           if (newPrice !== item.sellPrice) {
             changed = true;
             return { ...item, sellPrice: newPrice };
           }
           return item;
         });
-        
+
         return changed ? newItems : items;
       });
     }, { allowSignalWrites: true });
@@ -119,17 +119,18 @@ export class SaleRegister {
     return products
       .filter((p) => !categoryId || p.category?.id == categoryId)
       .map((p) => ({
-        label: p.name,
+        label: `${p.name} (Estoque: ${p.stockQuantity ?? 0})`,
         value: p.id,
         product: p,
+        disabled: (p.stockQuantity ?? 0) <= 0
       }));
   });
   public readonly selectedQuantity = signal<number>(1);
   public readonly saleItems = signal<SaleItemDraft[]>([]); // items added to the sale
-  
+
   // Confirmation State
   public readonly isConfirmDialogOpen = signal(false);
-  
+
   public readonly totalSalePrice = computed(() => {
     return this.saleItems().reduce((acc, curr) => acc + (curr.sellPrice * curr.quantity), 0);
   });
@@ -194,7 +195,7 @@ export class SaleRegister {
     }
 
     let sellPrice = product.sellPrice;
-    
+
     if (origem === 'IFOOD' && product.ifoodSellPrice) {
       sellPrice = product.ifoodSellPrice;
     } else if (origem === 'REVENDA' && product.resalePrice) {
@@ -206,6 +207,20 @@ export class SaleRegister {
       this.toast({
         title: 'Preço não configurado',
         message: `O produto "${product.name}" não possui preço configurado para a origem "${origem}". Configure o preço na Ficha Técnica antes de vender.`,
+        type: 'warning',
+      });
+      return;
+    }
+
+    // Validação de Estoque (US-020)
+    const existingInCart = this.saleItems().find(i => String(i.productId) === String(productId));
+    const totalRequested = (existingInCart?.quantity || 0) + quantity;
+    const availableStock = product.stockQuantity ?? 0;
+
+    if (totalRequested > availableStock) {
+      this.toast({
+        title: 'Estoque insuficiente',
+        message: `O produto "${product.name}" possui apenas ${availableStock} em estoque. (Você já tem ${existingInCart?.quantity || 0} no carrinho)`,
         type: 'warning',
       });
       return;
@@ -246,11 +261,11 @@ export class SaleRegister {
     form().markAsTouched();
 
     if (!form().valid() || !form().value().origem?.trim() || !form().value().sellDate) {
-       this.toast({
+      this.toast({
         title: 'Dados incompletos',
         message: 'Preencha os campos obrigatórios (Origem e Data)',
         type: 'error',
-       });
+      });
       return;
     }
 
@@ -259,7 +274,7 @@ export class SaleRegister {
         title: 'Sem itens',
         message: 'A venda deve possuir pelo menos um produto',
         type: 'error',
-       });
+      });
       return;
     }
 
@@ -296,7 +311,7 @@ export class SaleRegister {
           title: 'Erro ao cadastrar venda',
           message: 'Erro ao cadastrar venda',
           type: 'error',
-         });
+        });
       },
       complete: () => {
         this.registerForm.isSubmitting.set(false);

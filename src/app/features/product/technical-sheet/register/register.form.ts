@@ -16,6 +16,7 @@ export interface TechnicalSheetModel {
   ifoodSellPrice: number;
   hasResale: boolean; // US-013
   resalePrice: number;
+  stockQuantity: number;
 }
 
 @Injectable()
@@ -35,12 +36,14 @@ export class TechnicalSheetForm {
     ifoodSellPrice: 0,
     hasResale: false,
     resalePrice: 0,
+    stockQuantity: 1,
   });
 
   public readonly registerForm = form(this.technicalSheetModel, (schemaPath) => {
     required(schemaPath.yieldUnits, { message: 'Rendimento é obrigatório' });
     required(schemaPath.yieldWeight, { message: 'Peso total é obrigatório' });
     required(schemaPath.sellPrice, { message: 'Preço de venda é obrigatório' });
+    required(schemaPath.stockQuantity, { message: 'Quantidade em estoque é obrigatória' });
   });
 
   public patchIfoodPrice(value: number): void {
@@ -75,6 +78,7 @@ export class TechnicalSheetForm {
       ifoodSellPrice: 0,
       hasResale: false,
       resalePrice: 0,
+      stockQuantity: 1,
     });
   }
 }

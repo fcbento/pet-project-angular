@@ -36,6 +36,7 @@ export interface TechnicalSheetRequest {
   hasResale?: boolean;
   resalePrice?: number;
   resaleQuantity?: number;
+  stockQuantity: number;
 }
 
 export interface TechnicalSheetResponse {
@@ -56,4 +57,5 @@ export interface TechnicalSheetResponse {
   hasResale?: boolean;
   resalePrice?: number;
   resaleQuantity?: number;
+  stockQuantity: number;
 }

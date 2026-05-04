@@ -80,10 +80,7 @@ export class SaleList {
     const list = this.sales();
     const totalPrice = list.reduce((acc, curr) => acc + curr.totalPrice, 0);
     const totalProfit = list.reduce((acc, curr) => acc + curr.totalProfit, 0);
-    const totalNetRevenue = list.reduce((acc, curr) => {
-      return acc + (curr.origem === 'IFOOD' ? curr.totalPrice * 0.72 : curr.totalPrice);
-    }, 0);
-    const profitMargin = totalNetRevenue > 0 ? (totalProfit / totalNetRevenue) * 100 : 0;
+    const profitMargin = totalPrice > 0 ? (totalProfit / totalPrice) * 100 : 0;
 
     return {
       totalSell: list.length,
@@ -118,10 +115,7 @@ export class SaleList {
     {
       label: 'Margem',
       field: 'profitMargin',
-      cell: (row: SaleResponse) => {
-        const margin = `${row.profitMargin?.toFixed(2)}%`;
-        return row.origem === 'IFOOD' ? `${margin} (Líquida)` : margin;
-      },
+      cell: (row: SaleResponse) => `${row.profitMargin?.toFixed(2)}%`,
     },
     {
       label: 'Criado em',

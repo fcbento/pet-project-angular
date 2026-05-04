@@ -30,6 +30,7 @@ export interface SaleResponse {
   totalPrice: number;
   totalProfit: number;
   profitMargin: number;
+  totalCmv: number;
   packagingFee?: number;
 }
 

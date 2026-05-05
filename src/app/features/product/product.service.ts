@@ -32,4 +32,10 @@ export class ProductService {
   public getById(id: number): Observable<ApiResponse<ProductResponse>> {
     return this.http.get<ApiResponse<ProductResponse>>(`${this.apiUrl}/produto/${id}`);
   }
+
+  public exportPdf(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/products/export-pdf`, {
+      responseType: 'blob',
+    });
+  }
 }

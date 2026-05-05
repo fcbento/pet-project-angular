@@ -3,7 +3,6 @@ import { Component, computed, effect, inject, input, signal } from '@angular/cor
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Button } from '../../../ui/button/button';
-import { FormDate } from '../../../ui/form-date/form-date';
 import { FormSelect } from '../../../ui/form-select/form-select';
 import { Table } from '../../../ui/table/table';
 import { SummaryCard } from '../../../ui/summary-card/summary-card';
@@ -13,7 +12,7 @@ import { ConfirmDialog } from '../../../ui/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-sale-list',
-  imports: [Table, FormDate, FormSelect, Button, CommonModule, SummaryCard, ConfirmDialog],
+  imports: [Table, FormSelect, Button, CommonModule, SummaryCard, ConfirmDialog],
   templateUrl: './list.html',
   styleUrl: './list.scss',
   providers: [DatePipe, CurrencyPipe],
@@ -119,9 +118,9 @@ export class SaleList {
   });
 
   public readonly columns = [
-    { 
-      label: 'Origem', 
-      field: 'origem', 
+    {
+      label: 'Origem',
+      field: 'origem',
       sortable: true,
       cell: (row: SaleResponse) => row.origem === 'IFOOD' ? '🔴 iFood' : row.origem
     },

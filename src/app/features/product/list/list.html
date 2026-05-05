@@ -1,7 +1,8 @@
 <section class="filters">
   <div class="filters-row">
     <app-form-input label="Nome" placeholder="Buscar por nome..." [(value)]="nameFilter" />
-    <app-form-select label="Categoria" placeholder="Todas as categorias" [options]="categoryOptions()" [(value)]="categoryFilter" />
+    <app-form-select label="Categoria" placeholder="Todas as categorias" [options]="categoryOptions()"
+      [(value)]="categoryFilter" />
     <div class="filter-actions">
       <app-button name="Limpar Filtros" type="secondary" [disabled]="false" (clicked)="clearFilters()"></app-button>
     </div>
@@ -10,24 +11,32 @@
 
 <section class="summary-cards">
   <app-summary-card label="Estoque Total" [value]="summary().units" icon="📦" />
-  
-  <app-summary-card label="Lucro Balcão" [value]="summary().balcaoProfit" [details]="summary().balcao" 
-    type="currency" variant="success" icon="🏪" />
-    
-  <app-summary-card label="Lucro iFood" [value]="summary().ifoodProfit" [details]="summary().ifood" 
-    type="currency" variant="warning" icon="🛵" />
-    
-  <app-summary-card label="Lucro Revenda" [value]="summary().resaleProfit" [details]="summary().resale" 
-    type="currency" variant="danger" icon="🤝" />
+
+  <app-summary-card label="Lucro Balcão" [value]="summary().balcaoProfit" [details]="summary().balcao" type="currency"
+    variant="success" icon="🏪" />
+
+  <app-summary-card label="Lucro iFood" [value]="summary().ifoodProfit" [details]="summary().ifood" type="currency"
+    variant="warning" icon="🛵" />
+
+  <app-summary-card label="Lucro Revenda" [value]="summary().resaleProfit" [details]="summary().resale" type="currency"
+    variant="danger" icon="🤝" />
 </section>
 
 @if (products().length > 0) {
-  <app-table [columns]="columns()" [data]="products()" [actions]="rowActions" [withPagination]="true" title="Produtos" subtitle="Gerenciamento e controle de estoque de produtos" (selectionChange)="onRowsSelected($event)" (rowClick)="onRowClick($event)" />
+<div style="padding-bottom: 10px;">
+  <app-button name="Exportar PDF" type="primary" [disabled]="products().length === 0" (clicked)="exportPdf()" />
+</div>
+
+<app-table [columns]="columns()" [data]="products()" [actions]="rowActions" [withPagination]="true" title="Produtos"
+  subtitle="Gerenciamento e controle de estoque de produtos" (selectionChange)="onRowsSelected($event)"
+  (rowClick)="onRowClick($event)" />
 } @else {
-  <div class="empty-state-card">
-    <span class="icon">📦</span>
-    <p>Não encontramos nenhum produto. Que tal cadastrar o primeiro? ✨</p>
-  </div>
+<div class="empty-state-card">
+  <span class="icon">📦</span>
+  <p>Não encontramos nenhum produto. Que tal cadastrar o primeiro? ✨</p>
+</div>
 }
 
-<app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Produto" [message]="'Deseja excluir o produto ' + (productToDelete()?.name || '') + '?'" confirmText="Sim, Excluir" cancelText="Cancelar" type="danger" (confirm)="confirmDelete()"></app-confirm-dialog>
+<app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Produto"
+  [message]="'Deseja excluir o produto ' + (productToDelete()?.name || '') + '?'" confirmText="Sim, Excluir"
+  cancelText="Cancelar" type="danger" (confirm)="confirmDelete()"></app-confirm-dialog>

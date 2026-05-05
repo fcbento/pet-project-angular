@@ -80,25 +80,25 @@ export class ProductList {
   // Derived Summary
   public readonly summary = computed(() => {
     const list = this.products();
-    
+
     const totals = list.reduce((acc, p) => {
       const stock = p.stockQuantity || 0;
-      
+
       // Balcao
       const revBalcao = p.sellPrice * stock;
       const profitBalcao = (p.sellPrice - p.costPrice) * stock;
-      
+
       // iFood
       const fee = p.marketplaceFee || 28;
       const multiplier = (1 - (fee / 100));
       const netRevIfood = (p.ifoodSellPrice * multiplier) * stock;
       const profitIfood = netRevIfood - (p.costPrice * stock);
       const grossRevIfood = p.ifoodSellPrice * stock;
-      
+
       // Revenda
       const revResale = p.hasResale ? (p.resalePrice * stock) : 0;
       const profitResale = p.hasResale ? (p.resalePrice - p.costPrice) * stock : 0;
-      
+
       acc.units += stock;
       acc.revBalcao += revBalcao;
       acc.profitBalcao += profitBalcao;
@@ -107,7 +107,7 @@ export class ProductList {
       acc.profitIfood += profitIfood;
       acc.revResale += revResale;
       acc.profitResale += profitResale;
-      
+
       return acc;
     }, { units: 0, revBalcao: 0, profitBalcao: 0, revIfood: 0, netRevIfood: 0, profitIfood: 0, revResale: 0, profitResale: 0 });
 
@@ -138,6 +138,34 @@ export class ProductList {
   public clearFilters(): void {
     this.nameFilter.set('');
     this.categoryFilter.set('');
+  }
+
+  public exportPdf(): void {
+    this.service.exportPdf().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `relatorio-produtos-${new Date().getTime()}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        this.store.dispatch(new OpenToast({
+          title: 'Sucesso',
+          message: 'PDF exportado com sucesso',
+          type: 'success'
+        }));
+      },
+      error: () => {
+        this.store.dispatch(new OpenToast({
+          title: 'Erro',
+          message: 'Erro ao exportar PDF',
+          type: 'error'
+        }));
+      }
+    });
   }
 
   public readonly columns = computed(() => {

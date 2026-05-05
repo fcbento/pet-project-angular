@@ -248,7 +248,7 @@
 
   <section class="details-section mt-6">
     <div class="card mix-card">
-      <h3>Mix de Produtos (Top 3)</h3>
+      <h3>Mix de Produtos (Top 10)</h3>
       <div class="product-mix">
         @for (item of s.topProducts; track item.name) {
         <div class="mix-item">
@@ -264,7 +264,7 @@
       </div>
     </div>
 
-    @if (isMonthlyView()) {
+    <!-- @if (isMonthlyView()) {
     <div class="card goal-card">
       <h3>Meta de Faturamento</h3>
       <div class="goal-content">
@@ -278,7 +278,7 @@
         <app-button name="Ajustar Meta" type="primary" [disabled]="false" (clicked)="openGoalModal()"></app-button>
       </div>
     </div>
-    }
+    } -->
   </section>
 </div>
 

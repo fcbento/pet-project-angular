@@ -1,17 +1,22 @@
 @if (summary(); as s) {
 <div class="gestao-container">
+  <div class="title-group" style="padding-bottom: 16px;">
+    <h1>Análise Avançada de Performance</h1>
+    <span>Análise de Performance por Período</span>
+  </div>
   <header class="gestao-header">
-    <div class="title-group">
-      <h1>Análise Avançada de Performance</h1>
-      <p class="competencia-range">
-        Período: {{ startDate() | date: 'dd/MM/yyyy' }} até {{ endDate() | date: 'dd/MM/yyyy' }}
-        <span class="period-badge">{{ selectedPeriod() }}</span>
-      </p>
-    </div>
+    <p class="competencia-range">
+      Período: {{ startDate() | date: 'dd/MM/yyyy' }} até {{ endDate() | date: 'dd/MM/yyyy' }}
+      <b class="period-badge">{{ selectedPeriod() }}</b>
+    </p>
     <div class="period-filters">
-      @for (p of ['Mês Atual', 'Mês Anterior', '3 Meses', '6 Meses', '12 Meses', 'Ano Atual']; track p) {
-      <button class="filter-btn" [class.active]="selectedPeriod() === p" (click)="setPeriod(p)">
-        {{ p }}
+      <button class="filter-btn" [class.active]="selectedPeriod() === 'Ano Completo'" (click)="setFullYear()">
+        Ano Completo
+      </button>
+      <div class="divider"></div>
+      @for (month of months; track month; let i = $index) {
+      <button class="filter-btn" [class.active]="selectedPeriod() === month" (click)="setMonth(i)">
+        {{ month }}
       </button>
       }
     </div>

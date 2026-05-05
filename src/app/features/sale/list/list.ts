@@ -36,9 +36,37 @@ export class SaleList {
   });
 
   // Filters
+  public readonly months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  public readonly selectedPeriod = signal<string>(this.months[new Date().getMonth()]);
   public readonly origemFilter = signal('');
   public readonly startDateFilter = signal('');
   public readonly endDateFilter = signal('');
+
+  constructor() {
+    this.setMonth(new Date().getMonth());
+  }
+
+  public setMonth(index: number): void {
+    const now = new Date();
+    const year = now.getFullYear();
+    const start = new Date(year, index, 1);
+    const end = new Date(year, index + 1, 0);
+
+    this.selectedPeriod.set(this.months[index]);
+    this.startDateFilter.set(start.toISOString().split('T')[0]);
+    this.endDateFilter.set(end.toISOString().split('T')[0]);
+  }
+
+  public setFullYear(): void {
+    const now = new Date();
+    const year = now.getFullYear();
+    const start = new Date(year, 0, 1);
+    const end = new Date(year, 11, 31);
+
+    this.selectedPeriod.set('Ano Completo');
+    this.startDateFilter.set(start.toISOString().split('T')[0]);
+    this.endDateFilter.set(end.toISOString().split('T')[0]);
+  }
 
   // Dialog State
   public readonly isDeleteDialogOpen = signal(false);
@@ -153,8 +181,7 @@ export class SaleList {
 
   public clearFilters(): void {
     this.origemFilter.set('');
-    this.startDateFilter.set('');
-    this.endDateFilter.set('');
+    this.setMonth(new Date().getMonth());
   }
 
   public newSale(): void {

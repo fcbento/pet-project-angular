@@ -26,12 +26,13 @@ export class Gestao {
   public readonly newGoalValue = signal<number>(0);
 
   // Filtros de Data
-  public readonly selectedPeriod = signal<string>('Mês Atual');
+  public readonly months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  public readonly selectedPeriod = signal<string>(this.months[new Date().getMonth()]);
   public readonly startDate = signal<string>(this.getDefaultStartDate());
   public readonly endDate = signal<string>(this.getDefaultEndDate());
 
   public readonly isMonthlyView = computed(() => {
-    return this.selectedPeriod() === 'Mês Atual' || this.selectedPeriod() === 'Mês Anterior';
+    return this.selectedPeriod() !== 'Ano Completo'; 
   });
 
   private getDefaultStartDate(): string {
@@ -44,40 +45,24 @@ export class Gestao {
     return new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
   }
 
-  public setPeriod(period: string): void {
+  public setMonth(index: number): void {
     const now = new Date();
-    let start = new Date();
-    let end = new Date();
+    const year = now.getFullYear();
+    const start = new Date(year, index, 1);
+    const end = new Date(year, index + 1, 0);
 
-    this.selectedPeriod.set(period);
+    this.selectedPeriod.set(this.months[index]);
+    this.startDate.set(start.toISOString().split('T')[0]);
+    this.endDate.set(end.toISOString().split('T')[0]);
+  }
 
-    switch (period) {
-      case 'Mês Atual':
-        start = new Date(now.getFullYear(), now.getMonth(), 1);
-        end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        break;
-      case 'Mês Anterior':
-        start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        end = new Date(now.getFullYear(), now.getMonth(), 0);
-        break;
-      case '3 Meses':
-        start = new Date(now.getFullYear(), now.getMonth() - 2, 1);
-        end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        break;
-      case '6 Meses':
-        start = new Date(now.getFullYear(), now.getMonth() - 5, 1);
-        end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        break;
-      case '12 Meses':
-        start = new Date(now.getFullYear(), now.getMonth() - 11, 1);
-        end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        break;
-      case 'Ano Atual':
-        start = new Date(now.getFullYear(), 0, 1);
-        end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        break;
-    }
+  public setFullYear(): void {
+    const now = new Date();
+    const year = now.getFullYear();
+    const start = new Date(year, 0, 1);
+    const end = new Date(year, 11, 31);
 
+    this.selectedPeriod.set('Ano Completo');
     this.startDate.set(start.toISOString().split('T')[0]);
     this.endDate.set(end.toISOString().split('T')[0]);
   }

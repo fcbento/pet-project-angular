@@ -7,11 +7,26 @@
 </header>
 
 <section class="filters">
+  <div class="period-filters">
+    <button class="filter-btn" [class.active]="selectedPeriod() === 'Ano Completo'" (click)="setFullYear()">
+      Ano Completo
+    </button>
+    <div class="divider"></div>
+    @for (month of months; track month; let i = $index) {
+    <button class="filter-btn" [class.active]="selectedPeriod() === month" (click)="setMonth(i)">
+      {{ month }}
+    </button>
+    }
+  </div>
+
   <div class="filters-row">
     <app-form-select label="Origem" placeholder="Todas as origens" [options]="origemOptions()"
       [(value)]="origemFilter" />
-    <app-form-date label="Data Inicial" [(value)]="startDateFilter" />
-    <app-form-date label="Data Final" [(value)]="endDateFilter" />
+    
+    <div class="date-info">
+      <span class="label">Período Selecionado:</span>
+      <span class="value">{{ startDateFilter() | date:'dd/MM/yyyy' }} - {{ endDateFilter() | date:'dd/MM/yyyy' }}</span>
+    </div>
 
     <div class="filter-actions">
       <app-button name="Limpar Filtros" type="secondary" [disabled]="false" (clicked)="clearFilters()"></app-button>

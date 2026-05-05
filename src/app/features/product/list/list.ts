@@ -147,6 +147,12 @@ export class ProductList {
     const baseColumns = [
       { label: 'Nome', field: 'name', sortable: true },
       { label: 'Categoria', field: 'category', cell: (row: ProductResponse) => row.category?.nome || '-' },
+      {
+        label: 'Quantidade',
+        field: 'stockQuantity',
+        sortable: true,
+        cell: (row: ProductResponse) => (row.stockQuantity || 0).toString(),
+      },
     ];
 
     const financialColumns = hasFinancials

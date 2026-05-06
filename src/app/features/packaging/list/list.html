@@ -4,7 +4,7 @@
       <h1>Embalagens</h1>
       <p>Gerencie os insumos de embalagem utilizados nos produtos</p>
     </div>
-    <app-button name="Nova Embalagem" type="primary" [disabled]="false" (clicked)="openAdd()"></app-button>
+    <app-button name="Nova Embalagem" type="primary" [disabled]="false" (clicked)="openAdd()" dataTestId="btn-new-packaging"></app-button>
   </div>
 
   @if (packagings().length > 0) {
@@ -17,7 +17,7 @@
   <div class="empty-state-card">
     <span class="icon">📦</span>
     <p>Nenhuma embalagem cadastrada ainda. Vamos adicionar a primeira? ✨</p>
-    <app-button name="Cadastrar Embalagem" type="primary" [disabled]="false" (clicked)="openAdd()"></app-button>
+    <app-button name="Cadastrar Embalagem" type="primary" [disabled]="false" (clicked)="openAdd()" dataTestId="btn-new-packaging-empty"></app-button>
   </div>
   }
 </div>
@@ -26,17 +26,17 @@
 <app-modal [(isOpen)]="isModalOpen" [title]="isEditing() ? 'Editar Embalagem' : 'Nova Embalagem'">
   <div class="form-container">
     <app-form-input label="Nome da Embalagem" [value]="formName()" (valueChange)="setString(formName, $event)"
-      placeholder="Ex: Palito de Madeira, Saquinho Plástico">
+      placeholder="Ex: Palito de Madeira, Saquinho Plástico" dataTestId="input-packaging-name">
     </app-form-input>
 
     <app-form-input label="Preço Unitário (R$)" type="number" [value]="formUnitPrice()"
-      (valueChange)="setNumber(formUnitPrice, $event)" placeholder="0.00">
+      (valueChange)="setNumber(formUnitPrice, $event)" placeholder="0.00" dataTestId="input-packaging-price">
     </app-form-input>
 
     <div class="modal-actions">
-      <app-button name="Cancelar" type="secondary" [disabled]="false" (clicked)="isModalOpen.set(false)"></app-button>
+      <app-button name="Cancelar" type="secondary" [disabled]="false" (clicked)="isModalOpen.set(false)" dataTestId="btn-cancel-packaging"></app-button>
       <app-button [name]="isEditing() ? 'Salvar Alterações' : 'Cadastrar Embalagem'" type="primary"
-        [disabled]="!formName() || formUnitPrice() <= 0" (clicked)="save()">
+        [disabled]="!formName() || formUnitPrice() <= 0" (clicked)="save()" dataTestId="btn-save-packaging">
       </app-button>
     </div>
   </div>

@@ -26,6 +26,10 @@ export class SaleService {
     return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
   }
 
+  public deleteAll(): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(this.baseUrl);
+  }
+
   public getReport(start: string, end: string): Observable<ApiResponse<SalesReportResponse>> {
     return this.http.get<ApiResponse<SalesReportResponse>>(`${this.baseUrl}/relatorio`, {
       params: { start, end },

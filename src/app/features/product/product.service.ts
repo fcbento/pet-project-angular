@@ -38,4 +38,8 @@ export class ProductService {
       responseType: 'blob',
     });
   }
+
+  public deleteAll(): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/produto`);
+  }
 }

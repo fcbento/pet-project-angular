@@ -3,7 +3,11 @@
     <h1>Vendas</h1>
     <span class="subtitle">Controle de vendas realizadas</span>
   </div>
-  <app-button name="Nova Venda" type="primary" [disabled]="false" (clicked)="newSale()"></app-button>
+  <div class="actions">
+    <app-button name="Excluir Todas" type="danger" [disabled]="false" (clicked)="deleteAll()"
+      style="margin-right: 1rem;"></app-button>
+    <app-button name="Nova Venda" type="primary" [disabled]="false" (clicked)="newSale()"></app-button>
+  </div>
 </header>
 
 <section class="filters">
@@ -55,3 +59,4 @@
 <app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Venda"
   [message]="'Deseja excluir a venda de ID ' + (saleToDelete()?.id || '') + '?'" confirmText="Sim, Excluir"
   cancelText="Cancelar" type="danger" (confirm)="confirmDelete()"></app-confirm-dialog>
+<app-confirm-dialog [(isOpen)]="isDeleteAllDialogOpen" title="Excluir Todas as Vendas" message="ATENÇÃO: Esta ação é irreversível e excluirá todo o histórico de vendas. Deseja continuar?" confirmText="Sim, Excluir Tudo" cancelText="Cancelar" type="danger" (confirm)="confirmDeleteAll()"></app-confirm-dialog>

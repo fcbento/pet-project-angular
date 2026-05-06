@@ -69,6 +69,7 @@ export class SaleList {
 
   // Dialog State
   public readonly isDeleteDialogOpen = signal(false);
+  public readonly isDeleteAllDialogOpen = signal(false);
   public readonly saleToDelete = signal<SaleResponse | null>(null);
 
   public readonly origemOptions = computed(() => {
@@ -175,6 +176,17 @@ export class SaleList {
     this.service.delete(row.id).subscribe(() => {
       this.saleResource.reload();
       this.isDeleteDialogOpen.set(false);
+    });
+  }
+
+  public deleteAll(): void {
+    this.isDeleteAllDialogOpen.set(true);
+  }
+
+  public confirmDeleteAll(): void {
+    this.service.deleteAll().subscribe(() => {
+      this.saleResource.reload();
+      this.isDeleteAllDialogOpen.set(false);
     });
   }
 

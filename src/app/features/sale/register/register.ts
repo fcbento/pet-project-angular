@@ -102,10 +102,7 @@ export class SaleRegister {
   public readonly origemOptions = signal([
     { label: 'iFood', value: 'IFOOD' },
     { label: 'Balcão', value: 'BALCAO' },
-    { label: 'Condomínio', value: 'CONDOMINIO' },
-    { label: 'Escola', value: 'ESCOLA' },
     { label: 'Revenda', value: 'REVENDA' },
-    { label: 'Outros', value: 'OUTROS' },
   ]);
 
   // Items State

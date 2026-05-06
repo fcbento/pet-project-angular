@@ -48,9 +48,12 @@ export class TechnicalSheetRegister {
   public readonly registerForm = inject(TechnicalSheetForm);
   private readonly currencyPipe = inject(CurrencyPipe);
 
+
   // Selection state
   public readonly selectedCategoryId = signal<number | null>(null);
   public readonly selectedProductId = signal<number | null>(null);
+  private readonly loadingIngredientSelections = signal(false);
+  private readonly loadingPackagingSelections = signal(false);
 
   // Resources
   public readonly categoryResource = rxResource({
@@ -132,19 +135,22 @@ export class TechnicalSheetRegister {
   }
 
   private loadMasters(): void {
+    this.loadingIngredientSelections.set(true);
+    this.loadingPackagingSelections.set(true);
+
     this.ingredientService.findAll().subscribe(ingredients => {
       this.centralIngredients.set(ingredients);
       this.ingredientSelections.set(ingredients.map(i => ({
         id: i.id, name: i.name, unitPrice: i.unitPrice, selected: false, extra: i.unit
       })));
-    });
+    }).add(() => this.loadingIngredientSelections.set(false));
 
     this.packagingService.findAll().subscribe(packagings => {
       this.centralPackagings.set(packagings);
       this.packagingSelections.set(packagings.map(p => ({
         id: p.id, name: p.name, unitPrice: p.unitPrice, selected: false
       })));
-    });
+    }).add(() => this.loadingPackagingSelections.set(false));
   }
 
   private loadExistingSheet(productId: number): void {
@@ -169,7 +175,7 @@ export class TechnicalSheetRegister {
         this.ingredientSelections.update(sels => sels.map(s => ({
           ...s, selected: sheet.ingredients.some(i => i.ingredientId === s.id)
         })));
-        
+
         this.packagingSelections.update(sels => sels.map(s => ({
           ...s, selected: sheet.packagings.some(p => p.id === s.id)
         })));

@@ -50,7 +50,32 @@ export class ProductList {
 
   // Dialog State
   public readonly isDeleteDialogOpen = signal(false);
+  public readonly isDeleteAllDialogOpen = signal(false);
   public readonly productToDelete = signal<ProductResponse | null>(null);
+
+  public deleteAll(): void {
+    this.isDeleteAllDialogOpen.set(true);
+  }
+
+  public confirmDeleteAll(): void {
+    this.service.deleteAll().subscribe({
+      next: () => {
+        this.store.dispatch(new OpenToast({
+          title: 'Sucesso',
+          message: 'Todos os produtos e vendas foram excluídos com sucesso',
+          type: 'success'
+        }));
+        this.productResource.reload();
+      },
+      error: () => {
+        this.store.dispatch(new OpenToast({
+          title: 'Erro',
+          message: 'Erro ao tentar excluir todos os produtos',
+          type: 'error'
+        }));
+      }
+    });
+  }
 
   public readonly categoryOptions = computed(() => {
     const categories = this.categoryResource.value()?.data || [];

@@ -20,7 +20,7 @@
         </div>
       </div>
 
-      @if (ingredientSelections().length > 0) {
+      @if (ingredientSelections().length > 0 && !loadingIngredientSelections()) {
       <div class="ingredient-checklist">
         @for (sel of ingredientSelections(); track sel.id) {
         <div class="ingredient-check-row" [class.selected]="sel.selected">
@@ -46,7 +46,7 @@
       </div>
 
       <!-- Summary Table -->
-      @if (selectedIngredients().length > 0) {
+      @if (selectedIngredients().length > 0 && !loadingIngredientSelections()) {
       <div class="ingredients-list mt-4">
         <table>
           <thead>

@@ -23,8 +23,9 @@
 </section>
 
 @if (products().length > 0) {
-<div style="padding-bottom: 10px;">
+<div class="list-actions" style="padding-bottom: 10px; display: flex; gap: 8px;">
   <app-button name="Exportar PDF" type="primary" [disabled]="products().length === 0" (clicked)="exportPdf()" />
+  <app-button name="Excluir Todos" type="danger" [disabled]="products().length === 0" (clicked)="deleteAll()" />
 </div>
 
 <app-table [columns]="columns()" [data]="products()" [actions]="rowActions" [withPagination]="true" title="Produtos"
@@ -40,3 +41,7 @@
 <app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Produto"
   [message]="'Deseja excluir o produto ' + (productToDelete()?.name || '') + '?'" confirmText="Sim, Excluir"
   cancelText="Cancelar" type="danger" (confirm)="confirmDelete()"></app-confirm-dialog>
+
+<app-confirm-dialog [(isOpen)]="isDeleteAllDialogOpen" title="Excluir TODOS os Produtos"
+  message="ATENÇÃO: Esta ação irá excluir TODOS os produtos e vendas cadastradas. Esta operação não pode ser desfeita. Deseja continuar?"
+  confirmText="Sim, Excluir TUDO" cancelText="Cancelar" type="danger" (confirm)="confirmDeleteAll()"></app-confirm-dialog>

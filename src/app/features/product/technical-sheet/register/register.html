@@ -7,7 +7,7 @@
   </div>
 
   <div class="content-grid">
-    <!-- Ingredients Section — Checkboxes from Central Module -->
+    <!-- Ingredients Section -->
     <div class="card ingredients-card">
       <div class="card-header-actions">
         <div>
@@ -22,13 +22,13 @@
 
       @if (ingredientSelections().length > 0) {
       <div class="ingredient-checklist">
-        @for (sel of ingredientSelections(); track sel.ingredientId) {
+        @for (sel of ingredientSelections(); track sel.id) {
         <div class="ingredient-check-row" [class.selected]="sel.selected">
           <label class="ingredient-checkbox" data-testid="ingredient-checkbox">
-            <input type="checkbox" [checked]="sel.selected" (change)="toggleIngredient(sel.ingredientId)">
+            <input type="checkbox" [checked]="sel.selected" (change)="toggleIngredient(sel.id)">
             <span class="ingredient-info">
-              <strong>{{ sel.ingredientName }}</strong>
-              <span class="ingredient-meta">{{ sel.unitPrice | currency: 'BRL' }} / {{ sel.unit }}</span>
+              <strong>{{ sel.name }}</strong>
+              <span class="ingredient-meta">{{ sel.unitPrice | currency: 'BRL' }} / {{ sel.extra }}</span>
             </span>
           </label>
 
@@ -59,10 +59,10 @@
             </tr>
           </thead>
           <tbody>
-            @for (ing of selectedIngredients(); track ing.ingredientId) {
+            @for (ing of selectedIngredients(); track ing.id) {
             <tr>
-              <td>{{ ing.ingredientName }}</td>
-              <td>{{ ing.unit }}</td>
+              <td>{{ ing.name }}</td>
+              <td>{{ ing.extra }}</td>
               <td>{{ ing.unitPrice | currency: 'BRL' }}</td>
               <td>{{ registerForm.registerForm().value().yieldUnits }}</td>
               <td>{{ (ing.unitPrice / (registerForm.registerForm().value().yieldUnits || 1)) | currency: 'BRL' }}</td>
@@ -80,49 +80,70 @@
       }
     </div>
 
-    <!-- Full Width: Packaging -->
+    <!-- Packaging Section -->
     <div class="card packaging-card">
-      <h3>Custos de Embalagem</h3>
-
-      <!-- Radio Selection for Picole -->
-      <div class="packaging-type-selection mb-4" *ngIf="isPicole()">
-        <label class="block mb-2 font-medium">Tipo de Embalagem para Picolé:</label>
-        <div class="radio-options">
-          <label class="radio-label">
-            <input type="radio" name="pkgType" [checked]="isPapel()" (change)="setPackagingType('PAPEL')">
-            <span>Embalagem Papel</span>
-          </label>
-          <label class="radio-label">
-            <input type="radio" name="pkgType" [checked]="isSaquinho()" (change)="setPackagingType('SAQUINHO')">
-            <span>Embalagem Saquinho</span>
-          </label>
+      <div class="card-header-actions">
+        <div>
+          <h3>Embalagens</h3>
+          <p class="card-description">Selecione as embalagens utilizadas para este produto.</p>
         </div>
       </div>
 
-      <div class="form-grid">
-        <!-- Always for Picole -->
-        <app-form-input *ngIf="isPicole()" label="Custo Palito" type="number"
-          [field]="registerForm.registerForm.stickCost" dataTestId="stickCost">
-        </app-form-input>
+      @if (packagingSelections().length > 0) {
+      <div class="ingredient-checklist">
+        @for (sel of packagingSelections(); track sel.id) {
+        <div class="ingredient-check-row" [class.selected]="sel.selected">
+          <label class="ingredient-checkbox" data-testid="packaging-checkbox">
+            <input type="checkbox" [checked]="sel.selected" (change)="togglePackaging(sel.id)">
+            <span class="ingredient-info">
+              <strong>{{ sel.name }}</strong>
+              <span class="ingredient-meta">{{ sel.unitPrice | currency: 'BRL' }} por unidade</span>
+            </span>
+          </label>
 
-        <!-- Standard fields for anything NOT (Picole + Paper) -->
-        <app-form-input *ngIf="!isPicole() || (isPicole() && isSaquinho())" label="Custo Saquinho" type="number"
-          [field]="registerForm.registerForm.bagCost" dataTestId="bagCost">
-        </app-form-input>
-
-        <app-form-input *ngIf="!isPicole() || (isPicole() && isSaquinho())" label="Custo Etiqueta Marca" type="number"
-          [field]="registerForm.registerForm.brandLabelCost" dataTestId="brandLabelCost">
-        </app-form-input>
-
-        <app-form-input *ngIf="!isPicole() || (isPicole() && isSaquinho())" label="Custo Etiqueta Sabor" type="number"
-          [field]="registerForm.registerForm.flavorLabelCost" dataTestId="flavorLabelCost">
-        </app-form-input>
-
-        <!-- Only for Picole + Papel -->
-        <app-form-input *ngIf="isPicole() && isPapel()" label="Custo Embalagem Papel" type="number"
-          [field]="registerForm.registerForm.paperPackagingCost" dataTestId="paperPackagingCost">
-        </app-form-input>
+          @if (sel.selected) {
+          <div class="ingredient-details">
+            <div class="subtotal-badge">
+              <span>Custo</span>
+              <strong>{{ sel.unitPrice | currency: 'BRL' }}</strong>
+            </div>
+          </div>
+          }
+        </div>
+        }
       </div>
+
+      <!-- Summary Table -->
+      @if (selectedPackagings().length > 0) {
+      <div class="ingredients-list mt-4">
+        <table>
+          <thead>
+            <tr>
+              <th>Embalagem</th>
+              <th>Custo Unitário</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (pkg of selectedPackagings(); track pkg.id) {
+            <tr>
+              <td>{{ pkg.name }}</td>
+              <td>{{ pkg.unitPrice | currency: 'BRL' }}</td>
+            </tr>
+            }
+            <tr class="total-row">
+              <td><strong>Total Embalagem</strong></td>
+              <td><strong>{{ totalPackagingCost() | currency: 'BRL' }}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      }
+      } @else {
+      <div class="empty-ingredients">
+        <p>Nenhuma embalagem cadastrada no sistema. <a routerLink="/dashboard/embalagem">Cadastre embalagens
+            primeiro.</a></p>
+      </div>
+      }
     </div>
 
     <div class="card resale-card">
@@ -204,7 +225,7 @@
           [field]="registerForm.registerForm.stockQuantity" dataTestId="stockQuantity"></app-form-input>
 
         <div class="summary-details mt-4">
-          <div *ngIf="ifoodSellPriceValue() < suggestedIfoodPrice()"
+          <div *ngIf="ifoodSellPriceValue() < (suggestedIfoodPrice() - 0.01)"
             style="color: red; font-size: 0.9rem; margin-bottom: 0.5rem;">
             Aviso: O preço iFood não pode ser menor que a sugestão mínima de {{ suggestedIfoodPrice() | currency:
             'BRL'

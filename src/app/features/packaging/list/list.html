@@ -1,0 +1,47 @@
+<div class="page-container">
+  <div class="header">
+    <div class="title-group">
+      <h1>Embalagens</h1>
+      <p>Gerencie os insumos de embalagem utilizados nos produtos</p>
+    </div>
+    <app-button name="Nova Embalagem" type="primary" [disabled]="false" (clicked)="openAdd()"></app-button>
+  </div>
+
+  @if (packagings().length > 0) {
+  <div class="content">
+    <app-table [columns]="columns" [data]="packagings()" [actions]="actions" [withPagination]="true"
+      title="Embalagens Cadastradas" subtitle="Gerencie os insumos de embalagem utilizados nas fichas técnicas">
+    </app-table>
+  </div>
+  } @else {
+  <div class="empty-state-card">
+    <span class="icon">📦</span>
+    <p>Nenhuma embalagem cadastrada ainda. Vamos adicionar a primeira? ✨</p>
+    <app-button name="Cadastrar Embalagem" type="primary" [disabled]="false" (clicked)="openAdd()"></app-button>
+  </div>
+  }
+</div>
+
+<!-- Modal de Cadastro/Edição -->
+<app-modal [(isOpen)]="isModalOpen" [title]="isEditing() ? 'Editar Embalagem' : 'Nova Embalagem'">
+  <div class="form-container">
+    <app-form-input label="Nome da Embalagem" [value]="formName()" (valueChange)="setString(formName, $event)"
+      placeholder="Ex: Palito de Madeira, Saquinho Plástico">
+    </app-form-input>
+
+    <app-form-input label="Preço Unitário (R$)" type="number" [value]="formUnitPrice()"
+      (valueChange)="setNumber(formUnitPrice, $event)" placeholder="0.00">
+    </app-form-input>
+
+    <div class="modal-actions">
+      <app-button name="Cancelar" type="secondary" [disabled]="false" (clicked)="isModalOpen.set(false)"></app-button>
+      <app-button [name]="isEditing() ? 'Salvar Alterações' : 'Cadastrar Embalagem'" type="primary"
+        [disabled]="!formName() || formUnitPrice() <= 0" (clicked)="save()">
+      </app-button>
+    </div>
+  </div>
+</app-modal>
+
+<app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Embalagem" [message]="deleteMessage()"
+  confirmText="Sim, Excluir" cancelText="Cancelar" type="danger" (confirm)="confirmDelete()">
+</app-confirm-dialog>

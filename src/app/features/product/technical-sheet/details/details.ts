@@ -2,13 +2,13 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CurrencyPipe, CommonModule } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { of } from 'rxjs';
 import { Button } from '../../../../ui/button/button';
 import { TechnicalSheetService } from '../technical-sheet.service';
 import { TechnicalSheetResponse } from '../technical-sheet.models';
 
 @Component({
   selector: 'app-technical-sheet-details',
+  standalone: true,
   imports: [CommonModule, CurrencyPipe, Button],
   templateUrl: './details.html',
   styleUrl: './details.scss',
@@ -40,30 +40,15 @@ export class TechnicalSheetDetails {
   public readonly totalPackagingCost = computed(() => {
     const s = this.sheet();
     if (!s) return 0;
-    const pkg = s.packaging;
-    return (
-      (pkg.stickCost || 0) +
-      (pkg.brandLabelCost || 0) +
-      (pkg.flavorLabelCost || 0) +
-      (pkg.bagCost || 0) +
-      (pkg.paperPackagingCost || 0)
-    );
+    return s.packagings.reduce((acc, curr) => acc + (curr.unitPrice || 0), 0);
   });
 
   public readonly fixedOperationalCost = computed(() => this.sheet()?.fixedOperationalCost || 0);
 
-  public readonly totalCost = computed(() => {
-    const s = this.sheet();
-    if (!s) return 0;
-    const yieldUnits = s.yieldUnits || 1;
-    return this.totalIngredientsCost() + this.totalPackagingCost() + (this.fixedOperationalCost() * yieldUnits);
-  });
-
   public readonly unitCost = computed(() => {
     const s = this.sheet();
     if (!s) return 0;
-    const yieldUnits = s.yieldUnits || 1;
-    return (this.totalIngredientsCost() + this.totalPackagingCost()) / yieldUnits + this.fixedOperationalCost();
+    return this.totalIngredientsCost() + this.totalPackagingCost() + this.fixedOperationalCost();
   });
 
   public readonly sellPrice = computed(() => this.sheet()?.sellPrice || 0);

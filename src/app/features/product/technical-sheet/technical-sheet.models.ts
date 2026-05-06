@@ -1,3 +1,5 @@
+import { PackagingResponse } from '../../packaging/packaging.model';
+
 // DTO usado no request da ficha técnica (ingredientId + rendimento)
 export interface IngredientDTO {
   ingredientId: number;
@@ -14,15 +16,6 @@ export interface IngredientSheetItem {
   subtotal: number;
 }
 
-export interface PackagingDTO {
-  stickCost: number;
-  brandLabelCost: number;
-  flavorLabelCost: number;
-  bagCost: number;
-  paperPackagingCost: number;
-  packagingType: 'PAPEL' | 'SAQUINHO';
-}
-
 export interface TechnicalSheetRequest {
   productId: number;
   yieldUnits: number;
@@ -30,7 +23,7 @@ export interface TechnicalSheetRequest {
   storage: string;
   validity: string;
   ingredients: IngredientDTO[];
-  packaging: PackagingDTO;
+  packagingIds: number[];
   sellPrice: number;
   ifoodSellPrice: number;
   hasResale?: boolean;
@@ -48,7 +41,7 @@ export interface TechnicalSheetResponse {
   storage: string;
   validity: string;
   ingredients: IngredientSheetItem[];
-  packaging: PackagingDTO;
+  packagings: PackagingResponse[];
   totalCost: number;
   unitCost: number;
   fixedOperationalCost: number;

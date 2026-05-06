@@ -6,15 +6,9 @@ export interface TechnicalSheetModel {
   yieldWeight: number;
   storage: string;
   validity: string;
-  stickCost: number;
-  brandLabelCost: number;
-  flavorLabelCost: number;
-  bagCost: number;
-  paperPackagingCost: number;
-  packagingType: 'PAPEL' | 'SAQUINHO';
   sellPrice: number;
   ifoodSellPrice: number;
-  hasResale: boolean; // US-013
+  hasResale: boolean;
   resalePrice: number;
   stockQuantity: number;
 }
@@ -26,12 +20,6 @@ export class TechnicalSheetForm {
     yieldWeight: 0,
     storage: 'Freezer (-18°C)',
     validity: '180 dias',
-    stickCost: 0,
-    brandLabelCost: 0.05,
-    flavorLabelCost: 0.03,
-    bagCost: 0.06,
-    paperPackagingCost: 0.15,
-    packagingType: 'SAQUINHO',
     sellPrice: 0,
     ifoodSellPrice: 0,
     hasResale: false,
@@ -67,12 +55,6 @@ export class TechnicalSheetForm {
       yieldWeight: 0,
       storage: 'Freezer (-18°C)',
       validity: '180 dias',
-      stickCost: 0,
-      brandLabelCost: 0.05,
-      flavorLabelCost: 0.03,
-      bagCost: 0.06,
-      paperPackagingCost: 0.15,
-      packagingType: 'SAQUINHO',
       sellPrice: 0,
       ifoodSellPrice: 0,
       hasResale: false,

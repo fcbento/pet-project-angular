@@ -12,17 +12,19 @@ import { ProductService } from '../../product.service';
 import { CategoryService } from '../../../category/category.service';
 import { TechnicalSheetService } from '../technical-sheet.service';
 import { IngredientService } from '../../../ingredient/ingredient.service';
+import { PackagingService } from '../../../packaging/packaging.service';
 import { IngredientResponse } from '../../../ingredient/ingredient.models';
+import { PackagingResponse } from '../../../packaging/packaging.model';
 import { TechnicalSheetForm } from './register.form';
-import { IngredientDTO, IngredientSheetItem, TechnicalSheetRequest } from '../technical-sheet.models';
+import { IngredientDTO, TechnicalSheetRequest } from '../technical-sheet.models';
 
-// Local state for ingredient selection
-interface IngredientSelection {
-  ingredientId: number;
-  ingredientName: string;
-  unit: string;
+// Local state for selections
+interface ItemSelection<T> {
+  id: number;
+  name: string;
   unitPrice: number;
   selected: boolean;
+  extra?: any;
 }
 
 @Component({
@@ -39,6 +41,7 @@ export class TechnicalSheetRegister {
   private readonly productService = inject(ProductService);
   private readonly categoryService = inject(CategoryService);
   private readonly ingredientService = inject(IngredientService);
+  private readonly packagingService = inject(PackagingService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(Store);
@@ -58,13 +61,15 @@ export class TechnicalSheetRegister {
     stream: () => this.productService.getAll(),
   });
 
-  // Central ingredients from API
+  // Masters from API
   public readonly centralIngredients = signal<IngredientResponse[]>([]);
+  public readonly centralPackagings = signal<PackagingResponse[]>([]);
 
-  // Ingredient selection state (checkboxes + yield)
-  public readonly ingredientSelections = signal<IngredientSelection[]>([]);
+  // Selection states
+  public readonly ingredientSelections = signal<ItemSelection<IngredientResponse>[]>([]);
+  public readonly packagingSelections = signal<ItemSelection<PackagingResponse>[]>([]);
 
-  // Computed Options — only categories that have at least one product
+  // Computed Options
   public readonly categoryOptions = computed(() => {
     if (this.categoryResource.error() || this.productResource.error()) return [];
     const categories = this.categoryResource.value()?.data || [];
@@ -74,8 +79,6 @@ export class TechnicalSheetRegister {
       .filter((c) => categoryIdsWithProducts.has(c.id))
       .map((c) => ({ label: c.nome, value: c.id }));
   });
-
-  public readonly isCategorySelected = computed(() => !!this.selectedCategoryId());
 
   public readonly productOptions = computed(() => {
     if (this.productResource.error()) return [];
@@ -94,25 +97,11 @@ export class TechnicalSheetRegister {
     return products.find((p) => p.id === id);
   });
 
-  public readonly isGeladinho = computed(() => {
-    const catName = this.selectedProduct()?.category?.nome?.toLowerCase() || '';
-    return catName.includes('geladinho') || catName.includes('gelado');
-  });
-
-  public readonly isPicole = computed(() => {
-    const catName = this.selectedProduct()?.category?.nome?.toLowerCase() || '';
-    return catName.includes('picolé') || catName.includes('picole');
-  });
-
-  public readonly isPapel = computed(() => this.registerForm.registerForm().value().packagingType === 'PAPEL');
-  public readonly isSaquinho = computed(() => this.registerForm.registerForm().value().packagingType === 'SAQUINHO');
-
-  // Auto-fill if productId is in query params
+  // Auto-fill and modes
   public readonly isEditMode = signal(false);
 
   public constructor() {
-    // Load central ingredients
-    this.loadIngredients();
+    this.loadMasters();
 
     const params = this.route.snapshot.queryParams;
     if (params['productId']) {
@@ -121,7 +110,6 @@ export class TechnicalSheetRegister {
       this.loadExistingSheet(id);
     }
 
-    // Auto-select category if we have a product selected but no category
     effect(() => {
       if (this.productResource.error()) return;
       const products = this.productResource.value()?.data;
@@ -134,7 +122,6 @@ export class TechnicalSheetRegister {
       }
     }, { allowSignalWrites: true });
 
-    // Auto-fill iFood price if it's below the suggested minimum
     effect(() => {
       const suggested = this.suggestedIfoodPrice();
       const currentVal = Number(this.registerForm.registerForm().value().ifoodSellPrice) || 0;
@@ -144,21 +131,19 @@ export class TechnicalSheetRegister {
     }, { allowSignalWrites: true });
   }
 
-  private loadIngredients(): void {
-    this.ingredientService.findAll().subscribe({
-      next: (ingredients) => {
-        this.centralIngredients.set(ingredients);
-        // Initialize selection state (all unchecked, yield=0)
-        this.ingredientSelections.set(
-          ingredients.map(ing => ({
-            ingredientId: ing.id,
-            ingredientName: ing.name,
-            unit: ing.unit,
-            unitPrice: ing.unitPrice,
-            selected: false,
-          }))
-        );
-      }
+  private loadMasters(): void {
+    this.ingredientService.findAll().subscribe(ingredients => {
+      this.centralIngredients.set(ingredients);
+      this.ingredientSelections.set(ingredients.map(i => ({
+        id: i.id, name: i.name, unitPrice: i.unitPrice, selected: false, extra: i.unit
+      })));
+    });
+
+    this.packagingService.findAll().subscribe(packagings => {
+      this.centralPackagings.set(packagings);
+      this.packagingSelections.set(packagings.map(p => ({
+        id: p.id, name: p.name, unitPrice: p.unitPrice, selected: false
+      })));
     });
   }
 
@@ -173,12 +158,6 @@ export class TechnicalSheetRegister {
           yieldWeight: sheet.yieldWeight,
           storage: sheet.storage,
           validity: sheet.validity,
-          stickCost: sheet.packaging.stickCost,
-          brandLabelCost: sheet.packaging.brandLabelCost,
-          flavorLabelCost: sheet.packaging.flavorLabelCost,
-          bagCost: sheet.packaging.bagCost,
-          paperPackagingCost: sheet.packaging.paperPackagingCost,
-          packagingType: sheet.packaging.packagingType || 'SAQUINHO',
           sellPrice: sheet.sellPrice || 0,
           ifoodSellPrice: sheet.ifoodSellPrice || 0,
           hasResale: product?.hasResale || ((sheet.resalePrice ?? 0) > 0) || false,
@@ -186,19 +165,18 @@ export class TechnicalSheetRegister {
           stockQuantity: sheet.stockQuantity || 1,
         });
 
-        // Mark ingredients from the sheet as selected
-        this.ingredientSelections.update(selections => {
-          return selections.map(sel => {
-            const sheetIng = sheet.ingredients.find(i => i.ingredientId === sel.ingredientId);
-            return { ...sel, selected: !!sheetIng };
-          });
-        });
+        // Sync selections
+        this.ingredientSelections.update(sels => sels.map(s => ({
+          ...s, selected: sheet.ingredients.some(i => i.ingredientId === s.id)
+        })));
+        
+        this.packagingSelections.update(sels => sels.map(s => ({
+          ...s, selected: sheet.packagings.some(p => p.id === s.id)
+        })));
       },
       error: () => {
-        // No existing sheet — show blank form for new registration
         this.isEditMode.set(false);
         this.registerForm.resetForm();
-
         if (product) {
           this.registerForm.registerForm().reset({
             ...this.registerForm.registerForm().value(),
@@ -209,9 +187,8 @@ export class TechnicalSheetRegister {
             stockQuantity: product.stockQuantity || 1
           });
         }
-
-        // Reset all ingredient selections
         this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false })));
+        this.packagingSelections.update(sels => sels.map(s => ({ ...s, selected: false })));
       },
     });
   }
@@ -222,6 +199,7 @@ export class TechnicalSheetRegister {
     this.isEditMode.set(false);
     this.registerForm.resetForm();
     this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false })));
+    this.packagingSelections.update(sels => sels.map(s => ({ ...s, selected: false })));
   }
 
   public onProductChange(value: string | number | null): void {
@@ -233,69 +211,31 @@ export class TechnicalSheetRegister {
       this.isEditMode.set(false);
       this.registerForm.resetForm();
       this.ingredientSelections.update(sels => sels.map(s => ({ ...s, selected: false })));
+      this.packagingSelections.update(sels => sels.map(s => ({ ...s, selected: false })));
     }
   }
 
-  public setPackagingType(type: 'PAPEL' | 'SAQUINHO'): void {
-    this.registerForm.registerForm().reset({
-      ...this.registerForm.registerForm().value(),
-      packagingType: type,
-    });
+  public toggleIngredient(id: number): void {
+    this.ingredientSelections.update(sels => sels.map(s => s.id === id ? { ...s, selected: !s.selected } : s));
   }
 
-  // Ingredient checkbox toggle
-  public toggleIngredient(ingredientId: number): void {
-    this.ingredientSelections.update(sels =>
-      sels.map(s =>
-        s.ingredientId === ingredientId
-          ? { ...s, selected: !s.selected }
-          : s
-      )
-    );
+  public togglePackaging(id: number): void {
+    this.packagingSelections.update(sels => sels.map(s => s.id === id ? { ...s, selected: !s.selected } : s));
   }
 
-  // Selected ingredients only
-  public readonly selectedIngredients = computed(() =>
-    this.ingredientSelections().filter(s => s.selected)
-  );
+  public readonly selectedIngredients = computed(() => this.ingredientSelections().filter(s => s.selected));
+  public readonly selectedPackagings = computed(() => this.packagingSelections().filter(s => s.selected));
 
   // Cost Calculations
   public readonly totalIngredientsCost = computed(() => {
     const yieldUnits = Number(this.registerForm.registerForm().value().yieldUnits) || 1;
-    return this.selectedIngredients().reduce((acc, curr) => {
-      return acc + (curr.unitPrice / yieldUnits);
-    }, 0);
+    return this.selectedIngredients().reduce((acc, curr) => acc + (curr.unitPrice / yieldUnits), 0);
   });
 
   public readonly totalPackagingCost = computed(() => {
-    const val = this.registerForm.registerForm().value();
-    let total = 0;
-
-    if (this.isPicole()) {
-      total += Number(val.stickCost) || 0;
-      if (this.isPapel()) {
-        total += Number(val.paperPackagingCost) || 0;
-      } else if (this.isSaquinho()) {
-        total += Number(val.bagCost) || 0;
-        total += Number(val.brandLabelCost) || 0;
-        total += Number(val.flavorLabelCost) || 0;
-      }
-    } else if (this.isGeladinho()) {
-      total += Number(val.bagCost) || 0;
-      total += Number(val.brandLabelCost) || 0;
-      total += Number(val.flavorLabelCost) || 0;
-    } else {
-      total += Number(val.stickCost) || 0;
-      total += Number(val.brandLabelCost) || 0;
-      total += Number(val.flavorLabelCost) || 0;
-      total += Number(val.bagCost) || 0;
-      total += Number(val.paperPackagingCost) || 0;
-    }
-
-    return total;
+    return this.selectedPackagings().reduce((acc, curr) => acc + curr.unitPrice, 0);
   });
 
-  // Fixed Operational Cost (Luz: 0.08 + Gasolina: 0.10 + Pró-labore: 0.50)
   public readonly fixedOperationalCost = signal(0.68);
 
   public readonly unitCost = computed(() => {
@@ -303,56 +243,26 @@ export class TechnicalSheetRegister {
   });
 
   // Pricing & Profit
-  public readonly sellPrice = computed(() => {
-    return Number(this.registerForm.registerForm().value().sellPrice) || 0;
-  });
+  public readonly sellPriceValue = computed(() => Number(this.registerForm.registerForm().value().sellPrice) || 0);
+  public readonly ifoodSellPriceValue = computed(() => Number(this.registerForm.registerForm().value().ifoodSellPrice) || 0);
 
   public readonly suggestedIfoodPrice = computed(() => {
-    const sell = this.sellPrice();
-    if (sell <= 0) return 0;
-    return sell / 0.72; // Comissão 28%: Preço / (1 - 0.28)
+    const sell = this.sellPriceValue();
+    return sell > 0 ? sell / 0.72 : 0;
   });
 
-  public readonly ifoodSellPriceValue = computed(() => {
-    return Number(this.registerForm.registerForm().value().ifoodSellPrice) || 0;
-  });
+  public readonly profit = computed(() => this.sellPriceValue() - this.unitCost());
+  public readonly profitMargin = computed(() => this.sellPriceValue() > 0 ? (this.profit() / this.sellPriceValue()) * 100 : 0);
 
-  public readonly profit = computed(() => {
-    return this.sellPrice() - this.unitCost();
-  });
+  public readonly ifoodProfit = computed(() => (this.ifoodSellPriceValue() * 0.72) - this.unitCost());
+  public readonly ifoodProfitMargin = computed(() => this.ifoodSellPriceValue() > 0 ? (this.ifoodProfit() / (this.ifoodSellPriceValue() * 0.72)) * 100 : 0);
 
-  public readonly profitMargin = computed(() => {
-    const sell = this.sellPrice();
-    if (sell <= 0) return 0;
-    return (this.profit() / sell) * 100;
-  });
-
-  public readonly ifoodProfit = computed(() => {
-    const ifoodPrice = this.ifoodSellPriceValue();
-    if (ifoodPrice <= 0) return 0;
-    return (ifoodPrice * 0.72) - this.unitCost();
-  });
-
-  public readonly ifoodProfitMargin = computed(() => {
-    const ifoodPrice = this.ifoodSellPriceValue();
-    if (ifoodPrice <= 0) return 0;
-    const ifoodNetRevenue = ifoodPrice * 0.72;
-    return (this.ifoodProfit() / ifoodNetRevenue) * 100;
-  });
-
-  // Resale Calculations
+  // Resale
   public readonly hasResaleValue = computed(() => this.registerForm.registerForm().value().hasResale);
   public readonly resalePriceValue = computed(() => Number(this.registerForm.registerForm().value().resalePrice) || 0);
 
-  public readonly minResalePrice = computed(() => {
-    const cost = this.unitCost();
-    return cost > 0 ? Math.round((cost / 0.8) * 100) / 100 : 0;
-  });
-
-  public readonly maxResalePrice = computed(() => {
-    const cost = this.unitCost();
-    return cost > 0 ? Math.round((cost / 0.75) * 100) / 100 : 0;
-  });
+  public readonly minResalePrice = computed(() => this.unitCost() > 0 ? Math.round((this.unitCost() / 0.8) * 100) / 100 : 0);
+  public readonly maxResalePrice = computed(() => this.unitCost() > 0 ? Math.round((this.unitCost() / 0.75) * 100) / 100 : 0);
 
   public readonly isResaleMarginValid = computed(() => {
     if (!this.hasResaleValue()) return true;
@@ -361,58 +271,36 @@ export class TechnicalSheetRegister {
   });
 
   public readonly resaleProfitUnit = computed(() => this.resalePriceValue() - this.unitCost());
-  public readonly resaleMargin = computed(() => {
-    const price = this.resalePriceValue();
-    return price > 0 ? (this.resaleProfitUnit() / price) * 100 : 0;
-  });
+  public readonly resaleMargin = computed(() => this.resalePriceValue() > 0 ? (this.resaleProfitUnit() / this.resalePriceValue()) * 100 : 0);
 
   public readonly canSubmit = computed(() => {
     const val = this.registerForm.registerForm().value();
-    const sellPrice = Number(val.sellPrice) || 0;
-    const ifoodSellPrice = Number(val.ifoodSellPrice) || 0;
     const suggestedIfood = this.suggestedIfoodPrice();
-
-    const resaleValid = !this.hasResaleValue() || this.isResaleMarginValid();
-
     return !!this.selectedProductId() &&
       this.selectedIngredients().length > 0 &&
       this.registerForm.registerForm().valid() &&
-      sellPrice > 0 &&
-      ifoodSellPrice >= suggestedIfood &&
+      this.sellPriceValue() > 0 &&
+      this.ifoodSellPriceValue() >= (suggestedIfood - 0.01) && // Tolerância
       this.profit() >= 0 &&
-      this.profitMargin() >= 0 &&
-      resaleValid &&
+      (!this.hasResaleValue() || this.isResaleMarginValid()) &&
       Number(val.stockQuantity) > 0;
   });
 
   public submit(): void {
     if (!this.canSubmit()) return;
-
     const formVal = this.registerForm.registerForm().value();
     const yieldUnits = Number(formVal.yieldUnits) || 1;
 
-    const ingredientDTOs: IngredientDTO[] = this.selectedIngredients().map(sel => ({
-      ingredientId: sel.ingredientId,
-      yieldQuantity: yieldUnits,
-    }));
-
     const request: TechnicalSheetRequest = {
       productId: this.selectedProductId()!,
-      yieldUnits: yieldUnits,
+      yieldUnits,
       yieldWeight: Number(formVal.yieldWeight),
       storage: String(formVal.storage),
       validity: String(formVal.validity),
-      ingredients: ingredientDTOs,
-      packaging: {
-        stickCost: Number(formVal.stickCost) || 0,
-        brandLabelCost: Number(formVal.brandLabelCost) || 0,
-        flavorLabelCost: Number(formVal.flavorLabelCost) || 0,
-        bagCost: Number(formVal.bagCost) || 0,
-        paperPackagingCost: Number(formVal.paperPackagingCost) || 0,
-        packagingType: formVal.packagingType,
-      },
-      sellPrice: Number(formVal.sellPrice) || 0,
-      ifoodSellPrice: Number(formVal.ifoodSellPrice) || 0,
+      ingredients: this.selectedIngredients().map(sel => ({ ingredientId: sel.id, yieldQuantity: yieldUnits })),
+      packagingIds: this.selectedPackagings().map(sel => sel.id),
+      sellPrice: this.sellPriceValue(),
+      ifoodSellPrice: this.ifoodSellPriceValue(),
       hasResale: formVal.hasResale,
       resalePrice: formVal.hasResale ? Number(formVal.resalePrice) : 0,
       stockQuantity: Number(formVal.stockQuantity) || 0
@@ -420,25 +308,10 @@ export class TechnicalSheetRegister {
 
     this.service.save(request).subscribe({
       next: () => {
-        this.store.dispatch(
-          new OpenToast({
-            title: 'Sucesso',
-            message: 'Ficha técnica salva com sucesso',
-            type: 'success',
-            duration: 1000
-          })
-        );
+        this.store.dispatch(new OpenToast({ title: 'Sucesso', message: 'Ficha técnica salva com sucesso', type: 'success', duration: 1000 }));
         this.router.navigate(['/dashboard/produto']);
       },
-      error: () => {
-        this.store.dispatch(
-          new OpenToast({
-            title: 'Erro',
-            message: 'Erro ao salvar ficha técnica',
-            type: 'error',
-          })
-        );
-      },
+      error: () => this.store.dispatch(new OpenToast({ title: 'Erro', message: 'Erro ao salvar ficha técnica', type: 'error' })),
     });
   }
 

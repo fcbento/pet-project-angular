@@ -50,10 +50,6 @@
           <span>Custo Operacional Fixo:</span>
           <strong>{{ fixedOperationalCost() | currency: 'BRL' }} (por un.)</strong>
         </div>
-        <div class="summary-row total">
-          <span>Custo Total Receita:</span>
-          <strong>{{ totalCost() | currency: 'BRL' }}</strong>
-        </div>
         <div class="summary-row unit-cost">
           <span>Custo Unitário Final:</span>
           <strong>{{ unitCost() | currency: 'BRL' }}</strong>
@@ -93,8 +89,7 @@
             <th>Ingrediente</th>
             <th>Unidade</th>
             <th>Preço Unit.</th>
-            <th>Rende</th>
-            <th>Subtotal</th>
+            <th>Custo Unit.</th>
           </tr>
         </thead>
         <tbody>
@@ -103,12 +98,11 @@
             <td>{{ ing.ingredientName }}</td>
             <td>{{ ing.unit }}</td>
             <td>{{ ing.unitPrice | currency: 'BRL' }}</td>
-            <td>{{ ing.yieldQuantity }}</td>
-            <td>{{ ing.subtotal | currency: 'BRL' }}</td>
+            <td>{{ (ing.unitPrice / (sheet()!.yieldUnits || 1)) | currency: 'BRL' }}</td>
           </tr>
           } @empty {
           <tr>
-            <td colspan="5" class="empty-cell">Nenhum ingrediente cadastrado</td>
+            <td colspan="4" class="empty-cell">Nenhum ingrediente cadastrado</td>
           </tr>
           }
         </tbody>
@@ -117,90 +111,88 @@
 
     <!-- Packaging Costs -->
     <div class="card packaging-card">
-      <h3>Custos de Embalagem</h3>
-      <div class="info-grid">
-        <div class="info-item">
-          <span class="info-label">Custo Palito</span>
-          <span class="info-value">{{ sheet()!.packaging.stickCost | currency: 'BRL' }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Custo Etiqueta Marca</span>
-          <span class="info-value">{{ sheet()!.packaging.brandLabelCost | currency: 'BRL' }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Custo Etiqueta Sabor</span>
-          <span class="info-value">{{ sheet()!.packaging.flavorLabelCost | currency: 'BRL' }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Custo Saquinho</span>
-          <span class="info-value">{{ sheet()!.packaging.bagCost | currency: 'BRL' }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Custo Embalagem Papel</span>
-          <span class="info-value">{{ sheet()!.packaging.paperPackagingCost | currency: 'BRL' }}</span>
-        </div>
-      </div>
-      <!-- Pricing & Profit -->
-      <div class="card pricing-card">
-        <h3>Precificação e Rentabilidade</h3>
-        <div class="pricing-grid">
-          <!-- Balcão -->
-          <div class="pricing-group">
-            <h4>Loja (Balcão)</h4>
-            <div class="info-row">
-              <span class="info-label">Preço de Venda:</span>
-              <span class="info-value">{{ sellPrice() | currency: 'BRL' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Lucro:</span>
-              <span class="info-value" [class.positive]="profit() >= 0" [class.negative]="profit() < 0">
-                {{ profit() | currency: 'BRL' }}
-              </span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Margem:</span>
-              <span class="info-value">{{ profitMargin() | number: '1.2-2' }}%</span>
-            </div>
-          </div>
+      <h3>Embalagens Utilizadas</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Embalagem</th>
+            <th>Custo Unitário</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (pkg of sheet()!.packagings; track pkg.id) {
+          <tr>
+            <td>{{ pkg.name }}</td>
+            <td>{{ pkg.unitPrice | currency: 'BRL' }}</td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="2" class="empty-cell">Nenhuma embalagem cadastrada</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
 
-          <div class="pricing-group" *ngIf="hasResale()">
-            <h4>Canal de Revenda</h4>
-            <div class="info-row">
-              <span class="info-label">Preço Unitário:</span>
-              <span class="info-value">{{ resalePrice() | currency: 'BRL' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Lucro Unitário:</span>
-              <span class="info-value" [class.positive]="resaleProfitUnit() >= 0"
-                [class.negative]="resaleProfitUnit() < 0">
-                {{ resaleProfitUnit() | currency: 'BRL' }}
-              </span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Margem:</span>
-              <span class="info-value">{{ resaleMargin() | number: '1.2-2' }}%</span>
-            </div>
+    <!-- Pricing & Profit -->
+    <div class="card pricing-card">
+      <h3>Precificação e Rentabilidade</h3>
+      <div class="pricing-grid">
+        <!-- Balcão -->
+        <div class="pricing-group">
+          <h4>Loja (Balcão)</h4>
+          <div class="info-row">
+            <span class="info-label">Preço de Venda:</span>
+            <span class="info-value">{{ sellPrice() | currency: 'BRL' }}</span>
           </div>
-
-          <!-- iFood -->
-          <div class="pricing-group" *ngIf="ifoodSellPrice() > 0">
-            <h4>iFood</h4>
-            <div class="info-row">
-              <span class="info-label">Preço de Venda:</span>
-              <span class="info-value">{{ ifoodSellPrice() | currency: 'BRL' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Lucro Líquido:</span>
-              <span class="info-value" [class.positive]="ifoodProfit() >= 0" [class.negative]="ifoodProfit() < 0">
-                {{ ifoodProfit() | currency: 'BRL' }}
-              </span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Margem Líquida:</span>
-              <span class="info-value">{{ ifoodProfitMargin() | number: '1.2-2' }}%</span>
-            </div>
+          <div class="info-row">
+            <span class="info-label">Lucro:</span>
+            <span class="info-value" [class.positive]="profit() >= 0" [class.negative]="profit() < 0">
+              {{ profit() | currency: 'BRL' }}
+            </span>
           </div>
+          <div class="info-row">
+            <span class="info-label">Margem:</span>
+            <span class="info-value">{{ profitMargin() | number: '1.2-2' }}%</span>
+          </div>
+        </div>
 
+        <div class="pricing-group" *ngIf="hasResale()">
+          <h4>Canal de Revenda</h4>
+          <div class="info-row">
+            <span class="info-label">Preço Unitário:</span>
+            <span class="info-value">{{ resalePrice() | currency: 'BRL' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Lucro Unitário:</span>
+            <span class="info-value" [class.positive]="resaleProfitUnit() >= 0"
+              [class.negative]="resaleProfitUnit() < 0">
+              {{ resaleProfitUnit() | currency: 'BRL' }}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Margem:</span>
+            <span class="info-value">{{ resaleMargin() | number: '1.2-2' }}%</span>
+          </div>
+        </div>
+
+        <!-- iFood -->
+        <div class="pricing-group" *ngIf="ifoodSellPrice() > 0">
+          <h4>iFood</h4>
+          <div class="info-row">
+            <span class="info-label">Preço de Venda:</span>
+            <span class="info-value">{{ ifoodSellPrice() | currency: 'BRL' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Lucro Líquido:</span>
+            <span class="info-value" [class.positive]="ifoodProfit() >= 0" [class.negative]="ifoodProfit() < 0">
+              {{ ifoodProfit() | currency: 'BRL' }}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Margem Líquida:</span>
+            <span class="info-value">{{ ifoodProfitMargin() | number: '1.2-2' }}%</span>
+          </div>
         </div>
       </div>
     </div>

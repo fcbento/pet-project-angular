@@ -295,8 +295,8 @@ export class TechnicalSheetRegister {
     return total;
   });
 
-  // Fixed Operational Cost
-  public readonly fixedOperationalCost = signal(1.00);
+  // Fixed Operational Cost (Luz: 0.08 + Gasolina: 0.10 + Pró-labore: 0.50)
+  public readonly fixedOperationalCost = signal(0.68);
 
   public readonly unitCost = computed(() => {
     return this.totalIngredientsCost() + this.totalPackagingCost() + this.fixedOperationalCost();
@@ -310,7 +310,7 @@ export class TechnicalSheetRegister {
   public readonly suggestedIfoodPrice = computed(() => {
     const sell = this.sellPrice();
     if (sell <= 0) return 0;
-    return sell / 0.72; // Markup for 28% fee: Price / (1 - 0.28)
+    return sell / 0.72; // Comissão 28%: Preço / (1 - 0.28)
   });
 
   public readonly ifoodSellPriceValue = computed(() => {
@@ -327,22 +327,10 @@ export class TechnicalSheetRegister {
     return (this.profit() / sell) * 100;
   });
 
-  public readonly markup = computed(() => {
-    const cost = this.unitCost();
-    if (cost <= 0) return 0;
-    return (this.profit() / cost) * 100;
-  });
-
   public readonly ifoodProfit = computed(() => {
     const ifoodPrice = this.ifoodSellPriceValue();
     if (ifoodPrice <= 0) return 0;
     return (ifoodPrice * 0.72) - this.unitCost();
-  });
-
-  public readonly ifoodMarkup = computed(() => {
-    const cost = this.unitCost();
-    if (cost <= 0) return 0;
-    return (this.ifoodProfit() / cost) * 100;
   });
 
   public readonly ifoodProfitMargin = computed(() => {

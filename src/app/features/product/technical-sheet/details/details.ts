@@ -70,10 +70,6 @@ export class TechnicalSheetDetails {
   public readonly ifoodSellPrice = computed(() => this.sheet()?.ifoodSellPrice || 0);
 
   public readonly profit = computed(() => this.sellPrice() - this.unitCost());
-  public readonly markup = computed(() => {
-    const cost = this.unitCost();
-    return cost > 0 ? (this.profit() / cost) * 100 : 0;
-  });
   public readonly profitMargin = computed(() => {
     const sell = this.sellPrice();
     return sell > 0 ? (this.profit() / sell) * 100 : 0;
@@ -82,10 +78,6 @@ export class TechnicalSheetDetails {
   public readonly ifoodProfit = computed(() => {
     const ifoodPrice = this.ifoodSellPrice();
     return ifoodPrice > 0 ? (ifoodPrice * 0.72) - this.unitCost() : 0;
-  });
-  public readonly ifoodMarkup = computed(() => {
-    const cost = this.unitCost();
-    return cost > 0 ? (this.ifoodProfit() / cost) * 100 : 0;
   });
   public readonly ifoodProfitMargin = computed(() => {
     const ifoodPrice = this.ifoodSellPrice();

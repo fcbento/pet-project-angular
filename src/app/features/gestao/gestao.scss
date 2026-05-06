@@ -177,6 +177,12 @@
           }
         }
 
+        .pct-label {
+          font-size: 0.75rem;
+          color: #94a3b8;
+          font-weight: 500;
+        }
+
         &.highlight {
           .value {
             color: #059669;
@@ -483,7 +489,168 @@
   .mt-6 {
     margin-top: 2rem;
   }
+
+  // Estilos para os Novos Indicadores Avançados
+  .card--margin {
+    background: #eff6ff;
+    border: 2px solid #3b82f6;
+
+    &.healthy {
+      background: #f0fdf4;
+      border-color: #22c55e;
+      .value { color: #15803d; }
+    }
+
+    .card__icon {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+  }
+
+  .card--ifood {
+    .stat-divider {
+      grid-column: 1 / -1;
+      height: 1px;
+      background: #f1f5f9;
+      margin: 0.5rem 0;
+    }
+
+    .stat.detail {
+      background: #f8fafc;
+      padding: 0.5rem;
+      border-radius: 8px;
+      
+      .label {
+        font-size: 0.65rem;
+        color: #94a3b8;
+      }
+
+      .value {
+        font-size: 0.95rem;
+      }
+    }
+  }
+
+  .valuation-section {
+    .valuation-card {
+      display: block;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      
+      .card__header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.5rem;
+
+        .icon { font-size: 1.5rem; }
+        h3 { margin: 0; font-size: 1.25rem; color: #1e293b; }
+      }
+
+      .valuation-disclaimer {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-bottom: 2rem;
+      }
+
+      .valuation-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+
+        .valuation-item {
+          padding: 1.5rem;
+          border-radius: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          transition: transform 0.2s;
+
+          &:hover { transform: scale(1.02); }
+
+          .label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+          }
+
+          .value {
+            font-size: 1.5rem;
+            font-weight: 800;
+          }
+
+          &.conservador {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+          }
+
+          &.realista {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #dbeafe;
+          }
+
+          &.otimista {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #d1fae5;
+          }
+        }
+      }
+    }
+  }
+
+  .executive-summary {
+    .summary-card-pro {
+      display: block;
+      background: #1e293b;
+      color: white;
+      padding: 2.5rem;
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+
+        .summary-group {
+          h4 {
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 0.5rem;
+          }
+
+          ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            li {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 1rem;
+              font-size: 0.95rem;
+
+              span { color: #cbd5e1; }
+              b { 
+                color: #f8fafc;
+                &.positive { color: #4ade80; }
+                &.negative { color: #fb7185; }
+                &.highlight { color: #60a5fa; font-size: 1.1rem; }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
+
+.mb-10 { margin-bottom: 4rem; }
 
 .modal-actions {
   display: flex;

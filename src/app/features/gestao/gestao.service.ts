@@ -69,6 +69,19 @@ export interface ManagementResponse {
   luzCost: number;
   gasolinaCost: number;
   proLaboreCost: number;
+
+  // Indicadores Avançados
+  ifoodFixedFees: number;
+  ifoodTotalOrders: number;
+  ifoodFixedFeePerOrder: number;
+
+  valuationConservador: number;
+  valuationRealista: number;
+  valuationOtimista: number;
+
+  counterRevenuePercentage: number;
+  ifoodRevenuePercentage: number;
+  resaleRevenuePercentage: number;
 }
 
 @Injectable({

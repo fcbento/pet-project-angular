@@ -129,6 +129,17 @@
         </div>
       </div>
     </div>
+
+    <div class="card card--margin" [class.healthy]="s.averageMargin > 40">
+      <div class="card__icon">🎯</div>
+      <div class="card__content">
+        <span class="label">Margem Real Final (%)</span>
+        <span class="value">{{ s.averageMargin | number: '1.2-2' }}%</span>
+        <div class="info-row">
+          <span>Faturamento vs Lucro Líquido</span>
+        </div>
+      </div>
+    </div>
   </main>
 
   <!-- Análise por Canal -->
@@ -143,6 +154,7 @@
         <div class="stat">
           <span class="label">Faturamento</span>
           <span class="value">{{ s.counterRevenue | currency: 'BRL' }}</span>
+          <span class="pct-label">{{ s.counterRevenuePercentage | number: '1.1-1' }}% do total</span>
         </div>
         <div class="stat">
           <span class="label">CMV</span>
@@ -156,10 +168,14 @@
           <span class="label">Ticket Médio</span>
           <span class="value">{{ s.counterAverageTicket | currency: 'BRL' }}</span>
         </div>
+        <div class="stat detail">
+          <span class="label">📌 Pedidos Balcão</span>
+          <span class="value">{{ s.counterSales }}</span>
+        </div>
       </div>
     </div>
 
-    <div class="channel-card">
+    <div class="channel-card card--ifood">
       <div class="channel-header">
         <span class="icon">🛵</span>
         <h3>iFood</h3>
@@ -168,6 +184,7 @@
         <div class="stat">
           <span class="label">Faturamento</span>
           <span class="value">{{ s.ifoodRevenue | currency: 'BRL' }}</span>
+          <span class="pct-label">{{ s.ifoodRevenuePercentage | number: '1.1-1' }}% do total</span>
         </div>
         <div class="stat">
           <span class="label">CMV</span>
@@ -177,9 +194,25 @@
           <span class="label">Lucro (Líquido Taxas)</span>
           <span class="value">{{ s.ifoodProfit | currency: 'BRL' }}</span>
         </div>
+
+        <div class="stat-divider"></div>
+
+        <div class="stat detail">
+          <span class="label">📌 Taxas iFood (fixas)</span>
+          <span class="value neg">{{ s.ifoodFixedFees | currency: 'BRL' }}</span>
+        </div>
+        <div class="stat detail">
+          <span class="label">📌 Taxa média por pedido</span>
+          <span class="value">{{ s.ifoodFixedFeePerOrder | currency: 'BRL' }}</span>
+        </div>
+
         <div class="stat">
           <span class="label">Ticket Médio</span>
           <span class="value">{{ s.ifoodAverageTicket | currency: 'BRL' }}</span>
+        </div>
+        <div class="stat detail">
+          <span class="label">📌 Pedidos iFood</span>
+          <span class="value">{{ s.ifoodTotalOrders }}</span>
         </div>
       </div>
     </div>
@@ -193,6 +226,7 @@
         <div class="stat">
           <span class="label">Faturamento</span>
           <span class="value">{{ s.resaleRevenue | currency: 'BRL' }}</span>
+          <span class="pct-label">{{ s.resaleRevenuePercentage | number: '1.1-1' }}% do total</span>
         </div>
         <div class="stat">
           <span class="label">CMV</span>
@@ -205,6 +239,10 @@
         <div class="stat">
           <span class="label">Ticket Médio</span>
           <span class="value">{{ s.resaleAverageTicket | currency: 'BRL' }}</span>
+        </div>
+        <div class="stat detail">
+          <span class="label">📌 Pedidos Revenda</span>
+          <span class="value">{{ s.resaleSales }}</span>
         </div>
       </div>
     </div>
@@ -279,6 +317,77 @@
       </div>
     </div>
     } -->
+  </section>
+
+  @if (!isMonthlyView()) {
+  <h2 class="section-title">📌 Valuation Estimado (Análise Gerencial)</h2>
+  <section class="valuation-section mb-6">
+    <div class="card valuation-card">
+      <div class="card__header">
+        <span class="icon">💎</span>
+        <h3>Valuation baseado no Lucro Anual</h3>
+      </div>
+      <p class="valuation-disclaimer">Estimativa baseada no lucro líquido médio do período projetado para 12 meses.</p>
+
+      <div class="valuation-grid">
+        <div class="valuation-item conservador">
+          <span class="label">Conservador (2x)</span>
+          <span class="value">{{ s.valuationConservador | currency: 'BRL' }}</span>
+        </div>
+        <div class="valuation-item realista">
+          <span class="label">Realista (3x)</span>
+          <span class="value">{{ s.valuationRealista | currency: 'BRL' }}</span>
+        </div>
+        <div class="valuation-item otimista">
+          <span class="label">Otimista (5x)</span>
+          <span class="value">{{ s.valuationOtimista | currency: 'BRL' }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  }
+
+  <h2 class="section-title">📌 Resumo Executivo (Perfil Investidor)</h2>
+  <section class="executive-summary mb-10">
+    <div class="card summary-card-pro">
+      <div class="summary-grid">
+        <div class="summary-group">
+          <h4>Performance Financeira</h4>
+          <ul>
+            <li><span>Receita Total:</span> <b>{{ s.totalRevenue | currency: 'BRL' }}</b></li>
+            <li><span>Lucro Líquido Final:</span> <b class="positive">{{ s.netProfit | currency: 'BRL' }}</b></li>
+            <li><span>Margem Real Final:</span> <b class="highlight">{{ s.averageMargin | number: '1.2-2' }}%</b></li>
+          </ul>
+        </div>
+        <div class="summary-group">
+          <h4>Operacional iFood</h4>
+          <ul>
+            <li><span>Total de Pedidos iFood:</span> <b>{{ s.ifoodTotalOrders }}</b></li>
+            <li><span>Taxas iFood Fixas:</span> <b class="negative">{{ s.ifoodFixedFees | currency: 'BRL' }}</b></li>
+            <li><span>Ticket Médio iFood:</span> <b>{{ s.ifoodAverageTicket | currency: 'BRL' }}</b></li>
+          </ul>
+        </div>
+        <div class="summary-group">
+          <h4>Outros Canais</h4>
+          <ul>
+            <li><span>Pedidos Balcão:</span> <b>{{ s.counterSales }}</b></li>
+            <li><span>Pedidos Revenda:</span> <b>{{ s.resaleSales }}</b></li>
+            <li><span>Ticket Médio Geral:</span> <b>{{ s.averageTicket | currency: 'BRL' }}</b></li>
+          </ul>
+        </div>
+        <div class="summary-group">
+          <h4>Indicadores de Valor</h4>
+          <ul>
+            <li><span>Ponto de Equilíbrio:</span> <b>{{ s.breakEvenPoint | currency: 'BRL' }}</b></li>
+            <li><span>Saúde Financeira:</span> <b>{{ s.healthScore | number: '1.0-0' }}%</b></li>
+            @if (!isMonthlyView()) {
+            <li><span>Valuation (Realista):</span> <b class="highlight">{{ s.valuationRealista | currency: 'BRL' }}</b>
+            </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
   </section>
 </div>
 

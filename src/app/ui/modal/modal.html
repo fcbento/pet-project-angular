@@ -1,6 +1,6 @@
 @if (isOpen()) {
   <div class="modal-overlay" (click)="close()">
-    <div class="modal-container" (click)="$event.stopPropagation()">
+    <div [class]="'modal-container ' + size()" (click)="$event.stopPropagation()">
       <header class="modal-header">
         <h2>{{ title() }}</h2>
         <button class="close-btn" (click)="close()">&times;</button>

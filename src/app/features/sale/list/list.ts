@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -9,18 +9,20 @@ import { SummaryCard } from '../../../ui/summary-card/summary-card';
 import { SaleService } from '../sale.service';
 import { SaleResponse } from '../sale.models';
 import { ConfirmDialog } from '../../../ui/confirm-dialog/confirm-dialog';
+import { SaleDetail } from '../detail/detail';
 
 @Component({
   selector: 'app-sale-list',
-  imports: [Table, FormSelect, Button, CommonModule, SummaryCard, ConfirmDialog],
+  imports: [Table, FormSelect, Button, CommonModule, SummaryCard, ConfirmDialog, SaleDetail],
   templateUrl: './list.html',
   styleUrl: './list.scss',
-  providers: [DatePipe, CurrencyPipe],
+  providers: [DatePipe, CurrencyPipe, DecimalPipe],
 })
 export class SaleList {
   private readonly service = inject(SaleService);
   private readonly datePipe = inject(DatePipe);
   private readonly currencyPipe = inject(CurrencyPipe);
+  private readonly decimalPipe = inject(DecimalPipe);
   private readonly router = inject(Router);
 
   public readonly updateTable = input<unknown>();
@@ -71,6 +73,10 @@ export class SaleList {
   public readonly isDeleteDialogOpen = signal(false);
   public readonly isDeleteAllDialogOpen = signal(false);
   public readonly saleToDelete = signal<SaleResponse | null>(null);
+  
+  // Detail State
+  public readonly isDetailOpen = signal(false);
+  public readonly selectedSale = signal<SaleResponse | null>(null);
 
   public readonly origemOptions = computed(() => {
     const data = this.saleResource.value()?.data || [];
@@ -143,7 +149,7 @@ export class SaleList {
     {
       label: 'Margem',
       field: 'profitMargin',
-      cell: (row: SaleResponse) => `${row.profitMargin?.toFixed(2)}%`,
+      cell: (row: SaleResponse) => `${this.decimalPipe.transform(row.profitMargin, '1.2-2')}%`,
     },
     {
       label: 'Criado em',
@@ -167,6 +173,11 @@ export class SaleList {
   public delete(row: SaleResponse): void {
     this.saleToDelete.set(row);
     this.isDeleteDialogOpen.set(true);
+  }
+
+  public openDetail(row: SaleResponse): void {
+    this.selectedSale.set(row);
+    this.isDetailOpen.set(true);
   }
 
   public confirmDelete(): void {

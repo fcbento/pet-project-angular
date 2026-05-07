@@ -135,3 +135,13 @@
     margin: 0;
   }
 }
+
+app-table {
+  display: block;
+  margin-top: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(0.99);
+  }
+}

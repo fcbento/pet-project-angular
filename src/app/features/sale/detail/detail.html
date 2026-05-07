@@ -1,0 +1,69 @@
+<app-modal [isOpen]="isOpen()" (isOpenChange)="onOpenChange($event)" [title]="'Detalhes da Venda #' + (sale()?.id || '')" size="lg">
+  @if (sale(); as s) {
+  <div class="sale-detail">
+    <header class="detail-header">
+      <div class="header-info">
+        <span class="origin-badge" [attr.data-origin]="s.origem">
+          {{ s.origem }}
+        </span>
+        <span class="date">{{ s.sellDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+    </header>
+
+    <section class="items-section">
+      <h3>Itens da Venda</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th class="text-center">Qtd</th>
+              <th class="text-right">Unitário</th>
+              <th class="text-right">Total</th>
+              <th class="text-right">Lucro</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of s.items; track item.productId) {
+            <tr>
+              <td>{{ item.productName }}</td>
+              <td class="text-center">{{ item.quantity }}</td>
+              <td class="text-right">{{ item.sellPrice | currency: 'BRL' }}</td>
+              <td class="text-right">{{ (item.quantity * item.sellPrice) | currency: 'BRL' }}</td>
+              <td class="text-right positive">{{ item.profit | currency: 'BRL' }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="financial-summary">
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="label">Faturamento Bruto</span>
+          <span class="value">{{ s.totalPrice | currency: 'BRL' }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">CMV Total</span>
+          <span class="value negative">{{ s.totalCmv | currency: 'BRL' }}</span>
+        </div>
+        @if (s.origem === 'IFOOD') {
+        <div class="summary-item">
+          <span class="label">Taxa Embalagem (iFood)</span>
+          <span class="value negative">{{ (s.packagingFee || 0) | currency: 'BRL' }}</span>
+        </div>
+        }
+        <div class="summary-item highlight">
+          <span class="label">Lucro Líquido Final</span>
+          <span class="value positive">{{ s.totalProfit | currency: 'BRL' }}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="detail-footer">
+      <span class="margin-badge">Margem Final: {{ (s.profitMargin) | number: '1.2-2' }}%</span>
+    </section>
+  </div>
+  }
+</app-modal>

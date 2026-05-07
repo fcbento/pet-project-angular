@@ -10,6 +10,7 @@ import { Component, input, model, output } from '@angular/core';
 export class Modal {
   public readonly isOpen = model<boolean>(false);
   public readonly title = input<string>('');
+  public readonly size = input<'sm' | 'md' | 'lg' | 'xl'>('md');
   
   public readonly closed = output<void>();
 

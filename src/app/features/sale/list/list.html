@@ -43,20 +43,24 @@
   <app-summary-card label="Receita Total" [value]="summary().totalPrice" type="currency" icon="💰" />
   <app-summary-card label="Lucro Total" [value]="summary().totalProfit" type="currency" variant="success" icon="📈" />
   <app-summary-card label="Margem de Lucro" [value]="summary().profitMargin" type="percentage" variant="warning"
-    icon="📊" />
+    icon="⚖️" />
 </section>
 
 @if (sales().length > 0) {
 <app-table [columns]="columns" [data]="sales()" [actions]="rowActions" [withPagination]="true"
   title="Histórico de Vendas" subtitle="Listagem detalhada de todas as vendas realizadas"
-  (selectionChange)="onRowsSelected($event)" />
+  (selectionChange)="onRowsSelected($event)" (rowClick)="openDetail($event)" />
 } @else {
 <div class="empty-state-card">
-  <span class="icon">🔍</span>
+  <span class="icon">📦</span>
   <p>Nenhuma venda realizada ainda. Vamos vender! 🚀</p>
 </div>
 }
+
+<app-sale-detail [isOpen]="isDetailOpen()" [sale]="selectedSale()" (close)="isDetailOpen.set(false)"></app-sale-detail>
+
 <app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Venda"
   [message]="'Deseja excluir a venda de ID ' + (saleToDelete()?.id || '') + '?'" confirmText="Sim, Excluir"
   cancelText="Cancelar" type="danger" (confirm)="confirmDelete()"></app-confirm-dialog>
-<app-confirm-dialog [(isOpen)]="isDeleteAllDialogOpen" title="Excluir Todas as Vendas" message="ATEN��O: Esta a��o � irrevers�vel e excluir� todo o hist�rico de vendas. Deseja continuar?" confirmText="Sim, Excluir Tudo" cancelText="Cancelar" type="danger" (confirm)="confirmDeleteAll()"></app-confirm-dialog>
+
+<app-confirm-dialog [(isOpen)]="isDeleteAllDialogOpen" title="Excluir Todas as Vendas" message="ATENÇÃO: Esta ação é irreversível e excluirá todo o histórico de vendas. Deseja continuar?" confirmText="Sim, Excluir Tudo" cancelText="Cancelar" type="danger" (confirm)="confirmDeleteAll()"></app-confirm-dialog>

@@ -18,12 +18,15 @@
 
 .dialog-container {
   background: white;
-  width: 100%;
-  max-width: 400px;
+  width: 90%;
   border-radius: vars.$radius-xl;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &.sm { max-width: 400px; }
+  &.md { max-width: 550px; }
+  &.lg { max-width: 700px; }
 }
 
 .dialog-header {

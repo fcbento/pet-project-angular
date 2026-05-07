@@ -52,8 +52,8 @@ export class TechnicalSheetRegister {
   // Selection state
   public readonly selectedCategoryId = signal<number | null>(null);
   public readonly selectedProductId = signal<number | null>(null);
-  private readonly loadingIngredientSelections = signal(false);
-  private readonly loadingPackagingSelections = signal(false);
+  public readonly loadingIngredientSelections = signal(false);
+  public readonly loadingPackagingSelections = signal(false);
 
   // Resources
   public readonly categoryResource = rxResource({

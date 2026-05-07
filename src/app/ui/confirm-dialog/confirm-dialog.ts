@@ -18,6 +18,7 @@ export class ConfirmDialog {
   public readonly confirmText = input<string>('Confirmar');
   public readonly cancelText = input<string>('Cancelar');
   public readonly type = input<DialogType>('danger');
+  public readonly size = input<'sm' | 'md' | 'lg'>('sm');
 
   public readonly confirm = output<void>();
   public readonly cancel = output<void>();

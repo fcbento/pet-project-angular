@@ -11,7 +11,20 @@
   @if (packagingFee() > 0) {
   <div class="packaging-notice">
     <span class="icon">📦</span>
-    <p>Uma taxa de embalagem de <strong>{{ packagingFee() | currency:'BRL' }}</strong> será aplicada a este pedido iFood.</p>
+    <div class="notice-content">
+      <p>Uma taxa de embalagem de <strong>{{ packagingFee() | currency:'BRL' }}</strong> será aplicada a este pedido
+        iFood.</p>
+      @if (ifoodPackagingItems().length > 0) {
+      <span class="packaging-breakdown">
+        <b>Itens inclusos:</b>
+        @for (p of ifoodPackagingItems(); track p.id; let last = $last) {
+        {{ p.name }} ({{ p.unitPrice | currency:'BRL' }}){{ !last ? ', ' : '' }}
+        }
+      </span>
+      } @else {
+      <span class="packaging-breakdown">Taxa padrão aplicada (Itens específicos não encontrados no sistema)</span>
+      }
+    </div>
   </div>
   }
 
@@ -93,7 +106,7 @@
 </div>
 }
 <app-confirm-dialog [(isOpen)]="isConfirmDialogOpen" title="Confirmar Venda" confirmText="Confirmar"
-  cancelText="Revisar" type="success" (confirm)="executeSave()">
+  cancelText="Revisar" type="success" size="md" (confirm)="executeSave()">
 
   <div class="sale-summary-dialog">
     <div class="summary-header">
@@ -123,10 +136,12 @@
         <span class="label">Total da Venda:</span>
         <span class="value">{{ totalSalePrice() | currency:'BRL' }}</span>
       </div>
+      @if (registerForm.registerForm().value().origem === 'IFOOD') {
       <div class="detail-item net-profit">
         <span class="label text-muted">Aviso:</span>
-        <span class="value text-muted">O custo da embalagem será deduzido do lucro líquido deste pedido.</span>
+        <span class="value text-muted">&ensp;O custo da embalagem será deduzido do lucro líquido deste pedido.</span>
       </div>
+      }
     </div>
 
     <div class="summary-table-wrapper">

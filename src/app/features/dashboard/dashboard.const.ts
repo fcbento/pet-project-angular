@@ -1,15 +1,7 @@
 export const DASHBOARD_ROUTES = [
-  // {
-  //   name: 'Simulador Revenda',
-  //   link: 'simulador-revenda',
-  // },
   {
     name: 'Categoria',
     link: 'categoria',
-  },
-  {
-    name: 'Produto',
-    link: 'produto',
   },
   {
     name: 'Ingredientes',
@@ -19,32 +11,25 @@ export const DASHBOARD_ROUTES = [
     name: 'Embalagem',
     link: 'embalagem',
   },
-  // {
-  //   name: 'Cliente',
-  //   link: 'cliente',
-  // },
-  // {
-  //   name: 'Fornecedor',
-  //   link: 'fornecedor',
-  // },
+  {
+    name: 'Produto',
+    link: 'produto',
+  },
   {
     name: 'Venda',
     link: 'venda',
-  },
-  {
-    name: 'Orçamento',
-    link: 'orcamento',
   },
   {
     name: 'Compras',
     link: 'compras',
   },
   {
+    name: 'Orçamento',
+    link: 'orcamento',
+  },
+
+  {
     name: 'Gestão',
     link: 'gestao',
   },
-  // {
-  //   name: 'Compra',
-  //   link: 'compra',
-  // },
 ];

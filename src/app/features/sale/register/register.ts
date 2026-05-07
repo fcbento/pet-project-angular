@@ -17,6 +17,7 @@ import { ProductResponse } from '../../product/list/list.models';
 import { SaleService } from '../sale.service';
 import { SaleRegisterForm } from './register.form';
 import { SaleItemRequest, SaleOrigin, SaleRequest } from '../sale.models';
+import { PackagingService } from '../../packaging/packaging.service';
 
 export interface SaleItemDraft {
   productId: number;
@@ -41,6 +42,7 @@ export class SaleRegister {
   private readonly router = inject(Router);
   public readonly registerForm = inject(SaleRegisterForm);
   public readonly store = inject(Store);
+  private readonly packagingService = inject(PackagingService);
 
   constructor() {
     effect(() => {
@@ -132,8 +134,24 @@ export class SaleRegister {
     return this.saleItems().reduce((acc, curr) => acc + (curr.sellPrice * curr.quantity), 0);
   });
 
+  // Packaging logic
+  public readonly packagingResource = rxResource({
+    stream: () => this.packagingService.findAll(),
+  });
+
+  public readonly ifoodPackagingItems = computed(() => {
+    const all = this.packagingResource.value() || [];
+    const targetNames = ['Saco Kraft', 'Saco térmico', 'Hamburgueira'];
+    return all.filter(p => targetNames.includes(p.name));
+  });
+
   public readonly packagingFee = computed(() => {
-    return this.registerForm.registerForm().value().origem === 'IFOOD' ? 3.0 : 0.0;
+    if (this.registerForm.registerForm().value().origem !== 'IFOOD') return 0;
+    
+    const items = this.ifoodPackagingItems();
+    if (items.length === 0) return 3.0; // Fallback se não encontrar os itens
+    
+    return items.reduce((acc, curr) => acc + curr.unitPrice, 0);
   });
 
   public readonly canAddItem = computed(() => {

@@ -1,6 +1,6 @@
 @if (isOpen()) {
 <div class="dialog-backdrop" (click)="onCancel()">
-  <div class="dialog-container" (click)="$event.stopPropagation()">
+  <div [class]="'dialog-container ' + size()" (click)="$event.stopPropagation()">
     <div class="dialog-header" [class]="type()">
       <div class="icon-circle">
         @if (type() === 'danger') { 🗑️ }

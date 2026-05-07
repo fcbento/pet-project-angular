@@ -15,4 +15,6 @@ export interface ProductResponse {
   resalePrice: number;
   resaleQuantity: number;
   stockQuantity: number;
+  hasActivePromotion?: boolean;
+  type?: 'PRODUCT' | 'COMBO';
 }

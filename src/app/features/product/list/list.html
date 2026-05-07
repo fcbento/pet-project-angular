@@ -28,7 +28,7 @@
   <app-button name="Excluir Todos" type="danger" [disabled]="products().length === 0" (clicked)="deleteAll()" />
 </div>
 
-<app-table [columns]="columns()" [data]="products()" [actions]="rowActions" [withPagination]="true" title="Produtos"
+<app-table [columns]="columns()" [data]="products()" [actions]="rowActions" [withPagination]="true" [rowClass]="getRowClass.bind(this)" title="Produtos"
   subtitle="Gerenciamento e controle de estoque de produtos" (selectionChange)="onRowsSelected($event)"
   (rowClick)="onRowClick($event)" />
 } @else {

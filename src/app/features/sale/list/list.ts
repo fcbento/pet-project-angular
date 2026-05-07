@@ -139,7 +139,16 @@ export class SaleList {
     {
       label: 'Preço Total',
       field: 'totalPrice',
-      cell: (row: SaleResponse) => this.currencyPipe.transform(row.totalPrice, 'BRL', 'symbol', '1.2-2'),
+      cell: (row: SaleResponse) => {
+        const hasPromo = row.items?.some(i => i.isPromotional);
+        const formatted = this.currencyPipe.transform(row.totalPrice, 'BRL', 'symbol', '1.2-2');
+        return `
+          <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+            <span>${formatted}</span>
+            ${hasPromo ? '<span class="badge info" style="font-size: 0.6rem; padding: 0px 4px;">Valor Promocional</span>' : ''}
+          </div>
+        `;
+      }
     },
     {
       label: 'Lucro Líquido',

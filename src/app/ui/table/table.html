@@ -27,10 +27,9 @@
       </thead>
       <tbody>
         @for (row of currentPageData(); track row) {
-        <tr class="clickable-row" (click)="rowClick.emit(row)" data-testid="table-row">
+        <tr class="clickable-row" [ngClass]="rowClass() ? rowClass()!(row) : ''" (click)="rowClick.emit(row)" data-testid="table-row">
           @for (col of columns(); track col) {
-          <td>
-            {{ col.cell ? col.cell(row) : cellValue(row, col.field) }}
+          <td [innerHTML]="col.cell ? col.cell(row) : cellValue(row, col.field)">
           </td>
           }
           @if (actions()?.length) {

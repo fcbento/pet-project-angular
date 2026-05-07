@@ -1,6 +1,7 @@
 export interface SaleItemRequest {
   productId: number;
   quantity: number;
+  isPromotional?: boolean;
 }
 
 export type SaleOrigin = 'IFOOD' | 'CONDOMINIO' | 'ESCOLA' | 'OUTROS' | 'REVENDA';
@@ -19,6 +20,8 @@ export interface SaleItemResponse {
   sellPrice: number;
   profit: number;
   profitMargin: number;
+  isPromotional?: boolean;
+  originalPrice?: number;
 }
 
 export interface SaleResponse {

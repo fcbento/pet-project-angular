@@ -1,0 +1,25 @@
+<div class="promocoes-container">
+  <header class="header">
+    <div class="title-group">
+      <h1>Promoções e Combos</h1>
+      <p>Gerencie descontos temporários e kits de produtos</p>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button [class.active]="activeTab() === 'promocoes'" (click)="setTab('promocoes')">
+      Promoções de Produtos
+    </button>
+    <button [class.active]="activeTab() === 'combos'" (click)="setTab('combos')">
+      Combos (Kits)
+    </button>
+  </nav>
+
+  <main class="content">
+    @if (activeTab() === 'promocoes') {
+    <app-promotion-register></app-promotion-register>
+    } @else {
+    <app-combo-register></app-combo-register>
+    }
+  </main>
+</div>

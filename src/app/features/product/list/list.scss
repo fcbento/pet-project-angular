@@ -10,6 +10,16 @@
   margin-bottom: vars.$space-xl;
 }
 
+:host ::ng-deep {
+  .row-combo {
+    background-color: #fef9c3 !important; // Light yellow for combos
+    
+    &:hover {
+      background-color: #fef08a !important;
+    }
+  }
+}
+
 .empty-state-card {
   background: colors.$bg-muted;
   border: 1px dashed colors.$border-default;

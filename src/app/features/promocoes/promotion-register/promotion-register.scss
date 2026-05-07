@@ -1,0 +1,121 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+
+.promotion-grid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: vars.$space-xl;
+  margin-bottom: vars.$space-xl;
+}
+
+.promo-form {
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: vars.$space-md;
+    margin-bottom: vars.$space-md;
+
+    &.full {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .form-actions {
+    margin-top: vars.$space-lg;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.analysis-section {
+  .product-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: vars.$space-lg;
+
+    h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: colors.$text-primary;
+    }
+
+    .badge {
+      padding: 4px 12px;
+      background: #f1f5f9;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: colors.$text-secondary;
+    }
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: vars.$space-md;
+    margin-bottom: vars.$space-lg;
+
+    .metric {
+      padding: vars.$space-md;
+      background: #f8fafc;
+      border-radius: vars.$radius-md;
+      display: flex;
+      flex-direction: column;
+
+      .label {
+        font-size: 0.75rem;
+        color: colors.$text-secondary;
+        margin-bottom: 4px;
+      }
+
+      .value {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: colors.$text-primary;
+
+        &.negative { color: #ef4444; }
+        &.promo { color: colors.$color-primary; }
+      }
+
+      &.highlight {
+        background: #f1f5f9;
+      }
+    }
+
+    &.promo-metrics {
+      border-top: 1px dashed #cbd5e1;
+      padding-top: vars.$space-lg;
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  .alert {
+    padding: vars.$space-md;
+    border-radius: vars.$radius-md;
+    font-weight: 600;
+    font-size: 0.875rem;
+    
+    &.danger {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+  }
+}
+
+.empty-analysis {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #e2e8f0;
+  border-radius: vars.$radius-lg;
+  color: colors.$text-secondary;
+  text-align: center;
+  padding: vars.$space-xl;
+}
+
+.list-section {
+  margin-top: vars.$space-xl;
+}

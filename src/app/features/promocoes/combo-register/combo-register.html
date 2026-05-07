@@ -1,0 +1,119 @@
+<div class="combo-grid">
+  <div class="creation-column">
+    <app-card>
+      <section class="combo-form">
+        <div class="stock-rule">
+          <div class="icon">📦</div>
+          <div class="text">
+            <strong>Regra de Estoque:</strong> Ao vender este combo, o sistema dará baixa automática nas quantidades
+            individuais de cada item acima.
+          </div>
+        </div>
+        <h3 style="padding-bottom: 10px;">Configurações do combo</h3>
+        <div class="form-row">
+          <app-form-input label="Nome do Combo" [field]="registerForm.form.name"
+            placeholder="Ex: Combo Família"></app-form-input>
+        </div>
+
+        <div class="composition-section">
+          <div class="section-title">Composição do Combo</div>
+          <div class="selection-row">
+            <app-form-select label="Filtrar por Categoria" [options]="categoryOptions()"
+              [field]="registerForm.form.filterCategoryId" placeholder="Filtrar produtos"></app-form-select>
+
+            <app-form-select label="Produto" [options]="productOptionsToFilter()"
+              [field]="registerForm.form.selectedProductId" placeholder="Selecione"></app-form-select>
+
+            <app-form-input label="Qtd" type="number" [field]="registerForm.form.selectedQuantity"></app-form-input>
+
+            <app-button name="+" type="primary" (clicked)="addItem()" [disabled]="false"></app-button>
+          </div>
+
+          <div class="items-table">
+            <table class="simple-table">
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Qtd</th>
+                  <th>Custo Unit.</th>
+                  <th>Total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of comboItems(); track $index) {
+                <tr>
+                  <td>{{ item.productName }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.costPrice | currency:'BRL' }}</td>
+                  <td>{{ (item.costPrice * item.quantity) | currency:'BRL' }}</td>
+                  <td>
+                    <button class="btn-remove" (click)="removeItem($index)">✕</button>
+                  </td>
+                </tr>
+                }
+                @if (comboItems().length === 0) {
+                <tr>
+                  <td colspan="5" class="empty-msg">Nenhum item adicionado</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="pricing-analysis-grid">
+          <div class="pricing-section">
+            <div class="section-title">Precificação</div>
+            <div class="pricing-rows">
+              <app-form-input label="Preço Balcão" type="number" [field]="registerForm.form.sellPrice"
+                prefix="R$"></app-form-input>
+              <app-form-input label="Preço iFood" type="number" [field]="registerForm.form.ifoodSellPrice"
+                prefix="R$"></app-form-input>
+            </div>
+          </div>
+
+          <div class="analysis-section">
+            <div class="section-title">Resumo Financeiro</div>
+            <div class="metrics-grid">
+              <div class="metric highlight">
+                <span class="label">Custo Total</span>
+                <span class="value">{{ totalCost() | currency:'BRL' }}</span>
+              </div>
+              <div class="metric">
+                <span class="label">Margem Bruta (Balcão)</span>
+                <span class="value" [class.negative]="totals().grossMargin < 0">
+                  {{ totals().grossMargin | number:'1.2-2' }}%
+                </span>
+              </div>
+              <div class="metric">
+                <span class="label">Margem Líquida (iFood)</span>
+                <span class="value" [class.negative]="totals().ifoodMargin < 0">
+                  {{ totals().ifoodMargin | number:'1.2-2' }}%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <app-button name="Salvar Combo" type="primary" (clicked)="save()"
+            [disabled]="registerForm.form().invalid() || comboItems().length === 0"></app-button>
+        </div>
+      </section>
+    </app-card>
+  </div>
+</div>
+<div style="margin-top: 20px;">
+  <app-table title="Combos Cadastrados" subtitle="Gerenciamento de combos cadastrados" [columns]="[
+            { field: 'name', label: 'Nome' },
+            { field: 'sellPrice', label: 'Balcão' },
+            { field: 'ifoodSellPrice', label: 'iFood' },
+            { field: 'costPrice', label: 'Custo' }
+          ]" [data]="activeCombos.value() || []" [actions]="tableActions">
+  </app-table>
+</div>
+
+<app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Combo"
+  message="Deseja realmente excluir este combo? Esta ação não pode ser desfeita." confirmText="Excluir"
+  cancelText="Cancelar" type="danger" (confirm)="confirmRemoveCombo()"></app-confirm-dialog>

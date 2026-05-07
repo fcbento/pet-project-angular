@@ -1,0 +1,98 @@
+<div class="promotion-grid">
+  <app-card>
+    <h3 style="padding-bottom: 10px;">Ativar Promoção</h3>
+    <section class="promo-form">
+      <div class="form-row">
+        <app-form-select label="Categoria" [options]="categoryOptions()" [field]="registerForm.form.categoryId"
+          placeholder="Selecione Categoria"></app-form-select>
+
+        <app-form-select label="Produto" [options]="productOptions()" [field]="registerForm.form.productId"
+          placeholder="Selecione Produto"></app-form-select>
+      </div>
+
+      <div class="form-row">
+        <app-form-select label="Canal de Venda"
+          [options]="[{label: 'Balcão', value: 'BALCAO'}, {label: 'iFood', value: 'IFOOD'}]"
+          [field]="registerForm.form.origin"></app-form-select>
+
+        <app-form-input label="Preço Promocional" type="number" [field]="registerForm.form.promoPrice"></app-form-input>
+      </div>
+
+
+      <div class="form-actions">
+        <app-button name="Ativar Promoção" type="primary" (clicked)="save()"
+          [disabled]="registerForm.form().invalid()"></app-button>
+      </div>
+    </section>
+  </app-card>
+
+  <div class="analysis-section">
+    @if (selectedProduct()) {
+    <app-card title="Análise de Margem">
+      <div class="product-info">
+        <h3>{{ selectedProduct()?.name }}</h3>
+        <span class="badge">{{ registerForm.model().origin }}</span>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric">
+          <span class="label">Preço Atual</span>
+          <span class="value">{{ currentPrice() | currency:'BRL' }}</span>
+        </div>
+        <div class="metric">
+          <span class="label">Custo Unitário</span>
+          <span class="value">{{ costPrice() | currency:'BRL' }}</span>
+        </div>
+        <div class="metric highlight">
+          <span class="label">Margem Bruta Atual</span>
+          <span class="value" [class.negative]="currentMargins().gross < 0">{{ currentMargins().gross | number:'1.2-2'
+            }}%</span>
+        </div>
+        <div class="metric highlight">
+          <span class="label">Margem Líquida Atual</span>
+          <span class="value" [class.negative]="currentMargins().net < 0">{{ currentMargins().net | number:'1.2-2'
+            }}%</span>
+        </div>
+      </div>
+
+      <div class="metrics-grid promo-metrics">
+        <div class="metric">
+          <span class="label">Desconto</span>
+          <span class="value promo">{{ promoMargins().discount | number:'1.2-2' }}%</span>
+        </div>
+        <div class="metric">
+          <span class="label">Nova Margem Bruta</span>
+          <span class="value" [class.negative]="promoMargins().gross < 0">{{ promoMargins().gross | number:'1.2-2'
+            }}%</span>
+        </div>
+        <div class="metric">
+          <span class="label">Nova Margem Líquida</span>
+          <span class="value" [class.negative]="promoMargins().net < 0">{{ promoMargins().net | number:'1.2-2'
+            }}%</span>
+        </div>
+      </div>
+
+      @if (promoMargins().net < 0 && registerForm.model().promoPrice> 0) {
+        <div class="warning-box">
+          <span class="title">⚠️ Margem Negativa</span>
+          <p>O preço promocional definido resultará em prejuízo líquido para este canal.</p>
+        </div>
+        }
+    </app-card>
+    } @else {
+    <div class="empty-analysis">
+      <p>Selecione um produto para ver a análise de margem</p>
+    </div>
+    }
+  </div>
+</div>
+
+<div class="list-section">
+  <app-table title="Promoções ativas" subtitle="Gerenciamento de promoções ativas" [columns]="columns"
+    [data]="activePromotions.value() || []" [actions]="tableActions">
+  </app-table>
+</div>
+
+<app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Remover Promoção"
+  message="Deseja realmente remover esta promoção? O produto voltará ao preço original imediatamente." confirmText="Remover"
+  cancelText="Cancelar" type="danger" (confirm)="confirmRemove()"></app-confirm-dialog>

@@ -18,6 +18,8 @@ import { SaleService } from '../sale.service';
 import { SaleRegisterForm } from './register.form';
 import { SaleItemRequest, SaleOrigin, SaleRequest } from '../sale.models';
 import { PackagingService } from '../../packaging/packaging.service';
+import { PromocoesService, PromotionResponse } from '../../promocoes/promocoes.service';
+import { FormSwitch } from '../../../ui/form-switch/form-switch';
 
 export interface SaleItemDraft {
   productId: number;
@@ -25,12 +27,13 @@ export interface SaleItemDraft {
   sellPrice: number;
   quantity: number;
   product: ProductResponse;
+  isPromotional?: boolean;
 }
 
 @Component({
   selector: 'app-sale-register',
   standalone: true,
-  imports: [CommonModule, FormInput, FormDate, FormSelect, Button, CurrencyPipe, DatePipe, Field, ConfirmDialog],
+  imports: [CommonModule, FormInput, FormDate, FormSelect, FormSwitch, Button, CurrencyPipe, DatePipe, Field, ConfirmDialog],
   templateUrl: './register.html',
   styleUrl: './register.scss',
   providers: [SaleRegisterForm],
@@ -43,6 +46,7 @@ export class SaleRegister {
   public readonly registerForm = inject(SaleRegisterForm);
   public readonly store = inject(Store);
   private readonly packagingService = inject(PackagingService);
+  private readonly promocoesService = inject(PromocoesService);
 
   constructor() {
     effect(() => {
@@ -82,10 +86,12 @@ export class SaleRegister {
   public readonly categoryOptions = computed(() => {
     const categories = this.categoryResource.value()?.data || [];
     const products = this.productResource.value()?.data || [];
+    const origem = this.registerForm.registerForm().value().origem;
 
-    // Filter categories that have at least one product
     return categories
       .filter((c) => products.some((p) => p.category?.id == c.id))
+      // Combos não são vendidos por revenda
+      .filter((c) => !(origem === 'REVENDA' && c.nome === 'Combo'))
       .map((c) => ({
         label: c.nome,
         value: c.id,
@@ -127,8 +133,31 @@ export class SaleRegister {
   public readonly selectedQuantity = signal<number>(1);
   public readonly saleItems = signal<SaleItemDraft[]>([]); // items added to the sale
 
-  // Confirmation State
   public readonly isConfirmDialogOpen = signal(false);
+
+  // Promotions State
+  public readonly activePromotions = rxResource<PromotionResponse[], unknown>({
+    stream: () => this.promocoesService.listActivePromotions()
+  });
+
+  public readonly isPromotionalSelection = signal(false);
+
+  public readonly hasPromotionForSelected = computed(() => {
+    const productId = this.selectedProductId();
+    const origin = this.registerForm.registerForm().value().origem;
+    if (!productId || origin === 'REVENDA') return false;
+
+    return this.activePromotions.value()?.some(p => p.productId === productId && p.origin === origin) || false;
+  });
+
+  public readonly promotionPrice = computed(() => {
+    const productId = this.selectedProductId();
+    const origin = this.registerForm.registerForm().value().origem;
+    if (!productId || origin === 'REVENDA') return null;
+
+    const promo = this.activePromotions.value()?.find(p => p.productId === productId && p.origin === origin);
+    return promo ? promo.promoPrice : null;
+  });
 
   public readonly totalSalePrice = computed(() => {
     return this.saleItems().reduce((acc, curr) => acc + (curr.sellPrice * curr.quantity), 0);
@@ -147,10 +176,10 @@ export class SaleRegister {
 
   public readonly packagingFee = computed(() => {
     if (this.registerForm.registerForm().value().origem !== 'IFOOD') return 0;
-    
+
     const items = this.ifoodPackagingItems();
     if (items.length === 0) return 3.0; // Fallback se não encontrar os itens
-    
+
     return items.reduce((acc, curr) => acc + curr.unitPrice, 0);
   });
 
@@ -203,6 +232,14 @@ export class SaleRegister {
 
     // Validação de Revenda (US-013)
     if (origem === 'REVENDA') {
+      if (product.type === 'COMBO') {
+        this.toast({
+          title: 'Produto inválido para revenda',
+          message: `Combos não podem ser vendidos por revenda.`,
+          type: 'warning',
+        });
+        return;
+      }
       if (!product.hasResale || !product.resalePrice || product.resalePrice <= 0) {
         this.toast({
           title: 'Produto não habilitado',
@@ -214,11 +251,16 @@ export class SaleRegister {
     }
 
     let sellPrice = product.sellPrice;
+    const isPromotional = this.isPromotionalSelection();
 
-    if (origem === 'IFOOD' && product.ifoodSellPrice) {
-      sellPrice = product.ifoodSellPrice;
-    } else if (origem === 'REVENDA' && product.resalePrice) {
-      sellPrice = product.resalePrice;
+    if (isPromotional && this.promotionPrice()) {
+      sellPrice = this.promotionPrice()!;
+    } else {
+      if (origem === 'IFOOD' && product.ifoodSellPrice) {
+        sellPrice = product.ifoodSellPrice;
+      } else if (origem === 'REVENDA' && product.resalePrice) {
+        sellPrice = product.resalePrice;
+      }
     }
 
     // Validação de Preço Zerado (US-021)
@@ -259,6 +301,7 @@ export class SaleRegister {
           sellPrice: sellPrice,
           quantity,
           product,
+          isPromotional
         },
       ];
     });
@@ -266,6 +309,7 @@ export class SaleRegister {
     // Reset item form
     this.selectedProductId.set(null);
     this.selectedQuantity.set(1);
+    this.isPromotionalSelection.set(false);
   }
 
   public removeItem(index: number): void {
@@ -311,6 +355,7 @@ export class SaleRegister {
       items: this.saleItems().map((i): SaleItemRequest => ({
         productId: i.productId,
         quantity: i.quantity,
+        isPromotional: i.isPromotional
       })),
       packagingFee: this.packagingFee(),
     };

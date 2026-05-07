@@ -198,7 +198,17 @@ export class ProductList {
     const hasFinancials = products.some((p) => p.costPrice > 0 || p.sellPrice > 0);
 
     const baseColumns = [
-      { label: 'Nome', field: 'name', sortable: true },
+      {
+        label: 'Nome',
+        field: 'name',
+        sortable: true,
+        cell: (row: ProductResponse) => `
+          <div style="display: flex; align-items: center; gap: 8px;">
+            ${row.name}
+            ${row.hasActivePromotion ? '<span class="badge success" style="font-size: 0.65rem; padding: 1px 6px;">Promoção ativa</span>' : ''}
+          </div>
+        `
+      },
       { label: 'Categoria', field: 'category', cell: (row: ProductResponse) => row.category?.nome || '-' },
       {
         label: 'Quantidade',
@@ -222,28 +232,22 @@ export class ProductList {
           cell: (row: ProductResponse) =>
             row.sellPrice ? this.currencyPipe.transform(row.sellPrice, 'BRL', 'symbol', '1.2-2') : '-',
         },
-        {
-          label: 'Lucro Balcão',
-          field: 'profit',
-          cell: (row: ProductResponse) =>
-            row.profit ? this.currencyPipe.transform(row.profit, 'BRL', 'symbol', '1.2-2') : '-',
-        },
-        {
-          label: 'Margem Balcão',
-          field: 'profitMargin',
-          cell: (row: ProductResponse) => {
-            if (!row.sellPrice || !row.costPrice) return '-';
-            const profit = row.sellPrice - row.costPrice;
-            const margin = (profit / row.sellPrice) * 100;
-            return `${margin.toFixed(2)}%`;
-          },
-        },
-        {
-          label: 'Preço Revenda',
-          field: 'resalePrice',
-          cell: (row: ProductResponse) =>
-            row.hasResale && row.resalePrice ? this.currencyPipe.transform(row.resalePrice, 'BRL', 'symbol', '1.2-2') : '-',
-        },
+        // {
+        //   label: 'Lucro Balcão',
+        //   field: 'profit',
+        //   cell: (row: ProductResponse) =>
+        //     row.profit ? this.currencyPipe.transform(row.profit, 'BRL', 'symbol', '1.2-2') : '-',
+        // },
+        // {
+        //   label: 'Margem Balcão',
+        //   field: 'profitMargin',
+        //   cell: (row: ProductResponse) => {
+        //     if (!row.sellPrice || !row.costPrice) return '-';
+        //     const profit = row.sellPrice - row.costPrice;
+        //     const margin = (profit / row.sellPrice) * 100;
+        //     return `${margin.toFixed(2)}%`;
+        //   },
+        // },
         {
           label: 'Venda iFood',
           field: 'ifoodSellPrice',
@@ -251,29 +255,36 @@ export class ProductList {
             row.ifoodSellPrice ? this.currencyPipe.transform(row.ifoodSellPrice, 'BRL', 'symbol', '1.2-2') : '-',
         },
         {
-          label: 'Lucro iFood',
-          field: 'ifoodProfit',
-          cell: (row: ProductResponse) => {
-            if (!row.ifoodSellPrice || !row.costPrice) return '-';
-            const fee = row.marketplaceFee || 28;
-            const multiplier = (1 - (fee / 100));
-            const ifoodProfit = (row.ifoodSellPrice * multiplier) - row.costPrice;
-            return this.currencyPipe.transform(ifoodProfit, 'BRL', 'symbol', '1.2-2');
-          },
+          label: 'Preço Revenda',
+          field: 'resalePrice',
+          cell: (row: ProductResponse) =>
+            row.hasResale && row.resalePrice ? this.currencyPipe.transform(row.resalePrice, 'BRL', 'symbol', '1.2-2') : '-',
         },
-        {
-          label: 'Margem iFood',
-          field: 'ifoodProfitMargin',
-          cell: (row: ProductResponse) => {
-            if (!row.ifoodSellPrice || !row.costPrice) return '-';
-            const fee = row.marketplaceFee || 28;
-            const multiplier = (1 - (fee / 100));
-            const ifoodNetRevenue = row.ifoodSellPrice * multiplier;
-            const ifoodProfit = ifoodNetRevenue - row.costPrice;
-            const margin = (ifoodProfit / ifoodNetRevenue) * 100;
-            return `${margin.toFixed(2)}%`;
-          },
-        },
+
+        // {
+        //   label: 'Lucro iFood',
+        //   field: 'ifoodProfit',
+        //   cell: (row: ProductResponse) => {
+        //     if (!row.ifoodSellPrice || !row.costPrice) return '-';
+        //     const fee = row.marketplaceFee || 28;
+        //     const multiplier = (1 - (fee / 100));
+        //     const ifoodProfit = (row.ifoodSellPrice * multiplier) - row.costPrice;
+        //     return this.currencyPipe.transform(ifoodProfit, 'BRL', 'symbol', '1.2-2');
+        //   },
+        // },
+        // {
+        //   label: 'Margem iFood',
+        //   field: 'ifoodProfitMargin',
+        //   cell: (row: ProductResponse) => {
+        //     if (!row.ifoodSellPrice || !row.costPrice) return '-';
+        //     const fee = row.marketplaceFee || 28;
+        //     const multiplier = (1 - (fee / 100));
+        //     const ifoodNetRevenue = row.ifoodSellPrice * multiplier;
+        //     const ifoodProfit = ifoodNetRevenue - row.costPrice;
+        //     const margin = (ifoodProfit / ifoodNetRevenue) * 100;
+        //     return `${margin.toFixed(2)}%`;
+        //   },
+        // },
       ]
       : [];
 
@@ -285,6 +296,7 @@ export class ProductList {
       label: 'Ficha',
       icon: '📋',
       callback: (row: ProductResponse) => this.fichaTecnica(row),
+      disabled: (row: ProductResponse) => row.type === 'COMBO'
     },
     {
       label: 'Excluir',
@@ -292,6 +304,10 @@ export class ProductList {
       callback: (row: ProductResponse) => this.delete(row),
     },
   ];
+
+  public getRowClass(row: ProductResponse): string {
+    return row.type === 'COMBO' ? 'row-combo' : '';
+  }
 
   private fichaTecnica(row: ProductResponse): void {
     this.router.navigate(['/dashboard/produto/ficha-tecnica'], {
@@ -340,6 +356,10 @@ export class ProductList {
   }
 
   public onRowClick(row: ProductResponse): void {
-    this.fichaTecnica(row);
+    if (row.type === 'COMBO') {
+      this.router.navigate(['/dashboard/promocoes'], { queryParams: { tab: 'combos', editId: row.id } });
+    } else {
+      this.fichaTecnica(row);
+    }
   }
 }

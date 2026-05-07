@@ -1,0 +1,50 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+
+.promocoes-container {
+  padding: vars.$space-lg;
+
+  .header {
+    margin-bottom: vars.$space-xl;
+
+    p {
+      color: colors.$text-secondary;
+    }
+  }
+
+  .tabs {
+    display: flex;
+    gap: vars.$space-md;
+    border-bottom: 2px solid #f1f5f9;
+    margin-bottom: vars.$space-xl;
+
+    button {
+      padding: vars.$space-md vars.$space-xl;
+      border: none;
+      background: none;
+      font-weight: 600;
+      color: colors.$text-secondary;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+
+      &:hover {
+        color: colors.$color-primary;
+      }
+
+      &.active {
+        color: colors.$color-primary;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background-color: colors.$color-primary;
+        }
+      }
+    }
+  }
+}

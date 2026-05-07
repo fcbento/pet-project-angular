@@ -41,13 +41,22 @@
       [options]="categoryOptions()" [(value)]="selectedCategoryId" (valueChange)="selectedProductId.set(null)" />
 
     @if (selectedCategoryId()) {
-    <app-form-select data-testid="select-produtct" label="Produto" placeholder="Selecione..."
-      [options]="productOptions()" [(value)]="selectedProductId" />
+    <app-form-select label="Produto" [options]="productOptions()" labelKey="label" valueKey="value"
+      (valueChange)="selectedProductId.set($event ? +$event : null)" placeholder="Selecione"></app-form-select>
+
+    <app-form-input label="Quantidade" type="number" [value]="selectedQuantity()"
+      (valueChange)="$event && selectedQuantity.set(+$event)" style="width: 10px;"></app-form-input>
     }
 
-    <app-form-input data-testid="quantity" label="Quantidade" type="number" [value]="selectedQuantity().toString()"
-      (valueChange)="selectedQuantity.set(+$event)" />
     <div class="add-action">
+      @if (hasPromotionForSelected()) {
+      <div class="promo-selection">
+        <app-form-switch label="Aplicar promoção: {{ promotionPrice() | currency:'BRL' }}"
+          [value]="isPromotionalSelection()"
+          (valueChange)="isPromotionalSelection.set($event || false)"></app-form-switch>
+      </div>
+      }
+
       <app-button data-testid="add-item" name="Adicionar Item" type="primary" [disabled]="!canAddItem()"
         (clicked)="addItem()"></app-button>
     </div>

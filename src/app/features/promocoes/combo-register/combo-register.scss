@@ -1,0 +1,206 @@
+@use 'styles/abstracts/variables' as vars;
+@use 'styles/abstracts/colors' as colors;
+
+.combo-grid {}
+
+.combo-form {
+  padding: vars.$space-xl;
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: vars.$space-md;
+    margin-bottom: vars.$space-lg;
+  }
+}
+
+.composition-section {
+  background: #f8fafc;
+  padding: vars.$space-lg;
+  border-radius: vars.$radius-lg;
+  border: 1px solid #e2e8f0;
+  margin-bottom: vars.$space-xl;
+
+  .section-title {
+    font-weight: 700;
+    margin-bottom: vars.$space-md;
+    color: colors.$text-primary;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+
+  .selection-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 100px 60px;
+    gap: vars.$space-sm;
+    align-items: flex-end;
+    margin-bottom: vars.$space-lg;
+  }
+
+  .items-table {
+    .simple-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th {
+        text-align: left;
+        font-size: 0.75rem;
+        color: colors.$text-secondary;
+        padding: vars.$space-sm;
+        border-bottom: 1px solid #e2e8f0;
+        text-transform: uppercase;
+      }
+
+      td {
+        padding: vars.$space-sm;
+        font-size: 0.875rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: colors.$text-primary;
+      }
+
+      .btn-remove {
+        background: none;
+        border: none;
+        color: #ef4444;
+        cursor: pointer;
+        font-size: 1.1rem;
+        padding: 4px;
+        line-height: 1;
+        transition: transform 0.2s;
+
+        &:hover {
+          transform: scale(1.2);
+        }
+      }
+
+      .empty-msg {
+        text-align: center;
+        padding: vars.$space-xl;
+        color: colors.$text-muted;
+        font-style: italic;
+      }
+    }
+  }
+}
+
+.pricing-analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: vars.$space-xl;
+  background: #f1f5f9;
+  padding: vars.$space-lg;
+  border-radius: vars.$radius-lg;
+  margin-bottom: vars.$space-xl;
+  align-items: start;
+}
+
+.pricing-section {
+  .section-title {
+    font-weight: 700;
+    margin-bottom: vars.$space-md;
+    font-size: 0.8rem;
+    color: colors.$text-secondary;
+    text-transform: uppercase;
+  }
+
+  .pricing-rows {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$space-sm;
+
+    ::v-deep app-form-input {
+      .form-group {
+        margin-bottom: 0;
+
+        input {
+          height: 36px;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+}
+
+.analysis-section {
+  .section-title {
+    font-weight: 700;
+    margin-bottom: vars.$space-md;
+    font-size: 0.8rem;
+    color: colors.$text-secondary;
+    text-transform: uppercase;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: vars.$space-md;
+
+    .metric {
+      background: white;
+      padding: vars.$space-sm vars.$space-md;
+      border-radius: vars.$radius-md;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #e2e8f0;
+
+      .label {
+        font-size: 0.7rem;
+        color: colors.$text-secondary;
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+
+      .value {
+        font-size: 1rem;
+        font-weight: 700;
+        color: colors.$text-primary;
+
+        &.positive {
+          color: #10b981;
+        }
+
+        &.negative {
+          color: #ef4444;
+        }
+      }
+
+      &.highlight {
+        border-color: colors.$color-primary;
+
+        .value {
+          color: colors.$color-primary;
+        }
+      }
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: vars.$space-lg;
+}
+
+.stock-rule {
+  display: flex;
+  gap: vars.$space-md;
+  background: #fef3c7;
+  padding: vars.$space-md;
+  border-radius: vars.$radius-md;
+  border-left: 4px solid #f59e0b;
+
+  .icon {
+    font-size: 1.2rem;
+  }
+
+  .text {
+    font-size: 0.85rem;
+    color: #92400e;
+    line-height: 1.4;
+  }
+}
+
+.combos-list {
+  margin-top: vars.$space-xl;
+}

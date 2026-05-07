@@ -61,6 +61,10 @@ export const routes: Routes = [
         path: 'compras',
         loadComponent: () => import('./features/purchase/list/list').then((m) => m.PurchaseList),
       },
+      {
+        path: 'promocoes',
+        loadComponent: () => import('./features/promocoes/promocoes').then((m) => m.Promocoes),
+      },
     ],
   },
   { path: '**', redirectTo: 'login' },

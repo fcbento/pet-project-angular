@@ -298,3 +298,13 @@
   margin-top: 4px;
   padding-top: 4px;
 }
+
+.promo-selection {
+  display: flex;
+  align-items: center;
+  padding: vars.$space-sm vars.$space-md;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: vars.$radius-md;
+  margin-bottom: vars.$space-md;
+}

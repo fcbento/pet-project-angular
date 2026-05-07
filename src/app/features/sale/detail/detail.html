@@ -6,6 +6,9 @@
         <span class="origin-badge" [attr.data-origin]="s.origem">
           {{ s.origem }}
         </span>
+        @if (s.items[0]?.isPromotional) {
+          <app-badge type="info" text="Valor Promocional"></app-badge>
+        }
         <span class="date">{{ s.sellDate | date: 'dd/MM/yyyy HH:mm' }}</span>
       </div>
     </header>
@@ -26,9 +29,25 @@
           <tbody>
             @for (item of s.items; track item.productId) {
             <tr>
-              <td>{{ item.productName }}</td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  {{ item.productName }}
+                  @if (item.isPromotional) {
+                    <app-badge type="info" text="Promocional" style="font-size: 0.6rem;"></app-badge>
+                  }
+                </div>
+              </td>
               <td class="text-center">{{ item.quantity }}</td>
-              <td class="text-right">{{ item.sellPrice | currency: 'BRL' }}</td>
+              <td class="text-right">
+                <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                  @if (item.isPromotional && item.originalPrice) {
+                    <span style="text-decoration: line-through; font-size: 0.75rem; color: #94a3b8;">
+                      {{ item.originalPrice | currency: 'BRL' }}
+                    </span>
+                  }
+                  <span>{{ item.sellPrice | currency: 'BRL' }}</span>
+                </div>
+              </td>
               <td class="text-right">{{ (item.quantity * item.sellPrice) | currency: 'BRL' }}</td>
               <td class="text-right positive">{{ item.profit | currency: 'BRL' }}</td>
             </tr>

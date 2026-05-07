@@ -19,10 +19,19 @@ export class Table<T> {
   public readonly pageSizeOptions = input<number[]>([10, 50, 100]);
   public readonly title = input<string>();
   public readonly subtitle = input<string>();
+  public readonly rowClass = input<(row: T) => string>();
   private readonly _selected = signal<Set<T>>(new Set());
+  private getData(): T[] {
+    const data = typeof this.data === 'function' ? this.data() : (this.data as any);
+    return Array.isArray(data) ? data : [];
+  }
+
   public readonly selectedCount = computed(() => this._selected().size);
   public readonly allSelected = computed(
-    () => this.data().length > 0 && this._selected().size === this.data().length,
+    () => {
+      const data = this.getData();
+      return data.length > 0 && this._selected().size === data.length;
+    }
   );
 
   public readonly allPageSelected = computed(() => {
@@ -49,7 +58,8 @@ export class Table<T> {
   }
 
   public readonly sortedData = computed(() => {
-    const arr = [...this.data()];
+    const data = this.getData();
+    const arr = [...data];
     const field = this.sortField() as string;
     const dir = this.sortDirection();
     if (!field) {
@@ -112,7 +122,7 @@ export class Table<T> {
     if (this.allSelected()) {
       this._selected.set(new Set());
     } else {
-      this._selected.set(new Set(this.data()));
+      this._selected.set(new Set(this.getData()));
     }
   }
 

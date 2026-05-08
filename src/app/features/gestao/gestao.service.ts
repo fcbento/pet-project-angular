@@ -33,7 +33,7 @@ export interface ManagementResponse {
   goalProgress: number;
   growthMoM: number;
   topProducts: ProductMixDTO[];
-  
+
   totalFixedCosts: number;
   totalCmv: number;
 
@@ -62,6 +62,8 @@ export interface ManagementResponse {
 
   // Fluxo de Caixa e Saúde
   availableCash: number;
+  initialBalance: number;
+  periodCashFlow: number;
   financialStatus: 'VERDE' | 'AMARELO' | 'VERMELHO';
   healthScore: number;
 
@@ -95,6 +97,10 @@ export class GestaoService {
   public getSummary(start: string, end: string): Observable<ApiResponse<ManagementResponse>> {
     const params = new HttpParams().set('start', start).set('end', end);
     return this.http.get<ApiResponse<ManagementResponse>>(this.apiUrl, { params });
+  }
+
+  public resetData(): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/reset`);
   }
 
   public saveGoal(month: number, year: number, value: number): Observable<ApiResponse<GoalResponse>> {

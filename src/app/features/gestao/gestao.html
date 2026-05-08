@@ -19,31 +19,66 @@
         {{ month }}
       </button>
       }
+      <div class="divider"></div>
+      <button class="filter-btn" style="color: #ff4d4f; border-color: #ff4d4f; background: rgba(255, 77, 79, 0.1);" (click)="resetData()">
+        ⚠️ Zerar Banco
+      </button>
     </div>
   </header>
 
-  <!-- NOVOS: Saúde e Liquidez -->
-  <section class="health-overview mb-6">
+  <!-- SEÇÃO 1: TESOURARIA (Rollover) -->
+  <h2 class="section-title">Dashboard de Tesouraria (Fluxo de Caixa Contínuo)</h2>
+  <section class="treasury-overview mb-8">
     <div class="stats-grid">
+      <div class="card">
+        <div class="card__icon">⏳</div>
+        <div class="card__content">
+          <span class="label">Saldo Inicial (Rollover)</span>
+          <span class="value">{{ s.initialBalance | currency: 'BRL' }}</span>
+          <div class="info-row">
+            <span>Caixa antes deste período</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__icon">📈</div>
+        <div class="card__content">
+          <span class="label">Movimentação do Período</span>
+          <span class="value" [class.positive]="s.periodCashFlow > 0" [class.negative]="s.periodCashFlow < 0">
+            {{ s.periodCashFlow > 0 ? '+' : '' }}{{ s.periodCashFlow | currency: 'BRL' }}
+          </span>
+          <div class="info-row">
+            <span>Entradas Líquidas - Saídas</span>
+          </div>
+        </div>
+      </div>
+
       <div class="card card--cash" [class.healthy]="s.financialStatus === 'VERDE'"
         [class.critical]="s.financialStatus === 'VERMELHO'">
         <div class="card__icon">{{ s.financialStatus === 'VERDE' ? '💰' : '📉' }}</div>
         <div class="card__content">
-          <span class="label">Caixa Disponível (Real)</span>
+          <span class="label">Caixa Disponível Real</span>
           <span class="value">{{ s.availableCash | currency: 'BRL' }}</span>
           <div class="info-row">
             <span class="status-badge" [attr.data-status]="s.financialStatus">
               Status: {{ s.financialStatus }}
             </span>
-            <span>Regime de Caixa</span>
+            <span>Dinheiro em Caixa</span>
           </div>
         </div>
       </div>
+    </div>
+  </section>
 
+  <!-- SEÇÃO 2: OPERAÇÃO (Competência) -->
+  <h2 class="section-title">Dashboard de Operação (Resultado do Período)</h2>
+  <section class="health-overview mb-6">
+    <div class="stats-grid">
       <div class="card card--health">
         <div class="card__icon">🩺</div>
         <div class="card__content">
-          <span class="label">Saúde do Negócio (Score)</span>
+          <span class="label">Saúde do Negócio (Score Operacional)</span>
           <span class="value">{{ s.healthScore | number: '1.0-0' }}%</span>
           <div class="progress-bar-mini">
             <div class="progress-fill" [style.width.%]="s.healthScore" [class.low]="s.healthScore < 70"

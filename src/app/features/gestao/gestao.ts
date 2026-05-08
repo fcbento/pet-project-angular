@@ -115,4 +115,19 @@ export class Gestao {
       error: (err) => console.error('Erro ao salvar meta:', err)
     });
   }
+
+  public resetData(): void {
+    if (confirm('ATENÇÃO: Tem certeza que deseja apagar TODAS as vendas e saídas de todos os meses? Esta ação é irreversível e feita apenas para testes.')) {
+      this.gestaoService.resetData().subscribe({
+        next: () => {
+          alert('Banco de dados limpo com sucesso! Todos os caixas estão zerados.');
+          this.loadSummary();
+        },
+        error: (err) => {
+          console.error('Erro ao resetar dados:', err);
+          alert('Erro ao tentar resetar o banco de dados.');
+        }
+      });
+    }
+  }
 }

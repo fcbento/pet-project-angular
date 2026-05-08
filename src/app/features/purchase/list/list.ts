@@ -152,14 +152,26 @@ export class PurchaseList {
     };
 
     if (this.isEditing() && this.currentId()) {
-      this.purchaseService.update(this.currentId()!, request).subscribe(() => {
-        this.isModalOpen.set(false);
-        this.reload();
+      this.purchaseService.update(this.currentId()!, request).subscribe({
+        next: () => {
+          this.isModalOpen.set(false);
+          this.reload();
+        },
+        error: (err) => {
+          console.error('Erro ao atualizar compra', err);
+          alert('Erro ao salvar a saída. Verifique sua conexão e tente novamente.');
+        }
       });
     } else {
-      this.purchaseService.create(request).subscribe(() => {
-        this.isModalOpen.set(false);
-        this.reload();
+      this.purchaseService.create(request).subscribe({
+        next: () => {
+          this.isModalOpen.set(false);
+          this.reload();
+        },
+        error: (err) => {
+          console.error('Erro ao criar compra', err);
+          alert('Erro ao registrar a saída. Verifique se os dados estão preenchidos corretamente.');
+        }
       });
     }
   }

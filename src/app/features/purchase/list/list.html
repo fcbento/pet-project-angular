@@ -1,20 +1,22 @@
 <section class="purchase-container">
   <header class="purchase__header">
     <div class="title-group">
-      <h1>Registro de Compras</h1>
+      <h1>Registro de Saídas</h1>
       <span class="subtitle">Controle manual de entradas e fornecedores</span>
     </div>
 
     <div class="main-action">
-      <app-button name="Adicionar Compra" type="primary" (clicked)="openAdd()" [disabled]="false"></app-button>
+      <app-button name="Adicionar Saída" type="primary" (clicked)="openAdd()" [disabled]="false"></app-button>
     </div>
   </header>
 
   <section class="filters">
     <div class="filters-row">
-      <app-form-input label="Início" type="date" [value]="startDate()" (valueChange)="setString(startDate, $event)"></app-form-input>
-      <app-form-input label="Fim" type="date" [value]="endDate()" (valueChange)="setString(endDate, $event)"></app-form-input>
-      
+      <app-form-input label="Início" type="date" [value]="startDate()"
+        (valueChange)="setString(startDate, $event)"></app-form-input>
+      <app-form-input label="Fim" type="date" [value]="endDate()"
+        (valueChange)="setString(endDate, $event)"></app-form-input>
+
       <div class="filter-actions">
         <app-button name="Atualizar" type="secondary" (clicked)="reload()" [disabled]="false"></app-button>
       </div>
@@ -23,36 +25,49 @@
 
   @if (purchases().length > 0) {
   <main class="purchase__content">
-    <app-table [columns]="columns" [data]="purchases()" [actions]="actions" [withPagination]="true" title="Compras e Entradas" subtitle="Registro de entradas de mercadorias e insumos"></app-table>
+    <app-table [columns]="columns" [data]="purchases()" [actions]="actions" [withPagination]="true"
+      title="Compras e Entradas" subtitle="Registro de entradas de mercadorias e insumos"></app-table>
   </main>
   } @else {
   <div class="empty-state-card">
     <span class="icon">🛒</span>
-    <p>Nenhuma compra registrada ainda. Vamos adicionar a primeira? ✨</p>
+    <p>Nenhuma saída registrada ainda. Vamos adicionar a primeira? ✨</p>
   </div>
   }
 
-  <app-modal [title]="isEditing() ? 'Editar Compra' : 'Nova Compra'" [(isOpen)]="isModalOpen">
+  <app-modal [title]="isEditing() ? 'Editar Saída' : 'Nova Saída'" [(isOpen)]="isModalOpen" size="lg">
     <div class="purchase-form">
       <div class="form-row">
-        <app-form-input label="Data e Hora" type="datetime-local" [value]="formDate()" (valueChange)="setString(formDate, $event)"></app-form-input>
-        <app-form-select label="Tipo de Compra" [options]="typeOptions" [value]="formType()" (valueChange)="setString(formType, $event)"></app-form-select>
+        <app-form-input label="Data e Hora" type="datetime-local" [value]="formDate()"
+          (valueChange)="setString(formDate, $event)"></app-form-input>
+        <app-form-select label="Tipo de Saída" [options]="typeOptions" [value]="formType()"
+          (valueChange)="setString(formType, $event)"></app-form-select>
       </div>
 
-      <app-form-input label="Fornecedor" type="text" [value]="formSupplier()" (valueChange)="setString(formSupplier, $event)" placeholder="Ex: Atacadão"></app-form-input>
-      <app-form-input label="Produto/Item" type="text" [value]="formProduct()" (valueChange)="setString(formProduct, $event)" placeholder="Ex: Leite Condensado"></app-form-input>
+      @if (subTypeOptions().length > 0) {
+      <div class="form-row">
+        <app-form-select label="Subtipo" [options]="subTypeOptions()" [value]="formSubType()"
+          (valueChange)="setString(formSubType, $event)" placeholder="Selecione um subtipo"></app-form-select>
+      </div>
+      }
+
 
       <div class="form-row">
-        <app-form-input label="Quantidade" type="number" [value]="String(formQuantity())" (valueChange)="setNumber(formQuantity, $event)"></app-form-input>
-        <app-form-input label="Preço Total" type="number" [value]="String(formPrice())" (valueChange)="setNumber(formPrice, $event)"></app-form-input>
+        <app-form-input label="Quantidade" type="number" [value]="String(formQuantity())"
+          (valueChange)="setNumber(formQuantity, $event)"></app-form-input>
+        <app-form-input label="Preço Total" type="number" [value]="String(formPrice())"
+          (valueChange)="setNumber(formPrice, $event)"></app-form-input>
       </div>
     </div>
 
     <div footer>
       <app-button name="Cancelar" type="secondary" (clicked)="isModalOpen.set(false)" [disabled]="false"></app-button>
-      <app-button [name]="isEditing() ? 'Salvar Alterações' : 'Confirmar Compra'" type="primary" (clicked)="save()" [disabled]="!formSupplier() || !formProduct()"></app-button>
+      <app-button [name]="isEditing() ? 'Salvar Alterações' : 'Confirmar Compra'" type="primary" (clicked)="save()"
+        [disabled]="(subTypeOptions().length > 0 && !formSubType())"></app-button>
     </div>
   </app-modal>
 
-  <app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Compra" message="Deseja realmente excluir esta compra? Esta ação não poderá ser desfeita." confirmText="Sim, Excluir" cancelText="Cancelar" type="danger" (confirm)="confirmDelete()"></app-confirm-dialog>
+  <app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Compra"
+    message="Deseja realmente excluir esta compra? Esta ação não poderá ser desfeita." confirmText="Sim, Excluir"
+    cancelText="Cancelar" type="danger" (confirm)="confirmDelete()"></app-confirm-dialog>
 </section>

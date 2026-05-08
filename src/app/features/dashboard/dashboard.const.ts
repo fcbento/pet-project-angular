@@ -20,7 +20,7 @@ export const DASHBOARD_ROUTES = [
     link: 'venda',
   },
   {
-    name: 'Compras',
+    name: 'Saídas',
     link: 'compras',
   },
   {

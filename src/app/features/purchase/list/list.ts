@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { combineLatest, switchMap } from 'rxjs';
@@ -41,19 +41,18 @@ export class PurchaseList {
   );
 
   public readonly columns: TableColumn<PurchaseResponse>[] = [
-    { 
-      label: 'Data', 
-      field: 'purchaseDate', 
-      cell: (row) => this.datePipe.transform(row.purchaseDate, 'dd/MM/yyyy HH:mm') || '' 
+    {
+      label: 'Data',
+      field: 'purchaseDate',
+      cell: (row) => this.datePipe.transform(row.purchaseDate, 'dd/MM/yyyy HH:mm') || ''
     },
     { label: 'Tipo', field: 'type' },
-    { label: 'Fornecedor', field: 'supplier' },
-    { label: 'Produto', field: 'productName' },
+    { label: 'Subtipo', field: 'subType' },
     { label: 'Qtd', field: 'quantity' },
-    { 
-      label: 'Total', 
-      field: 'totalPrice', 
-      cell: (row) => this.currencyPipe.transform(row.totalPrice, 'BRL') || '' 
+    {
+      label: 'Total',
+      field: 'totalPrice',
+      cell: (row) => this.currencyPipe.transform(row.totalPrice, 'BRL') || ''
     }
   ];
 
@@ -80,18 +79,42 @@ export class PurchaseList {
 
   // Form fields
   public readonly formDate = signal(new Date().toLocaleString('sv-SE').substring(0, 16).replace(' ', 'T'));
-  public readonly formSupplier = signal('');
-  public readonly formProduct = signal('');
+  //public readonly formSupplier = signal('');
   public readonly formQuantity = signal(1);
   public readonly formPrice = signal(0);
-  public readonly formType = signal('INSUMOS');
+  public readonly formType = signal('CMV');
+  public readonly formSubType = signal('');
 
   public readonly typeOptions = [
-    { label: 'Insumos', value: 'INSUMOS' },
-    { label: 'Marketing', value: 'MARKETING' },
-    { label: 'Reposição', value: 'REPOSICAO' },
+    { label: 'CMV (Custo de Mercadoria Vendida)', value: 'CMV' },
+    { label: 'Despesas Operacionais (OPEX)', value: 'OPEX' },
+    { label: 'Pró-labore (Retirada)', value: 'PRO_LABORE' },
     { label: 'Outros', value: 'OUTROS' }
   ];
+
+  private readonly subTypesMap: Record<string, { label: string, value: string }[]> = {
+    'CMV': [
+      { label: 'Insumos', value: 'Insumos' },
+      { label: 'Ingredientes', value: 'Ingredientes' },
+      { label: 'Embalagens', value: 'Embalagens' }
+    ],
+    'OPEX': [
+      { label: 'Luz', value: 'Luz' },
+      { label: 'Água', value: 'Água' },
+      { label: 'Internet', value: 'Internet' },
+      { label: 'Gasolina / logística', value: 'Gasolina / logística' },
+      { label: 'Marketing / anúncios', value: 'Marketing / anúncios' }
+    ],
+    'PRO_LABORE': [
+      { label: 'Retirada pessoal', value: 'Retirada pessoal' },
+      { label: 'Pagamento do trabalho do sócio', value: 'Pagamento do trabalho do sócio' }
+    ]
+  };
+
+  public readonly subTypeOptions = computed(() => {
+    const type = this.formType();
+    return this.subTypesMap[type] || [];
+  });
 
   public reload(): void {
     this.refreshTrigger.update(v => v + 1);
@@ -101,11 +124,10 @@ export class PurchaseList {
     this.isEditing.set(false);
     this.currentId.set(null);
     this.formDate.set(new Date().toLocaleString('sv-SE').substring(0, 16).replace(' ', 'T'));
-    this.formSupplier.set('');
-    this.formProduct.set('');
     this.formQuantity.set(1);
     this.formPrice.set(0);
-    this.formType.set('INSUMOS');
+    this.formType.set('CMV');
+    this.formSubType.set('');
     this.isModalOpen.set(true);
   }
 
@@ -113,22 +135,20 @@ export class PurchaseList {
     this.isEditing.set(true);
     this.currentId.set(purchase.id);
     this.formDate.set(purchase.purchaseDate.substring(0, 16));
-    this.formSupplier.set(purchase.supplier);
-    this.formProduct.set(purchase.productName);
     this.formQuantity.set(purchase.quantity);
     this.formPrice.set(purchase.totalPrice);
-    this.formType.set(purchase.type || 'INSUMOS');
+    this.formType.set(purchase.type || 'CMV');
+    this.formSubType.set(purchase.subType || '');
     this.isModalOpen.set(true);
   }
 
   public save(): void {
     const request: PurchaseRequest = {
       purchaseDate: new Date(this.formDate()).toISOString(),
-      supplier: this.formSupplier(),
-      productName: this.formProduct(),
       quantity: Number(this.formQuantity()),
       totalPrice: Number(this.formPrice()),
-      type: this.formType()
+      type: this.formType(),
+      subType: this.formSubType()
     };
 
     if (this.isEditing() && this.currentId()) {
@@ -162,6 +182,11 @@ export class PurchaseList {
   public setString(signal: { set: (v: string) => void }, value: string | number | null): void {
     if (value === null) return;
     signal.set(String(value));
+
+    // Reset subType when type changes
+    if (signal === this.formType) {
+      this.formSubType.set('');
+    }
   }
 
   public setNumber(signal: { set: (v: number) => void }, value: string | number | null): void {

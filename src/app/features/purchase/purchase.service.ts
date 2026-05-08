@@ -5,21 +5,19 @@ import { environment } from '../../../environments/environment';
 
 export interface PurchaseRequest {
   purchaseDate: string;
-  supplier: string;
-  productName: string;
   quantity: number;
   totalPrice: number;
-  type: string; // MARKETING, INSUMOS, REPOSICAO, OUTROS
+  type: string; // CMV, OPEX, PRO_LABORE, OUTROS
+  subType?: string;
 }
 
 export interface PurchaseResponse {
   id: number;
   purchaseDate: string;
-  supplier: string;
-  productName: string;
   quantity: number;
   totalPrice: number;
   type: string;
+  subType?: string;
 }
 
 @Injectable({

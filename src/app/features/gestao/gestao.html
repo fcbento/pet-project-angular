@@ -20,7 +20,8 @@
       </button>
       }
       <div class="divider"></div>
-      <button class="filter-btn" style="color: #ff4d4f; border-color: #ff4d4f; background: rgba(255, 77, 79, 0.1);" (click)="resetData()">
+      <button class="filter-btn" style="color: #ff4d4f; border-color: #ff4d4f; background: rgba(255, 77, 79, 0.1);"
+        (click)="resetData()">
         ⚠️ Zerar Banco
       </button>
     </div>
@@ -114,7 +115,7 @@
         <span class="label">CMV Total (Variável)</span>
         <span class="value negative">{{ s.totalCmv | currency: 'BRL' }}</span>
         <div class="info-row">
-          <span>Ingredientes + Rateio Fixo</span>
+          <span>Ingredientes</span>
         </div>
       </div>
     </div>
@@ -381,49 +382,6 @@
     </div>
   </section>
   }
-
-  <h2 class="section-title">📌 Resumo Executivo (Perfil Investidor)</h2>
-  <section class="executive-summary mb-10">
-    <div class="card summary-card-pro">
-      <div class="summary-grid">
-        <div class="summary-group">
-          <h4>Performance Financeira</h4>
-          <ul>
-            <li><span>Receita Total:</span> <b>{{ s.totalRevenue | currency: 'BRL' }}</b></li>
-            <li><span>Lucro Líquido Final:</span> <b class="positive">{{ s.netProfit | currency: 'BRL' }}</b></li>
-            <li><span>Margem Real Final:</span> <b class="highlight">{{ s.averageMargin | number: '1.2-2' }}%</b></li>
-          </ul>
-        </div>
-        <div class="summary-group">
-          <h4>Operacional iFood</h4>
-          <ul>
-            <li><span>Total de Pedidos iFood:</span> <b>{{ s.ifoodTotalOrders }}</b></li>
-            <li><span>Taxas iFood Fixas:</span> <b class="negative">{{ s.ifoodFixedFees | currency: 'BRL' }}</b></li>
-            <li><span>Ticket Médio iFood:</span> <b>{{ s.ifoodAverageTicket | currency: 'BRL' }}</b></li>
-          </ul>
-        </div>
-        <div class="summary-group">
-          <h4>Outros Canais</h4>
-          <ul>
-            <li><span>Pedidos Balcão:</span> <b>{{ s.counterSales }}</b></li>
-            <li><span>Pedidos Revenda:</span> <b>{{ s.resaleSales }}</b></li>
-            <li><span>Ticket Médio Geral:</span> <b>{{ s.averageTicket | currency: 'BRL' }}</b></li>
-          </ul>
-        </div>
-        <div class="summary-group">
-          <h4>Indicadores de Valor</h4>
-          <ul>
-            <li><span>Ponto de Equilíbrio:</span> <b>{{ s.breakEvenPoint | currency: 'BRL' }}</b></li>
-            <li><span>Saúde Financeira:</span> <b>{{ s.healthScore | number: '1.0-0' }}%</b></li>
-            @if (!isMonthlyView()) {
-            <li><span>Valuation (Realista):</span> <b class="highlight">{{ s.valuationRealista | currency: 'BRL' }}</b>
-            </li>
-            }
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
 </div>
 
 <!-- Modal de Meta -->

@@ -33,7 +33,7 @@ interface ComboItemSelection {
 @Component({
   selector: 'app-combo-register',
   standalone: true,
-  imports: [CommonModule, FormSelect, FormInput, Button, Table, Card, Field, ConfirmDialog, Modal, Badge],
+  imports: [CommonModule, FormSelect, FormInput, Button, Table, Card, Field, ConfirmDialog, Modal],
   templateUrl: './combo-register.html',
   styleUrl: './combo-register.scss',
   providers: [ComboForm, CurrencyPipe]
@@ -45,7 +45,7 @@ export class ComboRegister {
   private readonly productService = inject(ProductService);
   private readonly store = inject(Store);
   private readonly currencyPipe = inject(CurrencyPipe);
-  
+
   public readonly isDeleteDialogOpen = signal(false);
   public readonly comboToDelete = signal<number | null>(null);
 
@@ -209,21 +209,21 @@ export class ComboRegister {
     });
     this.isDetailsModalOpen.set(true);
   }
-  
+
   public readonly columns = [
     { field: 'name', label: 'Nome' },
-    { 
-      field: 'sellPrice', 
+    {
+      field: 'sellPrice',
       label: 'Balcão',
       cell: (row: any) => this.currencyPipe.transform(row.sellPrice, 'BRL', 'symbol', '1.2-2') || '-'
     },
-    { 
-      field: 'ifoodSellPrice', 
+    {
+      field: 'ifoodSellPrice',
       label: 'iFood',
       cell: (row: any) => this.currencyPipe.transform(row.ifoodSellPrice, 'BRL', 'symbol', '1.2-2') || '-'
     },
-    { 
-      field: 'costPrice', 
+    {
+      field: 'costPrice',
       label: 'Custo',
       cell: (row: any) => this.currencyPipe.transform(row.costPrice, 'BRL', 'symbol', '1.2-2') || '-'
     }

@@ -129,7 +129,7 @@
       </div>
       <div class="detail-item">
         <span class="label">Data:</span>
-        <span class="value">{{ registerForm.registerForm().value().sellDate | date:'dd/MM/yyyy HH:mm' }}</span>
+        <span class="value">{{ registerForm.registerForm().value().sellDate | date:'dd/MM/yyyy':'UTC' }}</span>
       </div>
       <div class="detail-item">
         <span class="label">Total de Itens:</span>

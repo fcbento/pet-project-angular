@@ -6,6 +6,7 @@
     </div>
   </header>
 
+  @if (hasProducts()) {
   <nav class="tabs">
     <button [class.active]="activeTab() === 'promocoes'" (click)="setTab('promocoes')">
       Promoções de Produtos
@@ -22,4 +23,10 @@
     <app-combo-register></app-combo-register>
     }
   </main>
+  } @else {
+  <div class="empty-state-card">
+    <span class="icon">✨</span>
+    <p>Nenhum produto cadastrado. Cadastre produtos primeiro para gerenciar promoções e combos.</p>
+  </div>
+  }
 </div>

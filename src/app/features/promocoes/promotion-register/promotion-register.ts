@@ -42,7 +42,9 @@ export class PromotionRegister {
   });
 
   public readonly categoryOptions = computed(() => {
-    return (this.categoriesResource.value() || []).map(c => ({ label: c.nome, value: c.id }));
+    return (this.categoriesResource.value() || [])
+      .filter(c => c.nome.toLowerCase() !== 'combo')
+      .map(c => ({ label: c.nome, value: c.id }));
   });
 
 

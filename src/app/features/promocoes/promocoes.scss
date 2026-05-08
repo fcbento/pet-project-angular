@@ -47,4 +47,29 @@
       }
     }
   }
+
+  .empty-state-card {
+    background: colors.$bg-muted;
+    border: 1px dashed colors.$border-default;
+    border-radius: vars.$radius-lg;
+    padding: vars.$space-xxl;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: vars.$space-sm;
+    margin-top: vars.$space-xl;
+
+    .icon {
+      font-size: 3rem;
+      margin-bottom: vars.$space-xs;
+    }
+
+    p {
+      color: colors.$text-secondary;
+      font-size: vars.$font-size-lg;
+      font-weight: vars.$font-weight-medium;
+      margin: 0;
+    }
+  }
 }

@@ -245,13 +245,13 @@
           </div>
           <hr>
           <div class="summary-row profit" *ngIf="ifoodSellPriceValue() > 0">
-            <span>Lucro iFood:</span>
+            <span>Lucro Líquido (iFood):</span>
             <strong [class.positive]="ifoodProfit() >= 0" [class.negative]="ifoodProfit() < 0">
               {{ ifoodProfit() | currency: 'BRL' }}
             </strong>
           </div>
           <div class="summary-row margin" *ngIf="ifoodSellPriceValue() > 0">
-            <span>Margem iFood:</span>
+            <span>Margem Líquida iFood:</span>
             <strong [class.positive]="ifoodProfitMargin() >= 0" [class.negative]="ifoodProfitMargin() < 0">
               {{ ifoodProfitMargin() | number: '1.2-2' }}%
             </strong>

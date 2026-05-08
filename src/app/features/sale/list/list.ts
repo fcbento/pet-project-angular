@@ -134,7 +134,7 @@ export class SaleList {
     {
       label: 'Data Venda',
       field: 'sellDate',
-      cell: (row: SaleResponse) => this.datePipe.transform(new Date(row.sellDate), 'dd/MM/yyyy'),
+      cell: (row: SaleResponse) => this.datePipe.transform(row.sellDate, 'dd/MM/yyyy', 'UTC'),
     },
     {
       label: 'Preço Total',

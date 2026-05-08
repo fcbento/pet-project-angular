@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { PromocoesService } from '../promocoes.service';
 import { TableAction } from '../../../ui/table/table.model';
 import { ProductResponse } from '../../product/list/list.models';
@@ -34,7 +34,7 @@ interface ComboItemSelection {
   imports: [CommonModule, FormSelect, FormInput, Button, Table, Card, Field, ConfirmDialog],
   templateUrl: './combo-register.html',
   styleUrl: './combo-register.scss',
-  providers: [ComboForm]
+  providers: [ComboForm, CurrencyPipe]
 })
 export class ComboRegister {
   public readonly registerForm = inject(ComboForm);
@@ -42,9 +42,13 @@ export class ComboRegister {
   private readonly categoryService = inject(CategoryService);
   private readonly productService = inject(ProductService);
   private readonly store = inject(Store);
+  private readonly currencyPipe = inject(CurrencyPipe);
   
   public readonly isDeleteDialogOpen = signal(false);
   public readonly comboToDelete = signal<number | null>(null);
+
+  public readonly isEditMode = signal(false);
+  public readonly editingId = signal<number | null>(null);
 
   public readonly comboItems = signal<ComboItemSelection[]>([]);
 
@@ -89,7 +93,7 @@ export class ComboRegister {
     const ifoodPrice = this.registerForm.model().ifoodSellPrice || 0;
 
     const grossMargin = sellPrice > 0 ? ((sellPrice - cost) / sellPrice) * 100 : 0;
-    const ifoodMargin = ifoodPrice > 0 ? ((ifoodPrice - cost - 3) / ifoodPrice) * 100 : 0;
+    const ifoodMargin = ifoodPrice > 0 ? ((ifoodPrice * 0.72 - cost) / (ifoodPrice * 0.72)) * 100 : 0;
 
     return { cost, grossMargin, ifoodMargin };
   });
@@ -136,20 +140,49 @@ export class ComboRegister {
     };
 
     try {
-      await lastValueFrom(this.promocoesService.createCombo(request));
-      this.store.dispatch(new OpenToast({ title: 'Sucesso', message: 'Combo criado com sucesso!', type: 'success' }));
+      if (this.isEditMode() && this.editingId()) {
+        await lastValueFrom(this.promocoesService.updateCombo(this.editingId()!, request));
+        this.store.dispatch(new OpenToast({ title: 'Sucesso', message: 'Combo atualizado com sucesso!', type: 'success' }));
+      } else {
+        await lastValueFrom(this.promocoesService.createCombo(request));
+        this.store.dispatch(new OpenToast({ title: 'Sucesso', message: 'Combo criado com sucesso!', type: 'success' }));
+      }
       this.activeCombos.reload();
       this.resetForm();
     } catch (e) {
-      this.store.dispatch(new OpenToast({ title: 'Erro', message: 'Erro ao criar combo', type: 'error' }));
+      this.store.dispatch(new OpenToast({ title: 'Erro', message: 'Erro ao processar combo', type: 'error' }));
     }
   }
 
   public readonly tableActions: TableAction<ProductResponse>[] = [
     {
+      label: 'Editar',
+      callback: (row: any) => this.onEdit(row),
+      icon: '✏️'
+    },
+    {
       label: 'Excluir',
-      callback: (row) => this.removeCombo(row.id!),
+      callback: (row: any) => this.removeCombo(row.id!),
       icon: '🗑️'
+    }
+  ];
+  
+  public readonly columns = [
+    { field: 'name', label: 'Nome' },
+    { 
+      field: 'sellPrice', 
+      label: 'Balcão',
+      cell: (row: any) => this.currencyPipe.transform(row.sellPrice, 'BRL', 'symbol', '1.2-2') || '-'
+    },
+    { 
+      field: 'ifoodSellPrice', 
+      label: 'iFood',
+      cell: (row: any) => this.currencyPipe.transform(row.ifoodSellPrice, 'BRL', 'symbol', '1.2-2') || '-'
+    },
+    { 
+      field: 'costPrice', 
+      label: 'Custo',
+      cell: (row: any) => this.currencyPipe.transform(row.costPrice, 'BRL', 'symbol', '1.2-2') || '-'
     }
   ];
 
@@ -167,13 +200,48 @@ export class ComboRegister {
       this.store.dispatch(new OpenToast({ title: 'Sucesso', message: 'Combo excluído', type: 'success' }));
       this.activeCombos.reload();
       this.isDeleteDialogOpen.set(false);
-    } catch (e) {
-      this.store.dispatch(new OpenToast({ title: 'Erro', message: 'Erro ao excluir', type: 'error' }));
+    } catch (e: any) {
+      const message = e.error?.message || 'Erro ao excluir combo';
+      this.store.dispatch(new OpenToast({ title: 'Erro', message, type: 'error' }));
     }
+  }
+
+  public onEdit(row: any): void {
+    this.isEditMode.set(true);
+    this.editingId.set(row.id);
+
+    this.registerForm.model.update(m => ({
+      ...m,
+      name: row.name,
+      sellPrice: row.sellPrice,
+      ifoodSellPrice: row.ifoodSellPrice
+    }));
+
+    const allProducts = this.allProducts.value() || [];
+    const items = (row.items || []).map((it: any) => {
+      const product = allProducts.find(p => p.id === it.productId);
+      return {
+        productId: it.productId,
+        productName: product?.name || 'Produto não encontrado',
+        quantity: it.quantity,
+        costPrice: product?.costPrice || 0,
+        sellPrice: product?.sellPrice || 0,
+        ifoodSellPrice: product?.ifoodSellPrice || 0
+      };
+    });
+
+    this.comboItems.set(items);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  public cancelEdit(): void {
+    this.resetForm();
   }
 
   private resetForm(): void {
     this.registerForm.reset();
     this.comboItems.set([]);
+    this.isEditMode.set(false);
+    this.editingId.set(null);
   }
 }

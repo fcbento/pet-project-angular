@@ -349,9 +349,15 @@ export class SaleRegister {
     this.isConfirmDialogOpen.set(false);
     this.registerForm.isSubmitting.set(true);
 
+    // Fix para evitar inversão de data (US-031/BUG-03)
+    // Converte YYYY-MM-DD para um objeto Date local antes de enviar como ISO
+    const dateStr = form().value().sellDate; // Formato YYYY-MM-DD
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const localDate = new Date(year, month - 1, day, 12, 0, 0); // Meio-dia para evitar shifts de fuso
+    
     const payload: SaleRequest = {
       origem: form().value().origem as SaleOrigin,
-      sellDate: new Date(form().value().sellDate).toISOString(),
+      sellDate: localDate.toISOString(),
       items: this.saleItems().map((i): SaleItemRequest => ({
         productId: i.productId,
         quantity: i.quantity,

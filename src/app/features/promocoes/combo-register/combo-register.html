@@ -9,7 +9,9 @@
             individuais de cada item acima.
           </div>
         </div>
-        <h3 style="padding-bottom: 10px;">Configurações do combo</h3>
+        <h3 style="padding-bottom: 10px;">
+          {{ isEditMode() ? 'Editando Combo: ' + registerForm.model().name : 'Configurações do combo' }}
+        </h3>
         <div class="form-row">
           <app-form-input label="Nome do Combo" [field]="registerForm.form.name"
             placeholder="Ex: Combo Família"></app-form-input>
@@ -87,7 +89,7 @@
                 </span>
               </div>
               <div class="metric">
-                <span class="label">Margem Líquida (iFood)</span>
+                <span class="label">Margem Líquida iFood</span>
                 <span class="value" [class.negative]="totals().ifoodMargin < 0">
                   {{ totals().ifoodMargin | number:'1.2-2' }}%
                 </span>
@@ -96,21 +98,21 @@
           </div>
         </div>
 
-        <div class="form-actions">
-          <app-button name="Salvar Combo" type="primary" (clicked)="save()"
+        <div class="form-actions" style="display: flex; gap: 8px;">
+          <app-button [name]="isEditMode() ? 'Atualizar Combo' : 'Salvar Combo'" type="primary" (clicked)="save()"
             [disabled]="registerForm.form().invalid() || comboItems().length === 0"></app-button>
+
+          @if (isEditMode()) {
+          <app-button name="Cancelar" type="secondary" (clicked)="cancelEdit()" [disabled]="false"></app-button>
+          }
         </div>
       </section>
     </app-card>
   </div>
 </div>
 <div style="margin-top: 20px;">
-  <app-table title="Combos Cadastrados" subtitle="Gerenciamento de combos cadastrados" [columns]="[
-            { field: 'name', label: 'Nome' },
-            { field: 'sellPrice', label: 'Balcão' },
-            { field: 'ifoodSellPrice', label: 'iFood' },
-            { field: 'costPrice', label: 'Custo' }
-          ]" [data]="activeCombos.value() || []" [actions]="tableActions">
+  <app-table title="Combos Cadastrados" subtitle="Gerenciamento de combos cadastrados" [columns]="columns"
+    [data]="activeCombos.value() || []" [actions]="tableActions">
   </app-table>
 </div>
 

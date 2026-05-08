@@ -60,4 +60,8 @@ export class PromocoesService {
   deleteCombo(id: number): Observable<void> {
     return this.http.delete<ApiResponse<void>>(`${this.comboUrl}/${id}`).pipe(map(() => undefined));
   }
+
+  updateCombo(id: number, request: ComboRequest): Observable<any> {
+    return this.http.put<ApiResponse<any>>(`${this.comboUrl}/${id}`, request).pipe(map(r => r.data));
+  }
 }

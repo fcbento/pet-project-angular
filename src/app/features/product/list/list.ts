@@ -88,6 +88,9 @@ export class ProductList {
   public readonly products = computed(() => {
     let data = this.productResource.value()?.data || [];
 
+    // Ocultar combos da listagem geral (US-035)
+    data = data.filter(p => p.type !== 'COMBO');
+
     const name = this.nameFilter().toLowerCase();
     const categoryId = this.categoryFilter();
 

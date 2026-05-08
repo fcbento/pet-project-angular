@@ -5,6 +5,8 @@ import { TableAction } from '../../../ui/table/table.model';
 import { ProductResponse } from '../../product/list/list.models';
 import { CategoryService } from '../../category/category.service';
 import { ProductService } from '../../product/product.service';
+import { Modal } from '../../../ui/modal/modal';
+import { Badge } from '../../../ui/badge/badge';
 import { FormSelect } from '../../../ui/form-select/form-select';
 import { FormInput } from '../../../ui/form-input/form-input';
 import { Button } from '../../../ui/button/button';
@@ -31,7 +33,7 @@ interface ComboItemSelection {
 @Component({
   selector: 'app-combo-register',
   standalone: true,
-  imports: [CommonModule, FormSelect, FormInput, Button, Table, Card, Field, ConfirmDialog],
+  imports: [CommonModule, FormSelect, FormInput, Button, Table, Card, Field, ConfirmDialog, Modal, Badge],
   templateUrl: './combo-register.html',
   styleUrl: './combo-register.scss',
   providers: [ComboForm, CurrencyPipe]
@@ -49,6 +51,9 @@ export class ComboRegister {
 
   public readonly isEditMode = signal(false);
   public readonly editingId = signal<number | null>(null);
+
+  public readonly isDetailsModalOpen = signal(false);
+  public readonly selectedComboDetails = signal<any>(null);
 
   public readonly comboItems = signal<ComboItemSelection[]>([]);
 
@@ -156,6 +161,11 @@ export class ComboRegister {
 
   public readonly tableActions: TableAction<ProductResponse>[] = [
     {
+      label: 'Detalhes',
+      callback: (row: any) => this.showDetails(row),
+      icon: '👁️'
+    },
+    {
       label: 'Editar',
       callback: (row: any) => this.onEdit(row),
       icon: '✏️'
@@ -166,6 +176,39 @@ export class ComboRegister {
       icon: '🗑️'
     }
   ];
+
+  public showDetails(row: any): void {
+    const allProducts = this.allProducts.value() || [];
+    const items = (row.items || []).map((it: any) => {
+      const product = allProducts.find(p => p.id === it.productId);
+      return {
+        ...it,
+        productName: product?.name || 'Produto não encontrado',
+        costPrice: product?.costPrice || 0,
+        sellPrice: product?.sellPrice || 0,
+        ifoodSellPrice: product?.ifoodSellPrice || 0
+      };
+    });
+
+    const totalCost = items.reduce((acc: number, it: any) => acc + (it.costPrice * it.quantity), 0);
+    const ifoodFee = row.ifoodSellPrice * 0.28;
+    const profitBalcao = row.sellPrice - totalCost;
+    const profitIfood = (row.ifoodSellPrice * 0.72) - totalCost;
+    const grossMargin = row.sellPrice > 0 ? ((row.sellPrice - totalCost) / row.sellPrice) * 100 : 0;
+    const ifoodMargin = row.ifoodSellPrice > 0 ? ((row.ifoodSellPrice * 0.72 - totalCost) / (row.ifoodSellPrice * 0.72)) * 100 : 0;
+
+    this.selectedComboDetails.set({
+      ...row,
+      itemsWithDetails: items,
+      totalCost,
+      ifoodFee,
+      profitBalcao,
+      profitIfood,
+      grossMargin,
+      ifoodMargin
+    });
+    this.isDetailsModalOpen.set(true);
+  }
   
   public readonly columns = [
     { field: 'name', label: 'Nome' },

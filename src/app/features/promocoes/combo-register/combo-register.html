@@ -123,3 +123,103 @@
 <app-confirm-dialog [(isOpen)]="isDeleteDialogOpen" title="Excluir Combo"
   message="Deseja realmente excluir este combo? Esta ação não pode ser desfeita." confirmText="Excluir"
   cancelText="Cancelar" type="danger" (confirm)="confirmRemoveCombo()"></app-confirm-dialog>
+
+<app-modal [(isOpen)]="isDetailsModalOpen" [title]="'Detalhes do Combo: ' + selectedComboDetails()?.name" size="lg">
+  @if (selectedComboDetails(); as details) {
+  <div class="combo-detail-modal">
+    <header class="detail-header" style="margin-bottom: 20px;">
+      <div class="header-info" style="display: flex; align-items: center; gap: 12px;">
+        <span class="origin-badge" style="background: #eff6ff; color: #1d4ed8; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">
+          KIT / COMBO
+        </span>
+        <span class="date" style="font-size: 0.9rem; color: #64748b; font-weight: 500;">Configuração Atual</span>
+      </div>
+    </header>
+
+    <section class="items-section">
+      <h3>Composição do Combo</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th class="text-right">Qtd</th>
+              <th class="text-right">P. Balcão</th>
+              <th class="text-right">P. iFood</th>
+              <th class="text-right">Custo</th>
+              <th class="text-right">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of details.itemsWithDetails; track $index) {
+            <tr>
+              <td>{{ item.productName }}</td>
+              <td class="text-right">{{ item.quantity }}</td>
+              <td class="text-right">{{ item.sellPrice | currency:'BRL' }}</td>
+              <td class="text-right">{{ item.ifoodSellPrice | currency:'BRL' }}</td>
+              <td class="text-right">{{ item.costPrice | currency:'BRL' }}</td>
+              <td class="text-right">{{ (item.costPrice * item.quantity) | currency:'BRL' }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="financial-summary">
+      <h3>Resumo Financeiro</h3>
+      <div class="summary-grid">
+        <div class="summary-item highlight">
+          <span class="label">Preço Balcão</span>
+          <span class="value">{{ details.sellPrice | currency:'BRL' }}</span>
+        </div>
+        <div class="summary-item highlight">
+          <span class="label">Preço iFood</span>
+          <span class="value">{{ details.ifoodSellPrice | currency:'BRL' }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Taxa iFood (28%)</span>
+          <span class="value negative">{{ (details.ifoodFee || 0) | currency:'BRL' }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Custo Total (CMV)</span>
+          <span class="value negative">{{ details.totalCost | currency:'BRL' }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Margem Balcão</span>
+          <span class="value" [class.positive]="details.grossMargin > 0" [class.negative]="details.grossMargin <= 0">
+            {{ details.grossMargin | number:'1.2-2' }}%
+          </span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Lucro Balcão</span>
+          <span class="value" [class.positive]="details.profitBalcao > 0" [class.negative]="details.profitBalcao <= 0">
+            {{ details.profitBalcao | currency:'BRL' }}
+          </span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Margem iFood</span>
+          <span class="value" [class.positive]="details.ifoodMargin > 0" [class.negative]="details.ifoodMargin <= 0">
+            {{ details.ifoodMargin | number:'1.2-2' }}%
+          </span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Lucro iFood</span>
+          <span class="value" [class.positive]="details.profitIfood > 0" [class.negative]="details.profitIfood <= 0">
+            {{ details.profitIfood | currency:'BRL' }}
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="detail-footer" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+      <span class="margin-badge" style="background: #1e293b; color: white; padding: 6px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 700;">
+        Balcão: {{ details.profitBalcao | currency:'BRL' }} ({{ details.grossMargin | number:'1.2-2' }}%)
+      </span>
+      <span class="margin-badge" style="background: #ef4444; color: white; padding: 6px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 700;">
+        iFood: {{ details.profitIfood | currency:'BRL' }} ({{ details.ifoodMargin | number:'1.2-2' }}%)
+      </span>
+    </footer>
+  </div>
+  }
+</app-modal>

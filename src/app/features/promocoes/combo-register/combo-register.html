@@ -37,6 +37,8 @@
                 <tr>
                   <th>Produto</th>
                   <th>Qtd</th>
+                  <th>P. Balcão</th>
+                  <th>P. iFood</th>
                   <th>Custo Unit.</th>
                   <th>Total</th>
                   <th></th>
@@ -47,6 +49,8 @@
                 <tr>
                   <td>{{ item.productName }}</td>
                   <td>{{ item.quantity }}</td>
+                  <td>{{ item.sellPrice | currency:'BRL' }}</td>
+                  <td>{{ item.ifoodSellPrice | currency:'BRL' }}</td>
                   <td>{{ item.costPrice | currency:'BRL' }}</td>
                   <td>{{ (item.costPrice * item.quantity) | currency:'BRL' }}</td>
                   <td>
@@ -56,7 +60,7 @@
                 }
                 @if (comboItems().length === 0) {
                 <tr>
-                  <td colspan="5" class="empty-msg">Nenhum item adicionado</td>
+                  <td colspan="7" class="empty-msg">Nenhum item adicionado</td>
                 </tr>
                 }
               </tbody>

@@ -63,16 +63,20 @@
           <span class="label">Faturamento Bruto</span>
           <span class="value">{{ s.totalPrice | currency: 'BRL' }}</span>
         </div>
-        <div class="summary-item">
-          <span class="label">CMV Total</span>
-          <span class="value negative">{{ s.totalCmv | currency: 'BRL' }}</span>
-        </div>
         @if (s.origem === 'IFOOD') {
+        <div class="summary-item">
+          <span class="label">Taxa iFood (28%)</span>
+          <span class="value negative">{{ (s.totalPrice * 0.28) | currency: 'BRL' }}</span>
+        </div>
         <div class="summary-item">
           <span class="label">Taxa Embalagem (iFood)</span>
           <span class="value negative">{{ (s.packagingFee || 0) | currency: 'BRL' }}</span>
         </div>
         }
+        <div class="summary-item">
+          <span class="label">CMV Total</span>
+          <span class="value negative">{{ s.totalCmv | currency: 'BRL' }}</span>
+        </div>
         <div class="summary-item highlight">
           <span class="label">Lucro Líquido Final</span>
           <span class="value positive">{{ s.totalProfit | currency: 'BRL' }}</span>

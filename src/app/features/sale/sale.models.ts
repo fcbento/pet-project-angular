@@ -22,6 +22,7 @@ export interface SaleItemResponse {
   profitMargin: number;
   isPromotional?: boolean;
   originalPrice?: number;
+  comboItems?: { productId: number, productName: string, quantity: number }[];
 }
 
 export interface SaleResponse {

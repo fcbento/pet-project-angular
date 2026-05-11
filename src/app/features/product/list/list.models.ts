@@ -17,4 +17,5 @@ export interface ProductResponse {
   stockQuantity: number;
   hasActivePromotion?: boolean;
   type?: 'PRODUCT' | 'COMBO';
+  comboItems?: { productId: number, productName: string, quantity: number }[];
 }

@@ -80,7 +80,16 @@
         <tbody>
           @for (item of saleItems(); track $index) {
           <tr>
-            <td>{{ item.productName }}</td>
+            <td>
+              {{ item.productName }}
+              @if (item.product.type === 'COMBO' && item.product.comboItems!.length) {
+              <div class="combo-sub-items">
+                @for (sub of item.product.comboItems; track sub.productId) {
+                <div class="combo-sub-item">↳ {{ sub.quantity }}x {{ sub.productName }}</div>
+                }
+              </div>
+              }
+            </td>
             <td>{{ item.sellPrice | currency:'BRL':'symbol':'1.2-2' }}</td>
             <td>{{ item.quantity }}</td>
             <td>{{ item.sellPrice * item.quantity | currency:'BRL':'symbol':'1.2-2' }}</td>
@@ -167,7 +176,16 @@
         <tbody>
           @for (item of saleItems(); track $index) {
           <tr>
-            <td>{{ item.productName }}</td>
+            <td>
+              {{ item.productName }}
+              @if (item.product.type === 'COMBO' && item.product.comboItems!.length) {
+              <div class="combo-sub-items">
+                @for (sub of item.product.comboItems; track sub.productId) {
+                <div class="combo-sub-item">↳ {{ sub.quantity }}x {{ sub.productName }}</div>
+                }
+              </div>
+              }
+            </td>
             <td>{{ item.quantity }}</td>
             <td>{{ item.sellPrice * item.quantity | currency:'BRL' }}</td>
           </tr>

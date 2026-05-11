@@ -36,6 +36,13 @@
                     <app-badge type="info" text="Promocional" style="font-size: 0.6rem;"></app-badge>
                   }
                 </div>
+                @if (item.comboItems?.length) {
+                <div class="combo-sub-items">
+                  @for (sub of item.comboItems; track sub.productId) {
+                  <div class="combo-sub-item">↳ {{ sub.quantity }}x {{ sub.productName }}</div>
+                  }
+                </div>
+                }
               </td>
               <td class="text-center">{{ item.quantity }}</td>
               <td class="text-right">

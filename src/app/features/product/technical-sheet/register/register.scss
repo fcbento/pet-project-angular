@@ -343,3 +343,31 @@ hr {
   background-color: #e5e7eb;
   margin: 1rem 0;
 }
+
+@media (max-width: 768px) {
+  .technical-sheet-container {
+    padding: 1rem;
+    
+    .content-grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      
+      .card.summary-card {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        position: static;
+      }
+
+      .card.ingredients-card,
+      .card.packaging-card,
+      .card.resale-card {
+        grid-column: 1 / -1;
+      }
+      
+      .card .form-grid,
+      .card .form-grid-5 {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}

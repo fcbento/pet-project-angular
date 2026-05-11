@@ -39,10 +39,12 @@
 
   .form-row {
     display: flex;
+    flex-wrap: wrap;
     gap: vars.$space-md;
     
     > * {
       flex: 1;
+      min-width: 200px;
     }
   }
 
@@ -75,6 +77,12 @@
       background-color: colors.$bg-muted;
       border-radius: vars.$radius-md;
       border: 1px dashed colors.$border-default;
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .items-table {

@@ -1,5 +1,9 @@
 <section class="dashboard">
-  <aside class="sidebar" [class.collapsed]="collapsed">
+  <div class="mobile-header">
+    <button class="hamburger-btn" (click)="sidebar.classList.toggle('mobile-open')">☰</button>
+    <img src="logo.png" alt="Logo" class="mobile-logo" />
+  </div>
+  <aside class="sidebar" #sidebar [class.collapsed]="collapsed">
     <img src="logo.png" alt="Logo" />
     <div class="sidebar__header"></div>
     <nav class="sidebar__nav">
@@ -8,8 +12,8 @@
           <li
             [class.active]="activeRoute() === route.link"
             class="nav-item has-children"
-            (click)="navigate(route.link)"
-            (keyup.enter)="navigate(route.link)"
+            (click)="navigate(route.link); sidebar.classList.remove('mobile-open')"
+            (keyup.enter)="navigate(route.link); sidebar.classList.remove('mobile-open')"
             tabindex="0"
           >
             <div class="nav-item__parent">

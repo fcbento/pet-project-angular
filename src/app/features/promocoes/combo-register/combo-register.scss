@@ -39,6 +39,10 @@
   }
 
   .items-table {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    
     .simple-table {
       width: 100%;
       border-collapse: collapse;
@@ -231,7 +235,8 @@
   .table-container {
     background: #f8fafc;
     border-radius: 12px;
-    overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     border: 1px solid #e2e8f0;
 
     table {
@@ -299,6 +304,28 @@
           }
         }
       }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .composition-section {
+    .selection-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .pricing-analysis-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .analysis-section .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .combo-detail-modal {
+    .financial-summary .summary-grid {
+      grid-template-columns: 1fr 1fr;
     }
   }
 }

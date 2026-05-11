@@ -119,3 +119,25 @@
 .list-section {
   margin-top: vars.$space-xl;
 }
+
+@media (max-width: 768px) {
+  .promotion-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .promo-form .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .analysis-section .metrics-grid, 
+  .analysis-section .metrics-grid.promo-metrics {
+    grid-template-columns: 1fr 1fr; // Keep 2 columns if possible, but 1 is safer.
+  }
+  
+  @media (max-width: 480px) {
+    .analysis-section .metrics-grid, 
+    .analysis-section .metrics-grid.promo-metrics {
+      grid-template-columns: 1fr;
+    }
+  }
+}

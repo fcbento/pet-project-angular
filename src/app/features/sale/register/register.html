@@ -66,36 +66,38 @@
     @if (saleItems().length === 0) {
     <p class="empty-list">Nenhum item adicionado à venda ainda.</p>
     } @else {
-    <table class="items-table">
-      <thead>
-        <tr>
-          <th>Produto</th>
-          <th>Preço Unit.</th>
-          <th>Quantidade</th>
-          <th>Subtotal</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (item of saleItems(); track $index) {
-        <tr>
-          <td>{{ item.productName }}</td>
-          <td>{{ item.sellPrice | currency:'BRL':'symbol':'1.2-2' }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>{{ item.sellPrice * item.quantity | currency:'BRL':'symbol':'1.2-2' }}</td>
-          <td>
-            <button class="btn-remove" (click)="removeItem($index)">Remover</button>
-          </td>
-        </tr>
-        }
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="3" class="total-label">Total da Venda</td>
-          <td colspan="2" class="total-value">{{ totalSalePrice() | currency:'BRL':'symbol':'1.2-2' }}</td>
-        </tr>
-      </tfoot>
-    </table>
+    <div class="table-responsive">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Preço Unit.</th>
+            <th>Quantidade</th>
+            <th>Subtotal</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of saleItems(); track $index) {
+          <tr>
+            <td>{{ item.productName }}</td>
+            <td>{{ item.sellPrice | currency:'BRL':'symbol':'1.2-2' }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.sellPrice * item.quantity | currency:'BRL':'symbol':'1.2-2' }}</td>
+            <td>
+              <button class="btn-remove" (click)="removeItem($index)">Remover</button>
+            </td>
+          </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="total-label">Total da Venda</td>
+            <td colspan="2" class="total-value">{{ totalSalePrice() | currency:'BRL':'symbol':'1.2-2' }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
     }
   </div>
 

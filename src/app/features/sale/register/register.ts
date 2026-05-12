@@ -89,7 +89,7 @@ export class SaleRegister {
     const origem = this.registerForm.registerForm().value().origem;
 
     return categories
-      .filter((c) => products.some((p) => p.category?.id == c.id))
+      .filter((c) => products.some((p) => p.category?.id == c.id && (origem !== 'REVENDA' || p.hasResale === true)))
       // Combos não são vendidos por revenda
       .filter((c) => !(origem === 'REVENDA' && c.nome === 'Combo'))
       .map((c) => ({
@@ -120,9 +120,11 @@ export class SaleRegister {
   public readonly productOptions = computed(() => {
     const products = this.productResource.value()?.data || [];
     const categoryId = this.selectedCategoryId();
+    const origem = this.registerForm.registerForm().value().origem;
 
     return products
       .filter((p) => !categoryId || p.category?.id == categoryId)
+      .filter((p) => origem !== 'REVENDA' || p.hasResale === true)
       .map((p) => ({
         label: `${p.name} (Estoque: ${p.stockQuantity ?? 0})`,
         value: p.id,

@@ -288,7 +288,7 @@ export class TechnicalSheetRegister {
       this.sellPriceValue() > 0 &&
       this.ifoodSellPriceValue() >= (suggestedIfood - 0.01) && // Tolerância
       this.profit() >= 0 &&
-      (!this.hasResaleValue() || this.isResaleMarginValid()) &&
+      (!this.hasResaleValue() || this.resalePriceValue() > 0) &&
       Number(val.stockQuantity) > 0;
   });
 

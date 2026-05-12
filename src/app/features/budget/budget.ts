@@ -54,7 +54,9 @@ export class Budget {
     stream: () => {
       const categoryId = this.selectedCategoryId();
       if (!categoryId) return of([] as ProductResponse[]);
-      return this.productService.getByCategory(categoryId).pipe(map(r => r.data || []));
+      return this.productService.getByCategory(categoryId).pipe(
+        map(r => (r.data || []).filter(p => p.hasResale === true))
+      );
     }
   });
 
@@ -64,7 +66,11 @@ export class Budget {
     const products = (this.allProductsResource.value() || []) as ProductResponse[];
     
     // Get unique category IDs that have products
-    const categoryIdsWithProducts = new Set(products.map((p: ProductResponse) => p.category?.id));
+    const categoryIdsWithProducts = new Set(
+      products
+        .filter((p: ProductResponse) => p.hasResale === true)
+        .map((p: ProductResponse) => p.category?.id)
+    );
     
     return categories.filter((c: CategoryResponse) => categoryIdsWithProducts.has(c.id));
   });
@@ -105,7 +111,7 @@ export class Budget {
   public currentTotal = computed(() => this.quantity() * this.customSellPrice());
   public currentProfit = computed(() => (this.customSellPrice() - this.currentCostPrice()) * this.quantity());
 
-  public isPriceInvalid = computed(() => {
+  public isPriceOutsideMargin = computed(() => {
     const price = this.customSellPrice();
     if (price === 0) return false;
     const min = this.minBudgetPrice();
@@ -136,7 +142,7 @@ export class Budget {
 
   public addItem() {
     const product = this.selectedProduct();
-    if (!product || this.isPriceInvalid() || this.quantity() <= 0) return;
+    if (!product || this.customSellPrice() <= 0 || this.quantity() <= 0) return;
 
     const newItem: BudgetItem = {
       id: product.id,
@@ -164,5 +170,10 @@ export class Budget {
 
   public generatePdf() {
     this.pdfService.generateBudgetPdf(this.items(), this.totalBudget());
+  }
+
+  public exportProducts() {
+    const products = this.allProductsResource.value() || [];
+    this.pdfService.generateProductListPdf(products);
   }
 }

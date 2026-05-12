@@ -1,4 +1,5 @@
-<app-modal [isOpen]="isOpen()" (isOpenChange)="onOpenChange($event)" [title]="'Detalhes da Venda #' + (sale()?.id || '')" size="lg">
+<app-modal [isOpen]="isOpen()" (isOpenChange)="onOpenChange($event)"
+  [title]="'Detalhes da Venda #' + (sale()?.id || '')" size="lg">
   @if (sale(); as s) {
   <div class="sale-detail">
     <header class="detail-header">
@@ -7,7 +8,7 @@
           {{ s.origem }}
         </span>
         @if (s.items[0]?.isPromotional) {
-          <app-badge type="info" text="Valor Promocional"></app-badge>
+        <app-badge type="info" text="Valor Promocional"></app-badge>
         }
         <span class="date">{{ s.sellDate | date: 'dd/MM/yyyy HH:mm' }}</span>
       </div>
@@ -33,7 +34,7 @@
                 <div style="display: flex; align-items: center; gap: 8px;">
                   {{ item.productName }}
                   @if (item.isPromotional) {
-                    <app-badge type="info" text="Promocional" style="font-size: 0.6rem;"></app-badge>
+                  <app-badge type="info" text="Promocional" style="font-size: 0.6rem;"></app-badge>
                   }
                 </div>
                 @if (item.comboItems?.length) {
@@ -48,9 +49,9 @@
               <td class="text-right">
                 <div style="display: flex; flex-direction: column; align-items: flex-end;">
                   @if (item.isPromotional && item.originalPrice) {
-                    <span style="text-decoration: line-through; font-size: 0.75rem; color: #94a3b8;">
-                      {{ item.originalPrice | currency: 'BRL' }}
-                    </span>
+                  <span style="text-decoration: line-through; font-size: 0.75rem; color: #94a3b8;">
+                    {{ item.originalPrice | currency: 'BRL' }}
+                  </span>
                   }
                   <span>{{ item.sellPrice | currency: 'BRL' }}</span>
                 </div>
@@ -81,8 +82,12 @@
         </div>
         }
         <div class="summary-item">
-          <span class="label">CMV Total</span>
-          <span class="value negative">{{ s.totalCmv | currency: 'BRL' }}</span>
+          <span class="label">CMV</span>
+          <span class="value negative">{{ s.directCmv | currency: 'BRL' }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Custo Fixo</span>
+          <span class="value negative">{{ s.fixedCost | currency: 'BRL' }}</span>
         </div>
         <div class="summary-item highlight">
           <span class="label">Lucro Líquido Final</span>

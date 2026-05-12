@@ -36,6 +36,8 @@ export interface SaleResponse {
   profitMargin: number;
   totalCmv: number;
   packagingFee?: number;
+  directCmv: number;
+  fixedCost: number;
 }
 
 export interface SalesReportResponse {

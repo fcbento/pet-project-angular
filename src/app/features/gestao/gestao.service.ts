@@ -74,6 +74,7 @@ export interface ManagementResponse {
 
   // Indicadores Avançados
   ifoodFixedFees: number;
+  ifoodCommissionFees: number;
   ifoodTotalOrders: number;
   ifoodFixedFeePerOrder: number;
 
